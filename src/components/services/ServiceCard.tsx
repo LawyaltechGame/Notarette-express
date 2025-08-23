@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Clock, Shield, CheckCircle, Plus } from 'lucide-react'
+import { Clock, Shield, CheckCircle, Plus, Zap } from 'lucide-react'
 import { Service } from '../../data/services'
 import { useAppDispatch } from '../../hooks/useAppDispatch'
 import { addItem } from '../../store/slices/cartSlice'
@@ -11,37 +11,73 @@ import { Link } from 'react-router-dom'
 
 interface ServiceCardProps {
   service: Service
+  stripePrice?: {
+    priceId: string
+    unitAmount: number | null
+    currency: string | null
+    productName: string | null
+  }
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
+const ServiceCard: React.FC<ServiceCardProps> = ({ service, stripePrice }) => {
   const dispatch = useAppDispatch()
   const [extraPages, setExtraPages] = useState(0)
   const [includeCourier, setIncludeCourier] = useState(false)
+  const [includeRushService, setIncludeRushService] = useState(false)
 
-  const formatPrice = (cents: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(cents / 100)
+  const getDisplayPrice = () => {
+    // Use Stripe price if available, otherwise fall back to local price
+    if (stripePrice?.unitAmount && stripePrice?.currency) {
+      return stripePrice.unitAmount / 100 // Convert cents to main unit
+    }
+    return service.priceCents / 100 // Convert cents to main unit
+  }
+
+  const getDisplayCurrency = () => {
+    // Use Stripe currency if available, otherwise fall back to local currency
+    if (stripePrice?.currency) {
+      return stripePrice.currency
+    }
+    return service.currency
+  }
+
+  const getDisplayPriceLabel = () => {
+    if (stripePrice?.unitAmount && stripePrice?.currency) {
+      return 'Live Stripe Price'
+    }
+    return 'Base Price'
   }
 
   const getTotalPrice = () => {
-    let total = service.priceCents
+    let total = getDisplayPrice() * 100 // Convert back to cents for calculations
     total += extraPages * service.options.extraPagesPriceCents
     if (includeCourier) total += service.options.courierPriceCents
+    if (includeRushService) total += service.options.rushServicePriceCents
     return total
+  }
+
+  const formatPrice = (cents: number, currency: string) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: currency,
+    }).format(cents / 100)
   }
 
   const handleAddToCart = () => {
     const cartItem = {
       id: service.id,
       name: service.name,
-      priceCents: service.priceCents,
+      priceCents: getTotalPrice(), // Use total price including add-ons
       quantity: 1,
+      currency: getDisplayCurrency(), // Include the currency
       addOns: {
         extraPages: extraPages > 0 ? extraPages : undefined,
         courier: includeCourier || undefined,
+        rushService: includeRushService || undefined,
       },
+      // Store Stripe info for checkout
+      stripePriceId: service.stripePriceId || undefined,
+      paymentLink: service.paymentLink || undefined,
     }
 
     dispatch(addItem(cartItem))
@@ -53,10 +89,10 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
   }
 
   return (
-    <Card hover className="h-full">
+    <Card hover className="h-full flex flex-col service-card">
       <div className="flex flex-col h-full">
         {/* Header */}
-        <div className="flex items-start justify-between mb-3">
+        <div className="flex items-start justify-between mb-3 flex-shrink-0">
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
               {service.name}
@@ -67,14 +103,19 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
           </div>
           <div className="text-right ml-3">
             <div className="text-xl font-bold text-teal-600">
-              {formatPrice(service.priceCents)}
+              {formatPrice(getDisplayPrice() * 100, getDisplayCurrency())}
             </div>
-            <div className="text-xs text-gray-500">starting</div>
+            <div className="text-xs text-gray-500">
+              {getDisplayPriceLabel()}
+            </div>
+            <div className="text-xs text-gray-400 mt-1">
+              + add-ons available
+            </div>
           </div>
         </div>
 
         {/* Features - Compact */}
-        <div className="mb-4">
+        <div className="mb-4 flex-shrink-0">
           <div className="space-y-1 mb-3">
             {service.features.slice(0, 2).map((feature, index) => (
               <div key={index} className="flex items-center space-x-2 text-xs">
@@ -96,14 +137,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
           </div>
         </div>
 
-        {/* Add-ons - Compact */}
-        <div className="mb-4 space-y-2">
+        {/* Add-ons - Show for all services */}
+        <div className="mb-4 space-y-2 flex-shrink-0">
           <h4 className="font-medium text-gray-900 dark:text-white text-sm">Add-ons</h4>
           
           {/* Extra Pages */}
           <div className="flex items-center justify-between">
             <label className="text-xs text-gray-700 dark:text-gray-300">
-              Extra pages ({formatPrice(service.options.extraPagesPriceCents)} each)
+              Extra pages ({formatPrice(service.options.extraPagesPriceCents, service.currency)} each)
             </label>
             <div className="flex items-center space-x-1">
               <button
@@ -134,26 +175,43 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
                 className="rounded border-gray-300 dark:border-gray-600 text-teal-600 focus:ring-teal-500 w-3 h-3"
               />
               <span className="text-xs text-gray-700 dark:text-gray-300">
-                Courier ({formatPrice(service.options.courierPriceCents)})
+                Courier ({formatPrice(service.options.courierPriceCents, service.currency)})
               </span>
             </label>
           </div>
+
+          {/* Rush Service */}
+          <div className="flex items-center justify-between">
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={includeRushService}
+                onChange={(e) => setIncludeRushService(e.target.checked)}
+                className="rounded border-gray-300 dark:border-gray-600 text-teal-600 focus:ring-teal-500 w-3 h-3"
+              />
+              <span className="flex items-center space-x-1 text-xs text-gray-700 dark:text-gray-300">
+                <Zap className="w-3 h-3 text-yellow-500" />
+                <span>Rush Service ({formatPrice(service.options.rushServicePriceCents, service.currency)})</span>
+              </span>
+            </label>
+          </div>
+
+          {/* Total Price */}
+          {(extraPages > 0 || includeCourier || includeRushService) && (
+            <div className="mb-4 p-2 bg-gray-50 dark:bg-gray-800 rounded text-sm flex-shrink-0">
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-gray-900 dark:text-white">Total:</span>
+                <span className="font-bold text-teal-600">
+                  {formatPrice(getTotalPrice(), getDisplayCurrency())}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Total Price */}
-        {(extraPages > 0 || includeCourier) && (
-          <div className="mb-4 p-2 bg-gray-50 dark:bg-gray-800 rounded text-sm">
-            <div className="flex items-center justify-between">
-              <span className="font-medium text-gray-900 dark:text-white">Total:</span>
-              <span className="font-bold text-teal-600">
-                {formatPrice(getTotalPrice())}
-              </span>
-            </div>
-          </div>
-        )}
-
         {/* Actions */}
-        <div className="mt-auto space-y-2">
+        <div className="mt-auto space-y-2 flex-shrink-0">
+          {/* All services use Add to Cart */}
           <Button
             onClick={handleAddToCart}
             variant="primary"

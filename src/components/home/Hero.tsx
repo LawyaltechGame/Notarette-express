@@ -1,33 +1,12 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Shield, Clock, Users, CheckCircle } from 'lucide-react'
+import { ArrowRight, Shield, CheckCircle } from 'lucide-react'
 import Button from '../ui/Button'
 
 const Hero: React.FC = () => {
-  const features = [
-    {
-      icon: Shield,
-      text: 'Bank-grade Security',
-      description: '256-bit encryption'
-    },
-    {
-      icon: Clock,
-      text: 'Same Day Service',
-      description: '2-4 hour turnaround'
-    },
-    {
-      icon: Users,
-      text: 'Licensed Notaries',
-      description: 'State-certified professionals'
-    },
-    {
-      icon: CheckCircle,
-      text: '100% Compliant',
-      description: 'Legal in all 50 states'
-    }
-  ]
-
+  // Features array removed - no longer displaying features grid below hero
+  
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-teal-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Background Pattern */}
@@ -179,13 +158,13 @@ const Hero: React.FC = () => {
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="absolute -bottom-4 -left-4 w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center"
             >
-              <Clock className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <div className="w-6 h-6 bg-blue-600 rounded-full"></div>
             </motion.div>
           </motion.div>
         </div>
 
-        {/* Features Grid */}
-        <motion.div
+        {/* Features Grid - Removed to keep page clean and focused */}
+        {/* <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
@@ -210,7 +189,7 @@ const Hero: React.FC = () => {
               </p>
             </motion.div>
           ))}
-        </motion.div>
+        </motion.div> */}
       </div>
 
                                                                                                                {/* Bottom Divider */}

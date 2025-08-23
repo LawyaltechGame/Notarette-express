@@ -1,35 +1,54 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Menu, X, ShoppingCart, User, Moon, Sun } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Menu, X, ShoppingCart, User, Moon, Sun, LogOut } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppSelector } from '../../hooks/useAppSelector'
 import { useAppDispatch } from '../../hooks/useAppDispatch'
 import { toggleCart } from '../../store/slices/cartSlice'
 import { toggleTheme } from '../../store/slices/uiSlice'
 import { selectCartItemCount } from '../../store/slices/cartSlice'
+import { logout } from '../../store/slices/userSlice'
+import { signOutUser } from '../../services/firebaseAuth'
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const cartItemCount = useAppSelector(selectCartItemCount)
   const theme = useAppSelector(state => state.ui.theme)
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated)
+  const user = useAppSelector(state => state.user.user)
 
   const navigation = [
-    { name: 'Home', href: '/' },
+    // { name: 'Home', href: '/home' }, // Hidden - Login is now default
     { name: 'Services', href: '/services' },
-    { name: 'How It Works', href: '/how-it-works' },
+    // { name: 'How It Works', href: '/how-it-works' }, // Hidden - exists on WordPress
     { name: 'Testimonials', href: '/testimonials' },
-    { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' },
+    // { name: 'About', href: '/about' }, // Hidden - exists on WordPress
+    // { name: 'Contact', href: '/contact' }, // Hidden - exists on WordPress
   ]
+
+  const handleLogout = async () => {
+    try {
+      await signOutUser()
+      dispatch(logout())
+      navigate('/')
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
+
+  // Don't show header on login page
+  if (!isAuthenticated) {
+    return null
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100 dark:bg-gray-900/80 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/services" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xs">NE</span>
             </div>
@@ -64,7 +83,10 @@ const Header: React.FC = () => {
 
             {/* Cart */}
             <button
-              onClick={() => dispatch(toggleCart())}
+              onClick={() => {
+                console.log('Cart button clicked, dispatching toggleCart')
+                dispatch(toggleCart())
+              }}
               className="relative p-2 text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition-colors"
               aria-label="Open cart"
             >
@@ -77,13 +99,18 @@ const Header: React.FC = () => {
             </button>
 
             {/* User Account */}
-            <Link
-              to={isAuthenticated ? '/portal' : '/login'}
-              className="p-2 text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition-colors"
-              aria-label="Account"
-            >
-              <User size={20} />
-            </Link>
+            <div className="flex items-center space-x-2">
+              <span className="text-gray-600 dark:text-gray-300 text-sm">
+                {user?.firstName} {user?.lastName}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="p-2 text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition-colors"
+                aria-label="Logout"
+              >
+                <LogOut size={20} />
+              </button>
+            </div>
 
             {/* CTA Button */}
             <Link

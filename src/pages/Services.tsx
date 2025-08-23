@@ -1,14 +1,67 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Search, Filter } from 'lucide-react'
+import { Search, Filter, Loader2 } from 'lucide-react'
 import ServiceCard from '../components/services/ServiceCard'
 import { services } from '../data/services'
+import { stripeService, StripePrice } from '../services/stripeService'
+import { addToast } from '../store/slices/uiSlice'
+import { useAppDispatch } from '../hooks/useAppDispatch'
 
 const Services: React.FC = () => {
-  const [searchTerm, setSearchTerm] = React.useState('')
-  const [filteredServices, setFilteredServices] = React.useState(services)
+  const dispatch = useAppDispatch()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filteredServices, setFilteredServices] = useState(services)
+  const [stripePrices, setStripePrices] = useState<Record<string, StripePrice>>({})
+  const [isLoadingPrices, setIsLoadingPrices] = useState(true)
 
-  React.useEffect(() => {
+  // Fetch Stripe prices on component mount
+  useEffect(() => {
+    const fetchPrices = async () => {
+      try {
+        setIsLoadingPrices(true)
+        
+        // Collect all Stripe price IDs from services (only those that have them)
+        const priceIds = services
+          .map(service => service.stripePriceId)
+          .filter(id => id && id.trim() !== '' && id.startsWith('price_'))
+
+        if (priceIds.length === 0) {
+          console.log('No Stripe price IDs found - all services will use local pricing')
+          setIsLoadingPrices(false)
+          return
+        }
+
+        console.log('Fetching Stripe prices for:', priceIds)
+
+        // Fetch prices from Stripe via Firebase Functions
+        const prices = await stripeService.getPrices(priceIds)
+        
+        // Convert to dictionary for easy lookup
+        const pricesDict = prices.reduce((acc, price) => {
+          acc[price.priceId] = price
+          return acc
+        }, {} as Record<string, StripePrice>)
+        
+        setStripePrices(pricesDict)
+        console.log('Stripe prices loaded:', pricesDict)
+        
+      } catch (error) {
+        console.error('Error fetching Stripe prices:', error)
+        dispatch(addToast({
+          type: 'error',
+          title: 'Price Loading Error',
+          message: 'Failed to load live prices. Services will use default pricing.',
+        }))
+      } finally {
+        setIsLoadingPrices(false)
+      }
+    }
+
+    fetchPrices()
+  }, [dispatch])
+
+  // Filter services based on search term
+  useEffect(() => {
     const filtered = services.filter(service =>
       service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       service.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -18,6 +71,11 @@ const Services: React.FC = () => {
     )
     setFilteredServices(filtered)
   }, [searchTerm])
+
+  // Get Stripe price for a service
+  const getStripePrice = (service: any) => {
+    return stripePrices[service.stripePriceId] || null
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
@@ -36,6 +94,32 @@ const Services: React.FC = () => {
             Professional remote notarization services available 24/7. 
             All services are backed by licensed notary publics and bank-grade security.
           </p>
+          
+          {/* Price Loading Status */}
+          {isLoadingPrices && (
+            <div className="flex items-center justify-center space-x-2 mt-4 text-sm text-gray-600 dark:text-gray-400">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Loading live prices from Stripe...</span>
+            </div>
+          )}
+          
+          {!isLoadingPrices && (
+            <div className="mt-4 text-sm text-center">
+              {Object.keys(stripePrices).length > 0 ? (
+                <div className="text-green-600 dark:text-green-400">
+                  ✓ Live Stripe prices loaded for {Object.keys(stripePrices).length} service(s)
+                  <br />
+                  <span className="text-gray-500 dark:text-gray-400">
+                    Services with Stripe links show live prices, others use local pricing
+                  </span>
+                </div>
+              ) : (
+                <div className="text-gray-600 dark:text-gray-400">
+                  All services use local pricing - Stripe prices will load when payment links are added
+                </div>
+              )}
+            </div>
+          )}
         </motion.div>
 
         {/* Search and Filters */}
@@ -64,15 +148,20 @@ const Services: React.FC = () => {
         </motion.div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start services-grid" style={{ alignItems: 'start' }}>
           {filteredServices.map((service, index) => (
             <motion.div
               key={service.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 * index }}
+              className="h-fit w-full service-card"
+              style={{ alignSelf: 'start' }}
             >
-              <ServiceCard service={service} />
+              <ServiceCard 
+                service={service} 
+                stripePrice={getStripePrice(service)}
+              />
             </motion.div>
           ))}
         </div>

@@ -3,28 +3,36 @@ import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, ArrowRight, User, Phone } from 'lucide-react'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { setLoading, setError, loginSuccess } from '../store/slices/userSlice'
 import { addToast } from '../store/slices/uiSlice'
-import { signInUser } from '../services/firebaseAuth'
+import { registerUser } from '../services/firebaseAuth'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 
-const loginSchema = z.object({
+const registerSchema = z.object({
+  firstName: z.string().min(2, 'First name must be at least 2 characters'),
+  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
+  phone: z.string().min(10, 'Phone number must be at least 10 digits'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string().min(8, 'Password must be at least 8 characters'),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 })
 
-type LoginFormData = z.infer<typeof loginSchema>
+type RegisterFormData = z.infer<typeof registerSchema>
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const location = useLocation()
   const [loading, setLocalLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   // Get the intended destination from location state, or default to services
   const from = (location.state as any)?.from?.pathname || '/services'
@@ -33,36 +41,42 @@ const Login: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
   })
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: RegisterFormData) => {
     try {
       setLocalLoading(true)
       dispatch(setLoading(true))
       dispatch(setError(null))
 
-      // Sign in user with Firebase
-      const user = await signInUser(data.email, data.password)
+      // Register user with Firebase
+      const user = await registerUser(
+        data.email,
+        data.password,
+        data.firstName,
+        data.lastName,
+        data.phone
+      )
 
-      // Login user after successful authentication
+      // Login user after successful registration
       dispatch(loginSuccess({ user }))
       
       dispatch(addToast({
         type: 'success',
-        title: 'Login successful!',
-        message: 'Welcome back to Notarette Express.',
+        title: 'Registration successful!',
+        message: 'Welcome to Notarette Express.',
       }))
 
       // Redirect to the intended destination or services page
       navigate(from, { replace: true })
     } catch (error: any) {
-      const errorMessage = error.message || 'Login failed. Please try again.'
+      const errorMessage = error.message || 'Registration failed. Please try again.'
       dispatch(setError(errorMessage))
       dispatch(addToast({
         type: 'error',
-        title: 'Login failed',
+        title: 'Registration failed',
         message: errorMessage,
       }))
     } finally {
@@ -89,10 +103,10 @@ const Login: React.FC = () => {
           </Link>
           
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Welcome Back
+            Create Account
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Sign in to access your account and manage your orders
+            Sign up to access our notarization services
           </p>
         </motion.div>
 
@@ -103,6 +117,43 @@ const Login: React.FC = () => {
         >
           <Card>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              {/* Name Fields */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    First Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                      {...register('firstName')}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                      placeholder="John"
+                    />
+                  </div>
+                  {errors.firstName && (
+                    <p className="text-red-600 text-sm mt-1">{errors.firstName.message}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Last Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                      {...register('lastName')}
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                      placeholder="Doe"
+                    />
+                  </div>
+                  {errors.lastName && (
+                    <p className="text-red-600 text-sm mt-1">{errors.lastName.message}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Email Address
@@ -121,6 +172,26 @@ const Login: React.FC = () => {
                 )}
               </div>
 
+              {/* Phone */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Phone Number
+                </label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type="tel"
+                    {...register('phone')}
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    placeholder="(555) 123-4567"
+                  />
+                </div>
+                {errors.phone && (
+                  <p className="text-red-600 text-sm mt-1">{errors.phone.message}</p>
+                )}
+              </div>
+
+              {/* Password */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Password
@@ -146,20 +217,30 @@ const Login: React.FC = () => {
                 )}
               </div>
 
-              <div className="flex items-center justify-between">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    className="rounded border-gray-300 dark:border-gray-600 text-teal-600 focus:ring-teal-500"
-                  />
-                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                    Remember me
-                  </span>
+              {/* Confirm Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Confirm Password
                 </label>
-                
-                <Link to="/forgot-password" className="text-sm text-teal-600 hover:text-teal-700">
-                  Forgot password?
-                </Link>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    {...register('confirmPassword')}
+                    className="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    placeholder="Confirm your password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <p className="text-red-600 text-sm mt-1">{errors.confirmPassword.message}</p>
+                )}
               </div>
 
               <Button
@@ -169,16 +250,16 @@ const Login: React.FC = () => {
                 className="w-full"
                 loading={loading}
               >
-                Sign In
+                Create Account
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <span className="text-gray-600 dark:text-gray-400 text-sm">
-                Don't have an account?{' '}
-                <Link to="/register" className="text-teal-600 hover:text-teal-700 font-medium">
-                  Sign up here
+                Already have an account?{' '}
+                <Link to="/login" className="text-teal-600 hover:text-teal-700 font-medium">
+                  Sign in here
                 </Link>
               </span>
             </div>
@@ -202,4 +283,4 @@ const Login: React.FC = () => {
   )
 }
 
-export default Login
+export default Register

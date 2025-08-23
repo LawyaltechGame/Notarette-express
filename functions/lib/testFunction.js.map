@@ -1,0 +1,1 @@
+{"version":3,"file":"testFunction.js","sourceRoot":"","sources":["../src/testFunction.ts"],"names":[],"mappings":";;;AAAA,gDAAgD;AAEnC,QAAA,YAAY,GAAG,SAAS,CAAC,KAAK,CAAC,MAAM,CAChD,KAAK,EAAE,IAAS,EAAE,OAAO,EAAmD,EAAE;IAC5E,OAAO;QACL,OAAO,EAAE,iCAAiC;QAC1C,SAAS,EAAE,IAAI,IAAI,EAAE,CAAC,WAAW,EAAE;KACpC,CAAC;AACJ,CAAC,CACF,CAAC"}

@@ -1,45 +1,67 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
-export interface User {
-  id: string
-  email: string
-  name: string
-  role: 'customer' | 'admin'
-}
+import { AuthUser } from '../../services/firebaseAuth'
 
 interface UserState {
-  user: User | null
+  user: AuthUser | null
   isAuthenticated: boolean
-  token: string | null
+  loading: boolean
+  error: string | null
 }
 
 const initialState: UserState = {
   user: null,
   isAuthenticated: false,
-  token: null,
+  loading: false,
+  error: null,
 }
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    loginSuccess: (state, action: PayloadAction<{ user: User; token: string }>) => {
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload
+    },
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload
+    },
+    loginSuccess: (state, action: PayloadAction<{ user: AuthUser; token?: string }>) => {
       state.user = action.payload.user
-      state.token = action.payload.token
       state.isAuthenticated = true
+      state.loading = false
+      state.error = null
+    },
+    loginFailure: (state, action: PayloadAction<string>) => {
+      state.user = null
+      state.isAuthenticated = false
+      state.loading = false
+      state.error = action.payload
     },
     logout: (state) => {
       state.user = null
-      state.token = null
       state.isAuthenticated = false
+      state.loading = false
+      state.error = null
     },
-    updateUser: (state, action: PayloadAction<Partial<User>>) => {
+    updateProfile: (state, action: PayloadAction<Partial<AuthUser>>) => {
       if (state.user) {
         state.user = { ...state.user, ...action.payload }
       }
     },
+    clearError: (state) => {
+      state.error = null
+    },
   },
 })
 
-export const { loginSuccess, logout, updateUser } = userSlice.actions
+export const { 
+  setLoading, 
+  setError, 
+  loginSuccess, 
+  loginFailure, 
+  logout, 
+  updateProfile, 
+  clearError 
+} = userSlice.actions
+
 export default userSlice.reducer

@@ -5,3 +5,18 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* Custom CSS for stable grid layout */
+.services-grid {
+  align-items: start !important;
+}
+
+.services-grid > * {
+  align-self: start !important;
+}
+
+/* Ensure service cards maintain their own height */
+.service-card {
+  height: fit-content !important;
+  align-self: start !important;
+}

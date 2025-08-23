@@ -1,9 +1,16 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Shield, Clock, Award, MapPin, Phone, Mail } from 'lucide-react'
+import { useAppSelector } from '../../hooks/useAppSelector'
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear()
+  const isAuthenticated = useAppSelector(state => state.user.isAuthenticated)
+
+  // Don't show footer on login page
+  if (!isAuthenticated) {
+    return null
+  }
 
   const trustBadges = [
     { icon: Shield, text: 'Bank-Grade Security' },
@@ -19,16 +26,16 @@ const Footer: React.FC = () => {
       { name: 'All Services', href: '/services' },
     ],
     company: [
-      { name: 'About Us', href: '/about' },
-      { name: 'How It Works', href: '/#how-it-works' },
+      // { name: 'About Us', href: '/about' }, // Hidden - exists on WordPress
+      // { name: 'How It Works', href: '/#how-it-works' }, // Hidden - exists on WordPress
       { name: 'Pricing', href: '/pricing' },
-      { name: 'Contact', href: '/contact' },
+      // { name: 'Contact', href: '/contact' }, // Hidden - exists on WordPress
     ],
     support: [
       { name: 'Help Center', href: '/help' },
       { name: 'FAQs', href: '/faqs' },
       { name: 'Client Portal', href: '/portal' },
-      { name: 'Book a Call', href: '/contact' },
+      // { name: 'Book a Call', href: '/contact' }, // Hidden - exists on WordPress
     ],
     legal: [
       { name: 'Privacy Policy', href: '/legal/privacy' },
@@ -61,13 +68,13 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Brand Section */}
           <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center space-x-2 mb-4">
-                          <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xs">NE</span>
-            </div>
-            <span className="font-bold text-xl text-gray-900 dark:text-white">
-              Notarette Express
-            </span>
+            <Link to="/services" className="flex items-center space-x-2 mb-4">
+              <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xs">NE</span>
+              </div>
+              <span className="font-bold text-xl text-gray-900 dark:text-white">
+                Notarette Express
+              </span>
             </Link>
             <p className="text-gray-600 dark:text-gray-400 text-sm mb-6 max-w-md">
               Secure, fast, and compliant remote online notarization services. 

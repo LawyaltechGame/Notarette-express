@@ -8,9 +8,12 @@ export interface Service {
   longDescription: string
   features: string[]
   turnaroundTime: string
+  stripePriceId: string
+  paymentLink: string
   options: {
     extraPagesPriceCents: number
     courierPriceCents: number
+    rushServicePriceCents: number
   }
   faqs: Array<{
     question: string
@@ -23,8 +26,8 @@ export const services: Service[] = [
     id: '1',
     name: 'Power of Attorney',
     slug: 'power-of-attorney',
-    priceCents: 3500, // $35.00
-    currency: 'USD',
+    priceCents: 3000, // ₹30.00 (3000 paise)
+    currency: 'INR',
     description: 'Legally binding power of attorney notarization',
     longDescription: 'Professional notarization of power of attorney documents with full legal compliance and identity verification.',
     features: [
@@ -35,9 +38,12 @@ export const services: Service[] = [
       '24/7 availability',
     ],
     turnaroundTime: '2-4 hours',
+    stripePriceId: 'price_1NxY0000000000000000000000000001',
+    paymentLink: 'https://buy.stripe.com/test_eVq8wP1OI09cep2aMV1Jm01',
     options: {
       extraPagesPriceCents: 500,
       courierPriceCents: 1500,
+      rushServicePriceCents: 2000,
     },
     faqs: [
       {
@@ -66,9 +72,12 @@ export const services: Service[] = [
       'Quick processing',
     ],
     turnaroundTime: '1-2 hours',
+    stripePriceId: '',
+    paymentLink: '',
     options: {
       extraPagesPriceCents: 300,
       courierPriceCents: 1200,
+      rushServicePriceCents: 1500,
     },
     faqs: [
       {
@@ -97,9 +106,12 @@ export const services: Service[] = [
       'Express service available',
     ],
     turnaroundTime: '1-3 hours',
+    stripePriceId: '',
+    paymentLink: '',
     options: {
       extraPagesPriceCents: 400,
       courierPriceCents: 1500,
+      rushServicePriceCents: 1800,
     },
     faqs: [
       {
@@ -128,9 +140,12 @@ export const services: Service[] = [
       '24/7 availability',
     ],
     turnaroundTime: '2-4 hours',
+    stripePriceId: '',
+    paymentLink: '',
     options: {
       extraPagesPriceCents: 600,
       courierPriceCents: 1000,
+      rushServicePriceCents: 2000,
     },
     faqs: [
       {
@@ -159,9 +174,12 @@ export const services: Service[] = [
       'Quick processing',
     ],
     turnaroundTime: '1-2 hours',
+    stripePriceId: '',
+    paymentLink: '',
     options: {
       extraPagesPriceCents: 500,
       courierPriceCents: 1200,
+      rushServicePriceCents: 1500,
     },
     faqs: [
       {
@@ -190,9 +208,12 @@ export const services: Service[] = [
       'Multi-language support',
     ],
     turnaroundTime: '1-3 business days',
+    stripePriceId: '',
+    paymentLink: '',
     options: {
       extraPagesPriceCents: 1000,
       courierPriceCents: 2500,
+      rushServicePriceCents: 3000,
     },
     faqs: [
       {
@@ -221,9 +242,12 @@ export const services: Service[] = [
       'Audit trail',
     ],
     turnaroundTime: '2-6 hours',
+    stripePriceId: '',
+    paymentLink: '',
     options: {
       extraPagesPriceCents: 800,
       courierPriceCents: 1800,
+      rushServicePriceCents: 2500,
     },
     faqs: [
       {
@@ -252,9 +276,12 @@ export const services: Service[] = [
       'Quality assurance',
     ],
     turnaroundTime: '2-5 business days',
+    stripePriceId: '',
+    paymentLink: '',
     options: {
       extraPagesPriceCents: 1500,
       courierPriceCents: 2000,
+      rushServicePriceCents: 3500,
     },
     faqs: [
       {
@@ -283,9 +310,12 @@ export const services: Service[] = [
       'Ongoing support',
     ],
     turnaroundTime: '3-7 business days',
+    stripePriceId: '',
+    paymentLink: '',
     options: {
       extraPagesPriceCents: 1200,
       courierPriceCents: 2500,
+      rushServicePriceCents: 4000,
     },
     faqs: [
       {
@@ -314,9 +344,12 @@ export const services: Service[] = [
       'Tracking included',
     ],
     turnaroundTime: '5-15 business days',
+    stripePriceId: '',
+    paymentLink: '',
     options: {
       extraPagesPriceCents: 800,
       courierPriceCents: 2000,
+      rushServicePriceCents: 3000,
     },
     faqs: [
       {
