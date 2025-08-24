@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useParams, Navigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Clock, Shield, CheckCircle, Plus, Minus, ArrowRight, Star } from 'lucide-react'
@@ -6,6 +6,7 @@ import { getServiceBySlug, Service } from '../data/services'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { addItem } from '../store/slices/cartSlice'
 import { addToast } from '../store/slices/uiSlice'
+import { stripeService, StripePrice } from '../services/stripeService'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import Badge from '../components/ui/Badge'
@@ -15,22 +16,57 @@ const ServiceDetail: React.FC = () => {
   const dispatch = useAppDispatch()
   const [extraPages, setExtraPages] = React.useState(0)
   const [includeCourier, setIncludeCourier] = React.useState(false)
+  const [stripePrice, setStripePrice] = React.useState<any>(null)
 
   const service = slug ? getServiceBySlug(slug) : null
+
+  // Fetch Stripe price if available
+  useEffect(() => {
+    const fetchStripePrice = async () => {
+      if (service?.stripePriceId && service.stripePriceId.startsWith('price_')) {
+        try {
+          const prices = await stripeService.getPrices([service.stripePriceId])
+          if (prices.length > 0) {
+            setStripePrice(prices[0])
+          }
+        } catch (error) {
+          console.error('Error fetching Stripe price:', error)
+        }
+      }
+    }
+
+    fetchStripePrice()
+  }, [service?.stripePriceId])
 
   if (!service) {
     return <Navigate to="/services" replace />
   }
 
-  const formatPrice = (cents: number) => {
+  const formatPrice = (cents: number, currency: string) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: currency,
     }).format(cents / 100)
   }
 
+  const getDisplayPrice = () => {
+    // Use Stripe price if available, otherwise fall back to local price
+    if (stripePrice?.unitAmount && stripePrice?.currency) {
+      return stripePrice.unitAmount / 100 // Convert cents to main unit
+    }
+    return service.priceCents / 100 // Convert cents to main unit
+  }
+
+  const getDisplayCurrency = () => {
+    // Use Stripe currency if available, otherwise fall back to local currency
+    if (stripePrice?.currency) {
+      return stripePrice.currency
+    }
+    return service.currency
+  }
+
   const getTotalPrice = () => {
-    let total = service.priceCents
+    let total = getDisplayPrice() * 100 // Convert back to cents for calculations
     total += extraPages * service.options.extraPagesPriceCents
     if (includeCourier) total += service.options.courierPriceCents
     return total
@@ -40,12 +76,15 @@ const ServiceDetail: React.FC = () => {
     const cartItem = {
       id: service.id,
       name: service.name,
-      priceCents: service.priceCents,
+      priceCents: getTotalPrice(),
       quantity: 1,
+      currency: getDisplayCurrency(),
       addOns: {
         extraPages: extraPages > 0 ? extraPages : undefined,
         courier: includeCourier || undefined,
       },
+      stripePriceId: service.stripePriceId || undefined,
+      paymentLink: service.paymentLink || undefined,
     }
 
     dispatch(addItem(cartItem))
@@ -97,9 +136,11 @@ const ServiceDetail: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <div className="text-3xl font-bold text-teal-600">
-                      {formatPrice(service.priceCents)}
+                      {formatPrice(getDisplayPrice() * 100, getDisplayCurrency())}
                     </div>
-                    <div className="text-sm text-gray-500">starting price</div>
+                    <div className="text-sm text-gray-500">
+                      {stripePrice ? 'Live Stripe Price' : 'Base Price'}
+                    </div>
                   </div>
                 </div>
 
@@ -207,7 +248,7 @@ const ServiceDetail: React.FC = () => {
                     </div>
                   </div>
                   <div className="font-semibold text-gray-900 dark:text-white">
-                    {formatPrice(service.priceCents)}
+                    {formatPrice(getDisplayPrice() * 100, getDisplayCurrency())}
                   </div>
                 </div>
 
@@ -219,7 +260,7 @@ const ServiceDetail: React.FC = () => {
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <label className="text-sm text-gray-700 dark:text-gray-300">
-                        Extra pages ({formatPrice(service.options.extraPagesPriceCents)} each)
+                        Extra pages ({formatPrice(service.options.extraPagesPriceCents, service.currency)} each)
                       </label>
                     </div>
                     <div className="flex items-center space-x-3">
@@ -251,7 +292,7 @@ const ServiceDetail: React.FC = () => {
                         className="rounded border-gray-300 dark:border-gray-600 text-teal-600 focus:ring-teal-500"
                       />
                       <span className="text-sm text-gray-700 dark:text-gray-300">
-                        Courier delivery ({formatPrice(service.options.courierPriceCents)})
+                        Courier delivery ({formatPrice(service.options.courierPriceCents, service.currency)})
                       </span>
                     </label>
                   </div>
@@ -264,7 +305,7 @@ const ServiceDetail: React.FC = () => {
                       Total:
                     </span>
                     <span className="text-2xl font-bold text-teal-600">
-                      {formatPrice(getTotalPrice())}
+                      {formatPrice(getTotalPrice(), service.currency)}
                     </span>
                   </div>
                 </div>

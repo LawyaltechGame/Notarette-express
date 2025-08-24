@@ -24,6 +24,7 @@ const Header: React.FC = () => {
     { name: 'Services', href: '/services' },
     // { name: 'How It Works', href: '/how-it-works' }, // Hidden - exists on WordPress
     { name: 'Testimonials', href: '/testimonials' },
+    { name: 'FAQ', href: '/faq' },
     // { name: 'About', href: '/about' }, // Hidden - exists on WordPress
     // { name: 'Contact', href: '/contact' }, // Hidden - exists on WordPress
   ]
@@ -99,10 +100,15 @@ const Header: React.FC = () => {
             </button>
 
             {/* User Account */}
-            <div className="flex items-center space-x-2">
-              <span className="text-gray-600 dark:text-gray-300 text-sm">
-                {user?.firstName} {user?.lastName}
-              </span>
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm">
+                  {user?.firstName?.charAt(0)?.toUpperCase() || 'U'}
+                </div>
+                <span className="text-gray-600 dark:text-gray-300 text-sm font-medium">
+                  {user?.firstName} {user?.lastName}
+                </span>
+              </div>
               <button
                 onClick={handleLogout}
                 className="p-2 text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition-colors"

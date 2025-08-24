@@ -451,6 +451,188 @@ const Checkout: React.FC = () => {
             </Card>
           </motion.div>
         </div>
+
+        {/* Trust & Information Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="mt-12"
+        >
+          {/* Why Choose Notary24™ */}
+          <Card className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+              Why Choose Notary24™
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-blue-600 dark:text-blue-400 text-xl font-bold">+</span>
+                </div>
+                <h3 className="font-bold text-gray-900 dark:text-white mb-2">No Hidden Fees Guarantee</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  All our services included in the selected product are completely covered by our fee.
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-blue-600 dark:text-blue-400 text-xl font-bold">+</span>
+                </div>
+                <h3 className="font-bold text-gray-900 dark:text-white mb-2">Professional Team</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  Our experienced notaries and lawyers ensure fast and efficient execution of your order.
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-blue-600 dark:text-blue-400 text-xl font-bold">+</span>
+                </div>
+                <h3 className="font-bold text-gray-900 dark:text-white mb-2">Fast Service</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  As soon as you place the order, you will receive email for order confirmation & we shall processing your order right after. Your will receive all instructions in a few hours.
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-blue-600 dark:text-blue-400 text-xl font-bold">+</span>
+                </div>
+                <h3 className="font-bold text-gray-900 dark:text-white mb-2">100% Safe and Secure Payment</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  All the information that you submit here is 100% encrypted. This is 256 bit SSL encrypted payment.
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-blue-600 dark:text-blue-400 text-xl font-bold">+</span>
+                </div>
+                <h3 className="font-bold text-gray-900 dark:text-white mb-2">No Visit Required</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  We are always happy to meet our customers. However, everything can be done online / from your home or office.
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-blue-600 dark:text-blue-400 text-xl font-bold">+</span>
+                </div>
+                <h3 className="font-bold text-gray-900 dark:text-white mb-2">Video Reviews</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  Check our verified <span className="text-blue-600 dark:text-blue-400 cursor-pointer">Video Reviews</span>
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          {/* Policies and Trust */}
+          <Card className="mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Trust Icons */}
+              <div className="space-y-6">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Shield className="w-8 h-8 text-gray-600 dark:text-gray-400" />
+                  </div>
+                  <p className="text-gray-700 dark:text-gray-300 font-medium">We Protect Your Privacy</p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <CheckCircle className="w-8 h-8 text-gray-600 dark:text-gray-400" />
+                  </div>
+                  <p className="text-gray-700 dark:text-gray-300 font-medium">100% Satisfaction Guaranteed</p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <CreditCard className="w-8 h-8 text-gray-600 dark:text-gray-400" />
+                  </div>
+                  <p className="text-gray-700 dark:text-gray-300 font-medium">Your Information Is Secure</p>
+                </div>
+              </div>
+
+              {/* Policies */}
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">100% Refund Policy</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    We offer a seven-day Money Back Guarantee. If you want to cancel your account and get back the money paid for our services, please contact our Customer Support. Our Money Back Guarantee gives you peace of mind that our services will meet the expectations.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Privacy Protection</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    We respect your privacy and will never share, sell, rent, lease or give away your personal information (name, address, email, etc.) to any third party for marketing, advertising or other purposes.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Other Payment Methods</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    Is it more convenient for you to pay in another way, for example, by bank transfer, e-currency or cash? Please contact us and we will find a solution. <strong>Tax Invoice will be provided for each payment.</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Payment Methods and Customer Support */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Payment Methods */}
+            <Card>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+                WE ACCEPT
+                <div className="w-24 h-1 bg-blue-500 mx-auto mt-2 rounded-full"></div>
+              </h3>
+              <div className="flex justify-center">
+                <img 
+                  src="/src/pages/Images/payment-methods We Accept image.png" 
+                  alt="Payment Methods We Accept" 
+                  className="max-w-full h-auto rounded-lg shadow-sm"
+                  style={{ maxHeight: '300px' }}
+                />
+              </div>
+            </Card>
+
+            {/* Customer Support */}
+            <Card>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 text-center">Customer Support</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-center mb-6">OUR CUSTOMER SUPPORT IS HERE FOR YOU</p>
+              
+              <div className="text-center mb-6">
+                <div className="w-20 h-20 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-3 flex items-center justify-center">
+                  <span className="text-gray-600 dark:text-gray-400 text-2xl font-bold">DC</span>
+                </div>
+                <h4 className="font-bold text-gray-900 dark:text-white text-lg">Dennis Chung</h4>
+                <p className="text-gray-600 dark:text-gray-400">Customer Happiness Manager</p>
+                <p className="text-gray-500 dark:text-gray-500 italic mt-2">Dennis Chung</p>
+              </div>
+              
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center space-x-2">
+                  <CreditCard className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-700 dark:text-gray-300">Contact our Support Team</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <CreditCard className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-700 dark:text-gray-300">E-Mail: support@notary24.com</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <CreditCard className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-700 dark:text-gray-300">Live Support: <span className="text-blue-600 dark:text-blue-400 cursor-pointer">LiveChat</span></span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <CreditCard className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-700 dark:text-gray-300">Business Hours: 24/7</span>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </motion.div>
       </div>
     </div>
   )

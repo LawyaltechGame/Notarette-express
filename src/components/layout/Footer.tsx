@@ -25,12 +25,6 @@ const Footer: React.FC = () => {
       { name: 'Apostille Services', href: '/services/apostille-services' },
       { name: 'All Services', href: '/services' },
     ],
-    company: [
-      // { name: 'About Us', href: '/about' }, // Hidden - exists on WordPress
-      // { name: 'How It Works', href: '/#how-it-works' }, // Hidden - exists on WordPress
-      { name: 'Pricing', href: '/pricing' },
-      // { name: 'Contact', href: '/contact' }, // Hidden - exists on WordPress
-    ],
     support: [
       { name: 'Help Center', href: '/help' },
       { name: 'FAQs', href: '/faqs' },
@@ -115,22 +109,7 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Company Links */}
-          <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Company</h3>
-            <ul className="space-y-2">
-              {footerLinks.company.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.href}
-                    className="text-sm text-gray-600 hover:text-teal-600 dark:text-gray-400 dark:hover:text-teal-400 transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+         
 
           {/* Support Links */}
           <div>

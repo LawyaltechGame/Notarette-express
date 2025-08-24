@@ -18,6 +18,7 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 import HowItWorksPage from './pages/HowItWorks'
 import TestimonialsPage from './pages/Testimonials'
+import FAQ from './pages/FAQ'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import PaymentSuccess from './pages/PaymentSuccess'
@@ -115,6 +116,11 @@ function App() {
                 <Route path="/testimonials" element={
                   <ProtectedRoute>
                     <TestimonialsPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/faq" element={
+                  <ProtectedRoute>
+                    <FAQ />
                   </ProtectedRoute>
                 } />
 
