@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ChevronDown, ChevronUp, HelpCircle, FileText, Shield, Clock, CreditCard, Globe, Building, UserCheck, Mail, Phone } from 'lucide-react'
+import { ChevronDown, ChevronUp, HelpCircle, FileText, Shield, Clock, CreditCard, Mail, Phone } from 'lucide-react'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 
