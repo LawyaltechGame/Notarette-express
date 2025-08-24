@@ -60,8 +60,8 @@ export const services: Service[] = [
     id: '2',
     name: 'Certified Copy of Document',
     slug: 'certified-copy-document',
-    priceCents: 2000, // $20.00
-    currency: 'USD',
+    priceCents: 4000, // ₹40.00 (real Stripe price)
+    currency: 'INR',
     description: 'Official certified copy of original documents',
     longDescription: 'Create legally certified copies of original documents with notarial certification.',
     features: [
@@ -72,12 +72,12 @@ export const services: Service[] = [
       'Quick processing',
     ],
     turnaroundTime: '1-2 hours',
-    stripePriceId: '',
-    paymentLink: '',
+    stripePriceId: 'price_placeholder_2', // Placeholder - will be extracted from payment link
+    paymentLink: 'https://buy.stripe.com/test_7sY14n50U7BEgxadZ71Jm02',
     options: {
-      extraPagesPriceCents: 300,
-      courierPriceCents: 1200,
-      rushServicePriceCents: 1500,
+      extraPagesPriceCents: 500, // ₹5.00 per extra page
+      courierPriceCents: 1500, // ₹15.00 for courier
+      rushServicePriceCents: 2000, // ₹20.00 for rush service
     },
     faqs: [
       {

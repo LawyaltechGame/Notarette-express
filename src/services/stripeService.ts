@@ -39,6 +39,12 @@ class StripeService {
           currency: 'INR',
           productName: 'Power of Attorney',
         },
+        {
+          priceId: 'price_placeholder_2',
+          unitAmount: 4000, // ₹40.00 in cents (real Stripe price)
+          currency: 'INR',
+          productName: 'Certified Copy of Document',
+        },
         // Add more mock prices as needed
       ];
       
@@ -49,7 +55,7 @@ class StripeService {
     }
   }
 
-  async checkSession(_sessionId: string): Promise<StripeSession> {
+  async checkSession(sessionId: string): Promise<StripeSession> {
     try {
       // For now, return mock session data
       // In production, you'd implement this with a free backend service
@@ -58,13 +64,13 @@ class StripeService {
       
       return {
         paid: true, // Mock successful payment
-        amount: 3000,
+        amount: 4000, // ₹40.00 for Certified Copy of Document
         currency: 'INR',
         items: [
           {
-            name: 'Power of Attorney',
+            name: 'Certified Copy of Document',
             qty: 1,
-            priceId: 'price_1NxY0000000000000000000000000001',
+            priceId: 'price_placeholder_2',
           },
         ],
         customer: {
