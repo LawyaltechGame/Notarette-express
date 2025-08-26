@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { selectCartItems } from '../store/slices/cartSlice';
-import { stripeService } from '../services/stripeService';
+
 import { motion } from 'framer-motion';
 import { CheckCircle, Calendar, ExternalLink, ArrowRight } from 'lucide-react';
 
@@ -33,12 +33,7 @@ const ThankYou: React.FC = () => {
 
     const loadOrderData = async () => {
       try {
-        // Use mock service instead of Firebase Functions
-        const data = await stripeService.checkSession(sessionId);
-        setOrderData(data);
-      } catch (error) {
-        console.error('Error loading order data:', error);
-        // Try to load from sessionStorage as fallback
+        // Load from sessionStorage since we're no longer using Stripe
         const savedOrder = sessionStorage.getItem('lastOrder');
         if (savedOrder) {
           try {
@@ -47,6 +42,8 @@ const ThankYou: React.FC = () => {
             console.error('Error parsing saved order:', parseError);
           }
         }
+      } catch (error) {
+        console.error('Error loading order data:', error);
       } finally {
         setIsLoading(false);
       }
@@ -75,6 +72,13 @@ const ThankYou: React.FC = () => {
   const handleBrowseMore = () => {
     navigate('/services');
   };
+
+  const formatPrice = (cents: number, currency: string) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: currency,
+    }).format(cents / 100)
+  }
 
   if (isLoading) {
     return (
@@ -121,7 +125,7 @@ const ThankYou: React.FC = () => {
                     <p className="text-sm text-gray-500">Quantity: {item.qty}</p>
                   </div>
                   <span className="text-gray-900 font-medium">
-                    {stripeService.formatPrice(orderData.amount || 0, orderData.currency || 'INR')}
+                    {formatPrice(orderData.amount || 0, orderData.currency || 'INR')}
                   </span>
                 </div>
               ))}
@@ -130,7 +134,7 @@ const ThankYou: React.FC = () => {
             <div className="flex justify-between items-center pt-4 border-t border-gray-200">
               <span className="text-lg font-semibold text-gray-900">Total</span>
               <span className="text-2xl font-bold text-blue-600">
-                {stripeService.formatPrice(orderData.amount || 0, orderData.currency || 'INR')}
+                {formatPrice(orderData.amount || 0, orderData.currency || 'INR')}
               </span>
             </div>
           </motion.div>

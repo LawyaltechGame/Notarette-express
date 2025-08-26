@@ -54,7 +54,7 @@ const HowItWorks: React.FC = () => {
 
         <div className="relative">
           {/* Connection Lines */}
-          <div className="hidden lg:block absolute top-24 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-200 via-teal-200 via-amber-200 to-green-200 dark:from-blue-800 dark:via-teal-800 dark:via-amber-800 dark:to-green-800" />
+          <div className="hidden lg:block absolute top-24 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-200 via-teal-200  to-green-200 dark:from-blue-800 dark:via-teal-800  dark:to-green-800" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {steps.map((step, index) => (

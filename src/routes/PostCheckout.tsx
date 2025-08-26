@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CheckCircle, XCircle, Loader2, ArrowLeft, Calendar } from 'lucide-react';
+import { XCircle, Loader2, ArrowLeft } from 'lucide-react';
 import { stripeService } from '../services/stripeService';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { useAppDispatch } from '../hooks/useAppDispatch';

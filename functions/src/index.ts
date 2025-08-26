@@ -1,4 +1,2 @@
-import { checkSession } from './checkSession';
-import { getPrices } from './getPrices';
-
-export { checkSession, getPrices };
+// Stripe-related functions removed as we now use Cal.com for payments.
+export {}

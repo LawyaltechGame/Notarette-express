@@ -11,8 +11,6 @@ export interface CartItem {
     courier?: boolean
     rushService?: boolean
   }
-  stripePriceId?: string
-  paymentLink?: string
 }
 
 interface CartState {
@@ -69,7 +67,7 @@ const cartSlice = createSlice({
       state.couponCode = action.payload.code
       state.discountCents = action.payload.discountCents
     },
-    // Action to restore cart from checkout data (useful after Stripe redirect)
+    // Action to restore cart from checkout data
     restoreCart: (state, action: PayloadAction<CartItem[]>) => {
       state.items = action.payload
     },

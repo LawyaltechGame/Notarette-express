@@ -8,8 +8,8 @@ export interface Service {
   longDescription: string
   features: string[]
   turnaroundTime: string
-  stripePriceId: string
-  paymentLink: string
+  calComBookingLink: string
+  imageUrl?: string // Optional field for future image support
   options: {
     extraPagesPriceCents: number
     courierPriceCents: number
@@ -26,7 +26,7 @@ export const services: Service[] = [
     id: '1',
     name: 'Power of Attorney',
     slug: 'power-of-attorney',
-    priceCents: 3000, // ₹30.00 (3000 paise)
+    priceCents: 1000, // ₹10.00 (1000 paise)
     currency: 'INR',
     description: 'Legally binding power of attorney notarization',
     longDescription: 'Professional notarization of power of attorney documents with full legal compliance and identity verification.',
@@ -38,8 +38,7 @@ export const services: Service[] = [
       '24/7 availability',
     ],
     turnaroundTime: '2-4 hours',
-    stripePriceId: 'price_1NxY0000000000000000000000000001',
-    paymentLink: 'https://buy.stripe.com/test_eVq8wP1OI09cep2aMV1Jm01',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
     options: {
       extraPagesPriceCents: 500,
       courierPriceCents: 1500,
@@ -60,7 +59,7 @@ export const services: Service[] = [
     id: '2',
     name: 'Certified Copy of Document',
     slug: 'certified-copy-document',
-    priceCents: 4000, // ₹40.00 (real Stripe price)
+    priceCents: 2000, // ₹20.00
     currency: 'INR',
     description: 'Official certified copy of original documents',
     longDescription: 'Create legally certified copies of original documents with notarial certification.',
@@ -72,8 +71,7 @@ export const services: Service[] = [
       'Quick processing',
     ],
     turnaroundTime: '1-2 hours',
-    stripePriceId: 'price_placeholder_2', // Placeholder - will be extracted from payment link
-    paymentLink: 'https://buy.stripe.com/test_7sY14n50U7BEgxadZ71Jm02',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/certified-copy-of-document-meeting-test',
     options: {
       extraPagesPriceCents: 500, // ₹5.00 per extra page
       courierPriceCents: 1500, // ₹15.00 for courier
@@ -97,153 +95,148 @@ export const services: Service[] = [
     priceCents: 2500, // $25.00
     currency: 'USD',
     description: 'Certified copy of passport or government ID',
-    longDescription: 'Create certified copies of passports, driver licenses, and government identification documents.',
+    longDescription: 'Create legally certified copies of passports, driver licenses, and other government-issued identification documents.',
     features: [
       'Government ID verification',
-      'Enhanced security protocols',
-      'International acceptance',
-      'Digital backup included',
-      'Express service available',
+      'Notarial certification',
+      'Digital copy provided',
+      'Secure storage',
+      'Quick processing',
     ],
-    turnaroundTime: '1-3 hours',
-    stripePriceId: '',
-    paymentLink: '',
+    turnaroundTime: '1-2 hours',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
     options: {
-      extraPagesPriceCents: 400,
+      extraPagesPriceCents: 500,
       courierPriceCents: 1500,
-      rushServicePriceCents: 1800,
+      rushServicePriceCents: 2000,
     },
     faqs: [
       {
-        question: 'Which IDs are accepted?',
-        answer: 'Passports, driver licenses, state IDs, and other government-issued identification.',
+        question: 'What types of ID can be certified?',
+        answer: 'Passports, driver licenses, national ID cards, and other government-issued identification.',
       },
       {
-        question: 'Is this accepted internationally?',
-        answer: 'Yes, certified copies are generally accepted for international use.',
+        question: 'Is the original ID required?',
+        answer: 'Yes, the original identification document must be presented for certification.',
       },
     ],
   },
   {
     id: '4',
-    name: 'Online Content Notarization',
-    slug: 'online-content-notarization',
-    priceCents: 3000, // $30.00
+    name: 'Company Formation Documents',
+    slug: 'company-formation-documents',
+    priceCents: 5000, // $50.00
     currency: 'USD',
-    description: 'Notarization of digital content and online documents',
-    longDescription: 'Specialized service for notarizing digital content, websites, and online documents.',
+    description: 'Notarization of company formation and business documents',
+    longDescription: 'Professional notarization of company formation documents, articles of incorporation, and business agreements.',
     features: [
-      'Digital content verification',
-      'Screenshot certification',
-      'Timestamp verification',
-      'Blockchain security',
+      'Business document expertise',
+      'Legal compliance assurance',
+      'Digital certificate included',
+      'Same-day processing',
       '24/7 availability',
     ],
     turnaroundTime: '2-4 hours',
-    stripePriceId: '',
-    paymentLink: '',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
     options: {
-      extraPagesPriceCents: 600,
-      courierPriceCents: 1000,
-      rushServicePriceCents: 2000,
+      extraPagesPriceCents: 1000,
+      courierPriceCents: 2000,
+      rushServicePriceCents: 3000,
     },
     faqs: [
       {
-        question: 'What types of content can be notarized?',
-        answer: 'Websites, social media posts, digital documents, and online content.',
+        question: 'What business documents can be notarized?',
+        answer: 'Articles of incorporation, operating agreements, contracts, and other business formation documents.',
       },
       {
-        question: 'How is digital content verified?',
-        answer: 'We use timestamped screenshots and blockchain verification for authenticity.',
+        question: 'Do I need to be present?',
+        answer: 'Yes, all parties must be present for notarization, either in person or via video call.',
       },
     ],
   },
   {
     id: '5',
-    name: 'Signature Notarization',
-    slug: 'signature-notarization',
-    priceCents: 2500, // $25.00
+    name: 'Apostille Services',
+    slug: 'apostille-services',
+    priceCents: 8000, // $80.00
     currency: 'USD',
-    description: 'Official notarization of signatures on documents',
-    longDescription: 'Standard signature notarization service for contracts, agreements, and legal documents.',
+    description: 'International document authentication and apostille services',
+    longDescription: 'Professional apostille services for international document authentication and legalization.',
     features: [
-      'Signature verification',
-      'Identity confirmation',
-      'Legal compliance',
-      'Digital certificate',
-      'Quick processing',
+      'International expertise',
+      'Government authentication',
+      'Express processing available',
+      'Document verification',
+      '24/7 availability',
     ],
-    turnaroundTime: '1-2 hours',
-    stripePriceId: '',
-    paymentLink: '',
+    turnaroundTime: '3-5 business days',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
     options: {
-      extraPagesPriceCents: 500,
-      courierPriceCents: 1200,
-      rushServicePriceCents: 1500,
+      extraPagesPriceCents: 1500,
+      courierPriceCents: 2500,
+      rushServicePriceCents: 4000,
     },
     faqs: [
       {
-        question: 'What documents can be signed?',
-        answer: 'Contracts, agreements, affidavits, and most legal documents.',
+        question: 'What is an apostille?',
+        answer: 'An apostille is a form of authentication for documents to be used in countries that are part of the Hague Convention.',
       },
       {
-        question: 'Do all signers need to be present?',
-        answer: 'Yes, all parties must be present during the notarization session.',
+        question: 'How long does apostille processing take?',
+        answer: 'Standard processing takes 3-5 business days, with express options available for faster service.',
       },
     ],
   },
   {
     id: '6',
-    name: 'Apostille Services',
-    slug: 'apostille-services',
-    priceCents: 5000, // $50.00
+    name: 'Document Translation & Notarization',
+    slug: 'document-translation-notarization',
+    priceCents: 6000, // $60.00
     currency: 'USD',
-    description: 'International document authentication',
-    longDescription: 'Complete apostille service for international document authentication under the Hague Convention.',
+    description: 'Professional translation and notarization services',
+    longDescription: 'Professional translation services combined with notarial certification for international use.',
     features: [
-      'Hague Convention compliance',
-      'International recognition',
-      'Expedited processing',
-      'Secure delivery',
-      'Multi-language support',
+      'Professional translation',
+      'Notarial certification',
+      'Multiple languages',
+      'Quality assurance',
+      '24/7 availability',
     ],
-    turnaroundTime: '1-3 business days',
-    stripePriceId: '',
-    paymentLink: '',
+    turnaroundTime: '2-3 business days',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
     options: {
-      extraPagesPriceCents: 1000,
-      courierPriceCents: 2500,
-      rushServicePriceCents: 3000,
+      extraPagesPriceCents: 1200,
+      courierPriceCents: 2000,
+      rushServicePriceCents: 3500,
     },
     faqs: [
       {
-        question: 'What is an apostille?',
-        answer: 'An apostille certifies documents for international use in Hague Convention countries.',
+        question: 'What languages do you support?',
+        answer: 'We support major world languages including Spanish, French, German, Chinese, and many others.',
       },
       {
-        question: 'Which countries accept apostilles?',
-        answer: 'Over 100 countries in the Hague Convention accept apostille certifications.',
+        question: 'Is the translation certified?',
+        answer: 'Yes, all translations are professionally certified and notarized for legal use.',
       },
     ],
   },
   {
     id: '7',
-    name: 'Contract Certification',
-    slug: 'contract-certification',
-    priceCents: 4000, // $40.00
+    name: 'Real Estate Document Notarization',
+    slug: 'real-estate-document-notarization',
+    priceCents: 4500, // $45.00
     currency: 'USD',
-    description: 'Professional contract notarization and certification',
-    longDescription: 'Comprehensive contract certification service for business and legal agreements.',
+    description: 'Notarization of real estate and property documents',
+    longDescription: 'Professional notarization of real estate contracts, deeds, mortgages, and property-related documents.',
     features: [
-      'Contract review included',
-      'Legal compliance check',
-      'Multi-party support',
-      'Digital execution',
-      'Audit trail',
+      'Real estate expertise',
+      'Legal compliance assurance',
+      'Digital certificate included',
+      'Same-day processing',
+      '24/7 availability',
     ],
-    turnaroundTime: '2-6 hours',
-    stripePriceId: '',
-    paymentLink: '',
+    turnaroundTime: '2-4 hours',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
     options: {
       extraPagesPriceCents: 800,
       courierPriceCents: 1800,
@@ -251,117 +244,48 @@ export const services: Service[] = [
     },
     faqs: [
       {
-        question: 'What types of contracts can be certified?',
-        answer: 'Business contracts, employment agreements, real estate contracts, and more.',
+        question: 'What real estate documents can be notarized?',
+        answer: 'Deeds, mortgages, contracts, leases, and other property-related legal documents.',
       },
       {
-        question: 'Is contract review included?',
-        answer: 'Yes, we provide basic legal compliance review with certification.',
+        question: 'Do I need to be physically present?',
+        answer: 'No, we offer remote notarization services that are legally recognized in most jurisdictions.',
       },
     ],
   },
   {
     id: '8',
-    name: 'Notarized Sworn Translation',
-    slug: 'notarized-sworn-translation',
-    priceCents: 6000, // $60.00
+    name: 'Estate Planning Document Notarization',
+    slug: 'estate-planning-document-notarization',
+    priceCents: 5500, // $55.00
     currency: 'USD',
-    description: 'Certified translation with notarial certification',
-    longDescription: 'Professional translation services with notarial certification for legal documents.',
+    description: 'Notarization of wills, trusts, and estate planning documents',
+    longDescription: 'Professional notarization of wills, trusts, power of attorney documents, and other estate planning instruments.',
     features: [
-      'Certified translator',
-      'Notarial certification',
-      'Multi-language support',
-      'Legal compliance',
-      'Quality assurance',
+      'Estate planning expertise',
+      'Legal compliance assurance',
+      'Digital certificate included',
+      'Same-day processing',
+      '24/7 availability',
     ],
-    turnaroundTime: '2-5 business days',
-    stripePriceId: '',
-    paymentLink: '',
+    turnaroundTime: '2-4 hours',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
     options: {
-      extraPagesPriceCents: 1500,
-      courierPriceCents: 2000,
-      rushServicePriceCents: 3500,
-    },
-    faqs: [
-      {
-        question: 'Which languages do you support?',
-        answer: 'We support 50+ languages with certified translators.',
-      },
-      {
-        question: 'Is the translation legally binding?',
-        answer: 'Yes, sworn translations with notarial certification are legally binding.',
-      },
-    ],
-  },
-  {
-    id: '9',
-    name: 'Company Registration',
-    slug: 'company-registration',
-    priceCents: 8000, // $80.00
-    currency: 'USD',
-    description: 'Business registration and incorporation services',
-    longDescription: 'Complete business registration and incorporation services with notarial support.',
-    features: [
-      'Business formation',
-      'Document preparation',
-      'Notarial certification',
-      'Compliance assistance',
-      'Ongoing support',
-    ],
-    turnaroundTime: '3-7 business days',
-    stripePriceId: '',
-    paymentLink: '',
-    options: {
-      extraPagesPriceCents: 1200,
-      courierPriceCents: 2500,
-      rushServicePriceCents: 4000,
-    },
-    faqs: [
-      {
-        question: 'What business types can be registered?',
-        answer: 'LLCs, corporations, partnerships, and sole proprietorships.',
-      },
-      {
-        question: 'Is legal advice included?',
-        answer: 'We provide basic guidance, but recommend consulting a lawyer for complex cases.',
-      },
-    ],
-  },
-  {
-    id: '10',
-    name: 'Vital Certificates Replacement',
-    slug: 'vital-certificates-replacement',
-    priceCents: 4500, // $45.00
-    currency: 'USD',
-    description: 'Replacement of vital records and certificates',
-    longDescription: 'Assistance with obtaining replacement vital certificates and official documents.',
-    features: [
-      'Document research',
-      'Government liaison',
-      'Notarial certification',
-      'Express processing',
-      'Tracking included',
-    ],
-    turnaroundTime: '5-15 business days',
-    stripePriceId: '',
-    paymentLink: '',
-    options: {
-      extraPagesPriceCents: 800,
+      extraPagesPriceCents: 1000,
       courierPriceCents: 2000,
       rushServicePriceCents: 3000,
     },
     faqs: [
       {
-        question: 'What certificates can be replaced?',
-        answer: 'Birth certificates, death certificates, marriage licenses, and divorce decrees.',
+        question: 'What estate planning documents can be notarized?',
+        answer: 'Wills, trusts, power of attorney documents, healthcare directives, and other estate planning instruments.',
       },
       {
-        question: 'How long does it take?',
-        answer: 'Processing time varies by state and document type, typically 5-15 business days.',
+        question: 'Is remote notarization valid for estate documents?',
+        answer: 'Yes, remote notarization is legally recognized for estate planning documents in most jurisdictions.',
       },
     ],
-  },
+  }
 ]
 
 export const getServiceById = (id: string): Service | undefined => {

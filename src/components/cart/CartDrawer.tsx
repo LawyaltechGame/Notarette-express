@@ -1,9 +1,9 @@
 import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { X, Minus, Plus, Trash2, ShoppingCart } from 'lucide-react'
 import { useAppSelector } from '../../hooks/useAppSelector'
 import { useAppDispatch } from '../../hooks/useAppDispatch'
-import { removeItem, updateQuantity, clearCart, closeCart, selectCartItems, selectCartTotal, selectCartItemCount, selectCartIsOpen } from '../../store/slices/cartSlice'
+import { removeItem, updateQuantity, closeCart, selectCartItems, selectCartTotal, selectCartItemCount, selectCartIsOpen } from '../../store/slices/cartSlice'
 import Button from '../ui/Button'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
@@ -59,9 +59,6 @@ const CartDrawer: React.FC = () => {
     dispatch(removeItem(itemId))
   }
 
-  const handleClearCart = () => {
-    dispatch(clearCart())
-  }
 
   const handleProceedToCheckout = () => {
     dispatch(closeCart()) // Close the cart automatically

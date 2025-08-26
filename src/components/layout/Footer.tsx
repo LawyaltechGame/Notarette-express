@@ -59,7 +59,7 @@ const Footer: React.FC = () => {
 
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 lg:gap-16 items-start">
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <Link to="/services" className="flex items-center space-x-2 mb-4">
@@ -93,7 +93,7 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Services Links */}
-          <div>
+          <div className="lg:col-span-1 lg:col-start-4">
             <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Services</h3>
             <ul className="space-y-2">
               {footerLinks.services.map((link) => (
@@ -109,10 +109,8 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-         
-
           {/* Support Links */}
-          <div>
+          <div className="lg:col-span-1">
             <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Support</h3>
             <ul className="space-y-2">
               {footerLinks.support.map((link) => (
@@ -129,7 +127,7 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Legal Links */}
-          <div>
+          <div className="lg:col-span-1">
             <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Legal</h3>
             <ul className="space-y-2">
               {footerLinks.legal.map((link) => (

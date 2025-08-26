@@ -1,42 +1,15 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useParams, Navigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Clock, Shield, CheckCircle, Plus, Minus, ArrowRight, Star } from 'lucide-react'
-import { getServiceBySlug, Service } from '../data/services'
-import { useAppDispatch } from '../hooks/useAppDispatch'
-import { addItem } from '../store/slices/cartSlice'
-import { addToast } from '../store/slices/uiSlice'
-import { stripeService, StripePrice } from '../services/stripeService'
+import { Clock, Shield, CheckCircle, ArrowRight, Star } from 'lucide-react'
+import { getServiceBySlug } from '../data/services'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
-import Badge from '../components/ui/Badge'
 
 const ServiceDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
-  const dispatch = useAppDispatch()
-  const [extraPages, setExtraPages] = React.useState(0)
-  const [includeCourier, setIncludeCourier] = React.useState(false)
-  const [stripePrice, setStripePrice] = React.useState<any>(null)
 
   const service = slug ? getServiceBySlug(slug) : null
-
-  // Fetch Stripe price if available
-  useEffect(() => {
-    const fetchStripePrice = async () => {
-      if (service?.stripePriceId && service.stripePriceId.startsWith('price_')) {
-        try {
-          const prices = await stripeService.getPrices([service.stripePriceId])
-          if (prices.length > 0) {
-            setStripePrice(prices[0])
-          }
-        } catch (error) {
-          console.error('Error fetching Stripe price:', error)
-        }
-      }
-    }
-
-    fetchStripePrice()
-  }, [service?.stripePriceId])
 
   if (!service) {
     return <Navigate to="/services" replace />
@@ -50,50 +23,14 @@ const ServiceDetail: React.FC = () => {
   }
 
   const getDisplayPrice = () => {
-    // Use Stripe price if available, otherwise fall back to local price
-    if (stripePrice?.unitAmount && stripePrice?.currency) {
-      return stripePrice.unitAmount / 100 // Convert cents to main unit
-    }
     return service.priceCents / 100 // Convert cents to main unit
   }
 
   const getDisplayCurrency = () => {
-    // Use Stripe currency if available, otherwise fall back to local currency
-    if (stripePrice?.currency) {
-      return stripePrice.currency
-    }
     return service.currency
   }
 
-  const getTotalPrice = () => {
-    let total = getDisplayPrice() * 100 // Convert back to cents for calculations
-    total += extraPages * service.options.extraPagesPriceCents
-    if (includeCourier) total += service.options.courierPriceCents
-    return total
-  }
-
-  const handleAddToCart = () => {
-    const cartItem = {
-      id: service.id,
-      name: service.name,
-      priceCents: getTotalPrice(),
-      quantity: 1,
-      currency: getDisplayCurrency(),
-      addOns: {
-        extraPages: extraPages > 0 ? extraPages : undefined,
-        courier: includeCourier || undefined,
-      },
-      stripePriceId: service.stripePriceId || undefined,
-      paymentLink: service.paymentLink || undefined,
-    }
-
-    dispatch(addItem(cartItem))
-    dispatch(addToast({
-      type: 'success',
-      title: 'Added to cart',
-      message: `${service.name} has been added to your cart.`,
-    }))
-  }
+  
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
@@ -139,7 +76,7 @@ const ServiceDetail: React.FC = () => {
                       {formatPrice(getDisplayPrice() * 100, getDisplayCurrency())}
                     </div>
                     <div className="text-sm text-gray-500">
-                      {stripePrice ? 'Live Stripe Price' : 'Base Price'}
+                      Base Price
                     </div>
                   </div>
                 </div>
@@ -224,155 +161,32 @@ const ServiceDetail: React.FC = () => {
             </motion.div>
           </div>
 
-          {/* Sidebar */}
+          {/* Sidebar (simplified) */}
           <div className="space-y-6">
-            {/* Order Summary */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
               <Card className="sticky top-24">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-                  Customize Your Order
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                  Next Steps
                 </h3>
-
-                {/* Base Service */}
-                <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
-                  <div>
-                    <div className="font-medium text-gray-900 dark:text-white">
-                      {service.name}
-                    </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                      Base service
-                    </div>
-                  </div>
-                  <div className="font-semibold text-gray-900 dark:text-white">
-                    {formatPrice(getDisplayPrice() * 100, getDisplayCurrency())}
-                  </div>
-                </div>
-
-                {/* Add-ons */}
-                <div className="space-y-6 mb-6">
-                  <h4 className="font-medium text-gray-900 dark:text-white">Add-ons</h4>
-                  
-                  {/* Extra Pages */}
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <label className="text-sm text-gray-700 dark:text-gray-300">
-                        Extra pages ({formatPrice(service.options.extraPagesPriceCents, service.currency)} each)
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <button
-                        onClick={() => setExtraPages(Math.max(0, extraPages - 1))}
-                        className="w-8 h-8 flex items-center justify-center rounded border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                      >
-                        <Minus size={16} />
-                      </button>
-                      <span className="w-8 text-center text-sm font-medium text-gray-900 dark:text-white">
-                        {extraPages}
-                      </span>
-                      <button
-                        onClick={() => setExtraPages(extraPages + 1)}
-                        className="w-8 h-8 flex items-center justify-center rounded border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                      >
-                        <Plus size={16} />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Courier */}
-                  <div>
-                    <label className="flex items-center space-x-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={includeCourier}
-                        onChange={(e) => setIncludeCourier(e.target.checked)}
-                        className="rounded border-gray-300 dark:border-gray-600 text-teal-600 focus:ring-teal-500"
-                      />
-                      <span className="text-sm text-gray-700 dark:text-gray-300">
-                        Courier delivery ({formatPrice(service.options.courierPriceCents, service.currency)})
-                      </span>
-                    </label>
-                  </div>
-                </div>
-
-                {/* Total */}
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mb-6">
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-semibold text-gray-900 dark:text-white">
-                      Total:
-                    </span>
-                    <span className="text-2xl font-bold text-teal-600">
-                      {formatPrice(getTotalPrice(), service.currency)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="space-y-3">
-                  <Button
-                    onClick={handleAddToCart}
-                    variant="primary"
-                    className="w-full"
-                    size="lg"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add to Cart
-                  </Button>
-                  
-                  <Link to="/services">
-                    <Button variant="ghost" className="w-full">
-                      Browse Other Services
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </Link>
-                </div>
-
-                {/* Trust Badges */}
-                <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center justify-center space-x-4 text-xs text-gray-600 dark:text-gray-400">
-                    <div className="flex items-center space-x-1">
-                      <Shield className="w-3 h-3" />
-                      <span>Secure</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Clock className="w-3 h-3" />
-                      <span>Fast</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <CheckCircle className="w-3 h-3" />
-                      <span>Licensed</span>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-
-            {/* Contact Card */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <Card>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                  Need Help?
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  Our support team is available 24/7 to help with any questions about our services.
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                  Start the service configuration to choose document type, notarization options, and add-ons.
                 </p>
-                <div className="space-y-2">
-                  <Link to="/contact">
-                    <Button variant="secondary" className="w-full" size="sm">
-                      Contact Support
-                    </Button>
-                  </Link>
-                  <Button variant="ghost" className="w-full" size="sm">
-                    Schedule a Call
+                <Link to={`/services/${service.slug}/document-type`}>
+                  <Button variant="primary" className="w-full">
+                    Continue
+                    <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
-                </div>
+                </Link>
+                <Link to="/services">
+                  <Button variant="ghost" className="w-full mt-2">
+                    Browse Other Services
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
               </Card>
             </motion.div>
           </div>

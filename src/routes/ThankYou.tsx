@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { CheckCircle, Calendar, Mail, ExternalLink, ArrowRight, Home, ShoppingCart, Loader2, XCircle } from 'lucide-react'
+import { CheckCircle, Calendar, ExternalLink, Home, ShoppingCart, Loader2, XCircle } from 'lucide-react'
 import { stripeService } from '../services/stripeService'
 import { useAppSelector } from '../hooks/useAppSelector'
 import { selectCartItems } from '../store/slices/cartSlice'
@@ -231,7 +231,7 @@ const ThankYou: React.FC = () => {
               </h2>
               <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
                 Your payment has been processed successfully! Now it's time to schedule your notarization appointment. 
-                Click the button below to book your preferred time slot on Cal.com.
+                Click the button below to book your preferred time slot.
               </p>
               
               <Button
@@ -241,7 +241,7 @@ const ThankYou: React.FC = () => {
                 className="mb-6"
               >
                 <Calendar className="w-5 h-5 mr-2" />
-                Book Your Appointment on Cal.com
+                Book Your Appointment Now
                 <ExternalLink className="w-5 h-5 ml-2" />
               </Button>
               

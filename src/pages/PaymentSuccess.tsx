@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { CheckCircle, Calendar, Mail, ExternalLink, ArrowRight } from 'lucide-react'
+import { CheckCircle } from 'lucide-react'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { clearCart } from '../store/slices/cartSlice'
 import { addToast } from '../store/slices/uiSlice'

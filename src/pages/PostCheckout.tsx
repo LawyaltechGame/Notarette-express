@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../hooks/useAppDispatch';
+import { useAppDispatch } from '../hooks/useAppDispatch';
+import { useAppSelector } from '../hooks/useAppSelector';
 import { removeItem, selectCartItems } from '../store/slices/cartSlice';
 import { stripeService } from '../services/stripeService';
 
@@ -21,7 +22,7 @@ const PostCheckout: React.FC = () => {
   
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<CheckSessionResponse | null>(null);
+  const [, setData] = useState<CheckSessionResponse | null>(null);
 
   useEffect(() => {
     const sessionId = searchParams.get('session_id');
@@ -70,7 +71,7 @@ const PostCheckout: React.FC = () => {
 
   const findPaidService = (sessionData: CheckSessionResponse) => {
     // Find the service in cart that matches the paid item
-    return cartItems.find(item => 
+    return cartItems.find((item: { name: string }) => 
       sessionData.items.some(sessionItem => 
         sessionItem.name === item.name
       )

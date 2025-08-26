@@ -33,7 +33,7 @@ export interface AppointmentResponse {
 }
 
 // Mock API functions
-export const createPaymentIntent = async (data: PaymentIntentRequest): Promise<PaymentIntentResponse> => {
+export const createPaymentIntent = async (_data: PaymentIntentRequest): Promise<PaymentIntentResponse> => {
   // Simulate API call
   await new Promise(resolve => setTimeout(resolve, 1000))
   
@@ -55,7 +55,7 @@ export const bookAppointment = async (data: AppointmentRequest): Promise<Appoint
   }
 }
 
-export const sendConfirmationEmail = async (bookingData: AppointmentResponse) => {
+export const sendConfirmationEmail = async (_bookingData: AppointmentResponse) => {
   // Simulate API call
   await new Promise(resolve => setTimeout(resolve, 500))
   
@@ -65,7 +65,7 @@ export const sendConfirmationEmail = async (bookingData: AppointmentResponse) =>
   }
 }
 
-export const addToCalendar = async (bookingData: AppointmentResponse) => {
+export const addToCalendar = async (_bookingData: AppointmentResponse) => {
   // Simulate API call
   await new Promise(resolve => setTimeout(resolve, 500))
   

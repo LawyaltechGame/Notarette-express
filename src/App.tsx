@@ -22,6 +22,10 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import PaymentSuccess from './pages/PaymentSuccess'
 import NotFound from './pages/NotFound'
+import ServiceForm from './pages/ServiceForm'
+import DocumentType from './pages/DocumentType'
+import ServiceSelection from './pages/ServiceSelection'
+import AddOns from './pages/AddOns'
 import './index.css'
 
 // Note: About, Contact, and How It Works pages are hidden from navigation
@@ -70,6 +74,26 @@ function App() {
                 <Route path="/services/:slug" element={
                   <ProtectedRoute>
                     <ServiceDetail />
+                  </ProtectedRoute>
+                } />
+                <Route path="/services/:slug/start" element={
+                  <ProtectedRoute>
+                    <ServiceForm />
+                  </ProtectedRoute>
+                } />
+                <Route path="/services/:slug/service-selection" element={
+                  <ProtectedRoute>
+                    <ServiceSelection />
+                  </ProtectedRoute>
+                } />
+                <Route path="/services/:slug/document-type" element={
+                  <ProtectedRoute>
+                    <DocumentType />
+                  </ProtectedRoute>
+                } />
+                <Route path="/services/:slug/add-ons" element={
+                  <ProtectedRoute>
+                    <AddOns />
                   </ProtectedRoute>
                 } />
                 <Route path="/checkout" element={

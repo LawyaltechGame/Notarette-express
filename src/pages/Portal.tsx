@@ -9,7 +9,6 @@ import Badge from '../components/ui/Badge'
 
 const Portal: React.FC = () => {
   const orders = useAppSelector(state => state.order.orders)
-  const user = useAppSelector(state => state.user.user)
   const navigate = useNavigate()
 
   // Check if user has any real orders
@@ -172,7 +171,7 @@ const Portal: React.FC = () => {
                     Legally binding power of attorney notarization
                   </p>
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     size="sm" 
                     className="w-full"
                     onClick={() => navigate('/services/power-of-attorney')}
@@ -188,7 +187,7 @@ const Portal: React.FC = () => {
                     Official certified copies of original documents
                   </p>
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     size="sm" 
                     className="w-full"
                     onClick={() => navigate('/services/certified-copy-document')}
@@ -204,7 +203,7 @@ const Portal: React.FC = () => {
                     Notarization of digital content and websites
                   </p>
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     size="sm" 
                     className="w-full"
                     onClick={() => navigate('/services/online-content-notarization')}

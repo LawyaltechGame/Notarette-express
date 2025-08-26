@@ -55,7 +55,7 @@ class StripeService {
     }
   }
 
-  async checkSession(sessionId: string): Promise<StripeSession> {
+  async checkSession(_sessionId: string): Promise<StripeSession> {
     try {
       // For now, return mock session data
       // In production, you'd implement this with a free backend service
