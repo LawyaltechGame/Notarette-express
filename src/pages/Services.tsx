@@ -27,11 +27,19 @@ const Services: React.FC = () => {
   useEffect(() => {
     if (searchParams.get('status') === 'submitted') {
       const pending = localStorage.getItem('intake_form_pending')
-      if (pending) {
-        localStorage.setItem('intake_form_submitted_for', pending)
-        localStorage.removeItem('intake_form_pending')
-        setSubmittedForSlug(pending)
+      const submitted = localStorage.getItem('intake_form_submitted_for')
+      const slug = pending || submitted
+      if (slug) {
+        if (pending) {
+          localStorage.setItem('intake_form_submitted_for', pending)
+          localStorage.removeItem('intake_form_pending')
+        }
+        setSubmittedForSlug(slug)
+        // Redirect directly to the Document Type page for the submitted service
+        navigate(`/services/${slug}/document-type`, { replace: true })
+        return
       }
+      // Fallback: if no slug found at all, just normalize URL
       navigate('/services', { replace: true })
     }
   }, [searchParams, navigate])
@@ -158,7 +166,7 @@ const Services: React.FC = () => {
                     navigate(`/services/${card.slug}/document-type`)
                   } else {
                     localStorage.setItem('intake_form_pending', card.slug)
-                    window.open('https://forms.gle/3ZN3BcZXqpiLR8Kx6', '_blank', 'noopener,noreferrer')
+                    window.location.assign('https://forms.gle/3ZN3BcZXqpiLR8Kx6')
                   }
                 }}
                 className={`w-full inline-flex items-center justify-center px-4 py-2 rounded-lg ${index===1 ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-600 hover:bg-blue-700'} text-white font-medium transition-colors`}
