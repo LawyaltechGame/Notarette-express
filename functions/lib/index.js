@@ -22,7 +22,7 @@ const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === 'true';
 const CANCEL_URL = IS_EMULATOR ? DEV_CANCEL_URL : PROD_CANCEL_URL;
 const stripe = new stripe_1.default(STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
 async function recalcFromFirestore(items) {
-    var _a, _b;
+    var _a, _b, _c, _d;
     const serviceIds = Array.from(new Set(items.map(i => i.serviceId)));
     const serviceSnaps = await db.getAll(...serviceIds.map(id => db.collection('services').doc(id)));
     const serviceMap = new Map();
@@ -55,7 +55,37 @@ async function recalcFromFirestore(items) {
             computed.lines.push({ name: addon.name, amount: addAmount, currency, quantity: qty });
             computed.total += addAmount * qty;
         }
-        computed.normalized.push({ serviceId: ci.serviceId, quantity: qty, addOnIds: (_b = ci.addOnIds) !== null && _b !== void 0 ? _b : [] });
+        // Map ServiceSelection options to server amounts to keep parity with UI
+        if (Array.isArray(ci.optionKeys)) {
+            for (const key of ci.optionKeys) {
+                if (key === 'signature') {
+                    const amt = 4900;
+                    computed.lines.push({ name: 'Signature Notarization', amount: amt, currency, quantity: 1 });
+                    computed.total += amt;
+                }
+                else if (key === 'true-content') {
+                    const amt = 3900;
+                    computed.lines.push({ name: 'True Content Verification', amount: amt, currency, quantity: 1 });
+                    computed.total += amt;
+                }
+                else if (key === 'base') {
+                    // already included as baseAmount
+                }
+            }
+        }
+        // Extra certified copies (₹15.00 each)
+        if (typeof ci.extraCopies === 'number' && ci.extraCopies > 0) {
+            const extraAmt = 1500 * ci.extraCopies;
+            computed.lines.push({ name: `Extra Copies × ${ci.extraCopies}`, amount: extraAmt, currency, quantity: 1 });
+            computed.total += extraAmt;
+        }
+        computed.normalized.push({
+            serviceId: ci.serviceId,
+            quantity: qty,
+            addOnIds: (_b = ci.addOnIds) !== null && _b !== void 0 ? _b : [],
+            optionKeys: (_c = ci.optionKeys) !== null && _c !== void 0 ? _c : [],
+            extraCopies: (_d = ci.extraCopies) !== null && _d !== void 0 ? _d : 0,
+        });
     }
     // Apply VAT similar to frontend (21%)
     const vatCents = Math.round(computed.total * 0.21);
@@ -71,7 +101,9 @@ exports.createCheckout = (0, https_1.onCall)(async (req) => {
         if (!((_a = req.data) === null || _a === void 0 ? void 0 : _a.items) || !Array.isArray(req.data.items) || req.data.items.length === 0) {
             throw new https_1.HttpsError('invalid-argument', 'items[] required');
         }
+        logger.info('createCheckout received items', { items: req.data.items });
         const { lines, total, currency, normalized } = await recalcFromFirestore(req.data.items);
+        logger.info('createCheckout computed summary', { lines, total, currency });
         const orderRef = db.collection('orders').doc();
         const orderId = orderRef.id;
         await orderRef.set({

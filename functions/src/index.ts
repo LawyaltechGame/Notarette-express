@@ -26,6 +26,8 @@ type CartItemInput = {
   serviceId: string
   quantity: number
   addOnIds?: string[]
+  optionKeys?: string[]
+  extraCopies?: number
 }
 
 async function recalcFromFirestore(items: CartItemInput[]) {
@@ -74,7 +76,37 @@ async function recalcFromFirestore(items: CartItemInput[]) {
       computed.total += addAmount * qty
     }
 
-    computed.normalized.push({ serviceId: ci.serviceId, quantity: qty, addOnIds: ci.addOnIds ?? [] })
+    // Map ServiceSelection options to server amounts to keep parity with UI
+    if (Array.isArray(ci.optionKeys)) {
+      for (const key of ci.optionKeys) {
+        if (key === 'signature') {
+          const amt = 4900
+          computed.lines.push({ name: 'Signature Notarization', amount: amt, currency, quantity: 1 })
+          computed.total += amt
+        } else if (key === 'true-content') {
+          const amt = 3900
+          computed.lines.push({ name: 'True Content Verification', amount: amt, currency, quantity: 1 })
+          computed.total += amt
+        } else if (key === 'base') {
+          // already included as baseAmount
+        }
+      }
+    }
+
+    // Extra certified copies (₹15.00 each)
+    if (typeof ci.extraCopies === 'number' && ci.extraCopies > 0) {
+      const extraAmt = 1500 * ci.extraCopies
+      computed.lines.push({ name: `Extra Copies × ${ci.extraCopies}`, amount: extraAmt, currency, quantity: 1 })
+      computed.total += extraAmt
+    }
+
+    computed.normalized.push({
+      serviceId: ci.serviceId,
+      quantity: qty,
+      addOnIds: ci.addOnIds ?? [],
+      optionKeys: ci.optionKeys ?? [],
+      extraCopies: ci.extraCopies ?? 0,
+    })
   }
 
   // Apply VAT similar to frontend (21%)
@@ -93,7 +125,9 @@ export const createCheckout = onCall(async (req) => {
       throw new HttpsError('invalid-argument', 'items[] required')
     }
 
+    logger.info('createCheckout received items', { items: req.data.items })
     const { lines, total, currency, normalized } = await recalcFromFirestore(req.data.items)
+    logger.info('createCheckout computed summary', { lines, total, currency })
 
     const orderRef = db.collection('orders').doc()
     const orderId = orderRef.id
