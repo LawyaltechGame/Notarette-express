@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Search, Filter, X, DollarSign, Clock, Globe, FileText } from 'lucide-react'
-import { services } from '../data/services'
+ 
 import {
   FaFileAlt,
   FaUserCheck,
@@ -20,8 +19,6 @@ const Services: React.FC = () => {
   // const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filteredServices, setFilteredServices] = useState(services)
   const [submittedForSlug, setSubmittedForSlug] = useState<string | null>(() => {
     return localStorage.getItem('intake_form_submitted_for') || null
   })
@@ -39,68 +36,7 @@ const Services: React.FC = () => {
     }
   }, [searchParams, navigate])
   
-  // Filter states
-  const [showFilters, setShowFilters] = useState(false)
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]) // in cents
-  const [turnaroundTime, setTurnaroundTime] = useState<string>('all')
-  const [serviceCategory, setServiceCategory] = useState<string>('all')
-  const [currency, setCurrency] = useState<string>('all')
-
-  // Memoize expensive computations
-  const uniqueCurrencies = useMemo(() => [...new Set(services.map(service => service.currency))], [])
-  // const uniqueTurnaroundTimes = useMemo(() => [...new Set(services.map(service => service.turnaroundTime))], [])
   
-  // Memoize active filters count
-  const activeFiltersCount = useMemo(() => {
-    let count = 0
-    if (searchTerm) count++
-    if (priceRange[0] > 0 || priceRange[1] < 10000) count++
-    if (turnaroundTime !== 'all') count++
-    if (serviceCategory !== 'all') count++
-    if (currency !== 'all') count++
-    return count
-  }, [searchTerm, priceRange, turnaroundTime, serviceCategory, currency])
-
-  // Memoize filtered services
-  const filteredServicesMemo = useMemo(() => {
-    return services.filter(service => {
-      const matchesSearch = 
-        service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        service.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        service.features.some(feature => feature.toLowerCase().includes(searchTerm.toLowerCase()))
-
-      const servicePrice = service.priceCents
-      const matchesPrice = servicePrice >= priceRange[0] && servicePrice <= priceRange[1]
-
-      const matchesTurnaround = turnaroundTime === 'all' || 
-        (turnaroundTime === 'same-day' && service.turnaroundTime.includes('1-2')) ||
-        (turnaroundTime === 'next-day' && service.turnaroundTime.includes('2-4')) ||
-        (turnaroundTime === 'week' && service.turnaroundTime.includes('business days'))
-
-      const matchesCategory = serviceCategory === 'all' || 
-        (serviceCategory === 'legal' && (service.name.includes('Power of Attorney') || service.name.includes('Contract'))) ||
-        (serviceCategory === 'documents' && service.name.includes('Certified Copy')) ||
-        (serviceCategory === 'identification' && (service.name.includes('Passport') || service.name.includes('ID'))) ||
-        (serviceCategory === 'business' && (service.name.includes('Company') || service.name.includes('Business'))) ||
-        (serviceCategory === 'international' && (service.name.includes('Apostille') || service.name.includes('Translation')))
-
-      const matchesCurrency = currency === 'all' || service.currency === currency
-
-      return matchesSearch && matchesPrice && matchesTurnaround && matchesCategory && matchesCurrency
-    })
-  }, [searchTerm, priceRange, turnaroundTime, serviceCategory, currency])
-
-  // Update filtered services when memoized value changes
-  useEffect(() => {
-    setFilteredServices(filteredServicesMemo)
-  }, [filteredServicesMemo])
-
-  const formatPrice = useCallback((cents: number, currency: string) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: currency,
-    }).format(cents / 100)
-  }, [])
 
   const getServiceIcon = (serviceName: string) => {
     const name = serviceName.toLowerCase()
@@ -117,17 +53,7 @@ const Services: React.FC = () => {
     return FaShieldAlt
   }
 
-  const clearAllFilters = useCallback(() => {
-    setSearchTerm('')
-    setPriceRange([0, 10000])
-    setTurnaroundTime('all')
-    setServiceCategory('all')
-    setCurrency('all')
-  }, [])
-
-  const toggleFilters = useCallback(() => {
-    setShowFilters(prev => !prev)
-  }, [])
+  
 
   // Fixed cards to match design
   const displayCards = [
@@ -191,134 +117,7 @@ const Services: React.FC = () => {
           </p>
         </motion.div>
 
-        {/* Search and Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-8"
-        >
-          <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search services..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-              />
-            </div>
-            <button 
-              onClick={toggleFilters}
-              className="flex items-center space-x-2 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            >
-              <Filter className="w-5 h-5" />
-              <span>Filters</span>
-              {activeFiltersCount > 0 && (
-                <span className="bg-teal-600 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
-                  {activeFiltersCount}
-                </span>
-              )}
-            </button>
-            {activeFiltersCount > 0 && (
-              <button 
-                onClick={clearAllFilters}
-                className="flex items-center space-x-2 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              >
-                <X className="w-5 h-5" />
-                <span>Clear All</span>
-              </button>
-            )}
-          </div>
-
-          {showFilters && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="mt-4 p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    <DollarSign className="w-4 h-4 inline mr-2" />
-                    Price Range
-                  </label>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>{formatPrice(priceRange[0], 'INR')}</span>
-                      <span>{formatPrice(priceRange[1], 'INR')}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="10000"
-                      step="500"
-                      value={priceRange[1]}
-                      onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    <Clock className="w-4 h-4 inline mr-2" />
-                    Turnaround Time
-                  </label>
-                  <select
-                    value={turnaroundTime}
-                    onChange={(e) => setTurnaroundTime(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                  >
-                    <option value="all">All Times</option>
-                    <option value="same-day">Same Day (1-2 hours)</option>
-                    <option value="next-day">Next Day (2-4 hours)</option>
-                    <option value="week">Within Week</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    <FileText className="w-4 h-4 inline mr-2" />
-                    Service Category
-                  </label>
-                  <select
-                    value={serviceCategory}
-                    onChange={(e) => setServiceCategory(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                  >
-                    <option value="all">All Categories</option>
-                    <option value="legal">Legal Documents</option>
-                    <option value="documents">Document Certification</option>
-                    <option value="identification">ID & Passport</option>
-                    <option value="business">Business Services</option>
-                    <option value="international">International</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    <Globe className="w-4 h-4 inline mr-2" />
-                    Currency
-                  </label>
-                  <select
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                  >
-                    <option value="all">All Currencies</option>
-                    {uniqueCurrencies.map(curr => (
-                      <option key={curr} value={curr}>{curr}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </motion.div>
+        {/* Search and Filters removed */}
 
         {/* Services Cards - simplified style */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -328,10 +127,14 @@ const Services: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.05 * index }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 text-center"
+              className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 text-center"
             >
               {card.badge && (
-                <div className="inline-block text-xs font-semibold px-2 py-1 rounded-full bg-red-100 text-red-600 mb-3">{card.badge}</div>
+                <div className="absolute -left-12 top-4 w-40 -rotate-45">
+                  <span className="block bg-red-500 text-white text-xs font-semibold text-center py-1 shadow-md">
+                    {card.badge}
+                  </span>
+                </div>
               )}
               <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-teal-500 to-blue-600 text-white flex items-center justify-center shadow-lg">
                 {React.createElement(getServiceIcon(card.title), { size: 36 })}
@@ -367,20 +170,7 @@ const Services: React.FC = () => {
           ))}
         </div>
 
-        {filteredServices.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-16"
-          >
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              No services found
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Try adjusting your search terms or clear the search to see all services.
-            </p>
-          </motion.div>
-        )}
+        {/* No empty-state since filtering/search removed */}
       </div>
     </div>
   )
