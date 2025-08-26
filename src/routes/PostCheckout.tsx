@@ -3,9 +3,8 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { XCircle, Loader2, ArrowLeft } from 'lucide-react';
 import { stripeService } from '../services/stripeService';
-import { useAppSelector } from '../hooks/useAppSelector';
 import { useAppDispatch } from '../hooks/useAppDispatch';
-import { removeItem, selectCartItems } from '../store/slices/cartSlice';
+// cart removed
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 
@@ -22,7 +21,6 @@ const PostCheckout: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const cartItems = useAppSelector(selectCartItems);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sessionData, setSessionData] = useState<CheckSessionResponse | null>(null);
@@ -46,11 +44,7 @@ const PostCheckout: React.FC = () => {
           // Payment successful - save to sessionStorage and redirect to thank you page
           sessionStorage.setItem('lastOrder', JSON.stringify(data));
           
-          // Find and remove the paid service from cart
-          const paidService = findPaidService(data);
-          if (paidService) {
-            dispatch(removeItem(paidService.id));
-          }
+          // Cart removed: skip removing paid service
           
           navigate(`/thank-you?session_id=${sessionId}`, { replace: true });
         } else {
@@ -67,19 +61,7 @@ const PostCheckout: React.FC = () => {
     verifyPayment();
   }, [searchParams, navigate, dispatch]);
 
-  // Find which service was paid for based on session data
-  const findPaidService = (sessionData: CheckSessionResponse) => {
-    // Try to match by amount or service name
-    for (const cartItem of cartItems) {
-      if (sessionData.amount && Math.abs(sessionData.amount - cartItem.priceCents / 100) < 0.01) {
-        return cartItem;
-      }
-      if (sessionData.items.some(item => item.name === cartItem.name)) {
-        return cartItem;
-      }
-    }
-    return null;
-  };
+  // Cart removed: no finder needed
 
   const formatCurrency = (amount: number | null, currency: string | null) => {
     if (!amount || !currency) return 'N/A';

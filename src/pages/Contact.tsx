@@ -77,7 +77,7 @@ const Contact: React.FC = () => {
     },
   ]
 
-  const onSubmit = async (data: ContactFormData) => {
+  const onSubmit = async () => {
     setLoading(true)
     
     try {

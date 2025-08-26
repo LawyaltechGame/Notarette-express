@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../hooks/useAppSelector';
-import { selectCartItems } from '../store/slices/cartSlice';
+// import { useAppSelector } from '../hooks/useAppSelector';
 
 import { motion } from 'framer-motion';
 import { CheckCircle, Calendar, ExternalLink, ArrowRight } from 'lucide-react';
@@ -17,11 +16,11 @@ interface OrderData {
 const ThankYou: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const cartItems = useAppSelector(selectCartItems);
+  const cartItems: any[] = []
   
   const [orderData, setOrderData] = useState<OrderData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const hasMoreItems = cartItems.length > 0;
+  const hasMoreItems = false;
 
   useEffect(() => {
     const sessionId = searchParams.get('session_id');
@@ -53,12 +52,9 @@ const ThankYou: React.FC = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    // Clear storage if all items are paid
-    if (!hasMoreItems) {
-      sessionStorage.removeItem('lastOrder');
-      localStorage.removeItem('notarette_checkout_data');
-    }
-  }, [hasMoreItems]);
+    sessionStorage.removeItem('lastOrder');
+    localStorage.removeItem('notarette_checkout_data');
+  }, []);
 
   const handleBookAppointment = () => {
     // Open Cal.com booking link
@@ -172,28 +168,7 @@ const ThankYou: React.FC = () => {
           </div>
         </motion.div>
 
-        {hasMoreItems ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="bg-blue-50 rounded-lg p-6 text-center"
-          >
-            <h3 className="text-lg font-semibold text-blue-900 mb-2">
-              Continue with Remaining Services
-            </h3>
-            <p className="text-blue-700 mb-4">
-              You have {cartItems.length} more service(s) in your cart to complete.
-            </p>
-            <button
-              onClick={handleContinueServices}
-              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Complete Remaining Services
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </button>
-          </motion.div>
-        ) : (
+        {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -208,7 +183,7 @@ const ThankYou: React.FC = () => {
               <ArrowRight className="w-4 h-4 ml-2" />
             </button>
           </motion.div>
-        )}
+        }
       </div>
     </div>
   );

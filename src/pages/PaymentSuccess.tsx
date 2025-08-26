@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { CheckCircle } from 'lucide-react'
 import { useAppDispatch } from '../hooks/useAppDispatch'
-import { clearCart } from '../store/slices/cartSlice'
 import { addToast } from '../store/slices/uiSlice'
 import { bookAppointment, createCalEvent, CAL_MEETING_LINK } from '../services/appointmentService'
 import Button from '../components/ui/Button'
@@ -27,7 +26,7 @@ const PaymentSuccess: React.FC = () => {
         }
 
         const checkoutData = JSON.parse(checkoutDataStr)
-        const { customerInfo, cartItems, cartTotal } = checkoutData
+        const { customerInfo } = checkoutData
 
         // Check if payment was successful (you can add more validation here)
         const sessionId = searchParams.get('session_id')
@@ -43,9 +42,9 @@ const PaymentSuccess: React.FC = () => {
           customerEmail: customerInfo.email,
           customerPhone: customerInfo.phone,
           customerAddress: `${customerInfo.address}, ${customerInfo.city}, ${customerInfo.state} ${customerInfo.zipCode}`,
-          serviceIds: cartItems.map((item: any) => item.id),
+          serviceIds: [],
           paymentSessionId: sessionId,
-          totalAmount: cartTotal,
+          totalAmount: 0,
           meetingLink: CAL_MEETING_LINK,
         }
 
@@ -53,9 +52,6 @@ const PaymentSuccess: React.FC = () => {
         await bookAppointment(appointmentData)
         await createCalEvent(appointmentData)
 
-        // Clear cart after successful booking
-        dispatch(clearCart())
-        
         // Clear checkout data from localStorage
         localStorage.removeItem('notarette_checkout_data')
 
@@ -68,8 +64,8 @@ const PaymentSuccess: React.FC = () => {
         // Store the order data for the Thank You page
         const orderData = {
           customerInfo,
-          cartItems,
-          cartTotal,
+          cartItems: [],
+          cartTotal: 0,
           sessionId,
           appointmentData
         }

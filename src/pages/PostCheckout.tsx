@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppDispatch } from '../hooks/useAppDispatch';
-import { useAppSelector } from '../hooks/useAppSelector';
-import { removeItem, selectCartItems } from '../store/slices/cartSlice';
+// cart removed
 import { stripeService } from '../services/stripeService';
 
 interface CheckSessionResponse {
@@ -18,7 +17,6 @@ const PostCheckout: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const cartItems = useAppSelector(selectCartItems);
   
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,11 +43,7 @@ const PostCheckout: React.FC = () => {
         if (result.paid) {
           sessionStorage.setItem('lastOrder', JSON.stringify(result));
           
-          // Find the paid service in cart and remove it
-          const paidService = findPaidService(result);
-          if (paidService) {
-            dispatch(removeItem(paidService.id));
-          }
+          // Cart removed: skip removing paid service
           
           navigate(`/thank-you?session_id=${sessionId}`, { replace: true });
         } else {
@@ -69,14 +63,7 @@ const PostCheckout: React.FC = () => {
     verifyPayment();
   }, [searchParams, navigate, dispatch]);
 
-  const findPaidService = (sessionData: CheckSessionResponse) => {
-    // Find the service in cart that matches the paid item
-    return cartItems.find((item: { name: string }) => 
-      sessionData.items.some(sessionItem => 
-        sessionItem.name === item.name
-      )
-    );
-  };
+  // Cart removed: no finder needed
 
   if (isLoading) {
     return (

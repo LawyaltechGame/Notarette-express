@@ -3,8 +3,8 @@ import { motion } from 'framer-motion'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { CheckCircle, Calendar, ExternalLink, Home, ShoppingCart, Loader2, XCircle } from 'lucide-react'
 import { stripeService } from '../services/stripeService'
-import { useAppSelector } from '../hooks/useAppSelector'
-import { selectCartItems } from '../store/slices/cartSlice'
+// import { useAppSelector } from '../hooks/useAppSelector'
+// cart removed
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 
@@ -20,7 +20,6 @@ interface CheckSessionResponse {
 const ThankYou: React.FC = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const cartItems = useAppSelector(selectCartItems)
   const [orderData, setOrderData] = useState<CheckSessionResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -77,7 +76,7 @@ const ThankYou: React.FC = () => {
   }
 
   // Check if there are more items in cart
-  const hasMoreItems = cartItems.length > 0
+  const hasMoreItems = false
 
   // Clear session storage if cart is empty (all services paid for)
   useEffect(() => {

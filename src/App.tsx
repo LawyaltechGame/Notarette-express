@@ -5,13 +5,11 @@ import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
-import CartDrawer from './components/cart/CartDrawer'
 import Home from './pages/Home'
 import Services from './pages/Services'
 import ServiceDetail from './pages/ServiceDetail'
 import Checkout from './pages/Checkout'
-import PostCheckout from './routes/PostCheckout'
-import ThankYou from './routes/ThankYou'
+import ThankYou from './pages/ThankYou'
 import Portal from './pages/Portal'
 import About from './pages/About'
 import Contact from './pages/Contact'
@@ -117,8 +115,7 @@ function App() {
                   </ProtectedRoute>
                 } />
                 
-                {/* Stripe post-checkout verification routes - no auth required */}
-                <Route path="/post-checkout" element={<PostCheckout />} />
+                {/* Stripe post-checkout removed */}
                 
                 {/* Hidden routes - these pages exist on WordPress website */}
                 <Route path="/about" element={
@@ -151,7 +148,6 @@ function App() {
               </Routes>
             </main>
             <Footer />
-            <CartDrawer />
           </div>
         </Router>
       </AuthProvider>

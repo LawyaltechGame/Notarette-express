@@ -28,8 +28,7 @@ This application is designed as a **service-specific extension** to an existing 
 2. **Authentication**: Users must sign in or create an account
 3. **Services Access**: After successful authentication, users are redirected to the Services page
 4. **Service Selection**: Browse and select notarization services
-5. **Add to Cart**: Add services to cart with real-time pricing
-6. **Checkout**: Complete customer information and payment
+5. **Checkout**: Complete customer information and payment
 7. **Appointment Booking**: Automatic booking with Cal.com
 8. **Confirmation**: Email confirmation and calendar invitation sent
 
@@ -171,8 +170,7 @@ src/
 1. **Browse Services**: Users visit the services page to view available notarization services
 2. **Select Service**: Choose a service and document type
 3. **Add Add-ons**: Select extra pages, courier, or rush service if needed
-4. **Add to Cart**: Add selected service to shopping cart
-5. **Checkout**: Complete customer information and proceed to Stripe checkout
+4. **Checkout**: Complete customer information and proceed to Stripe checkout
 6. **Stripe Payment**: Complete payment securely on Stripe's hosted checkout page
 7. **Success Redirect**: User is redirected back to your app after successful payment
 8. **Thank You Page**: Display order summary and purchased services

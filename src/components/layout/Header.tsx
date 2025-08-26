@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Menu, X, ShoppingCart, Moon, Sun, LogOut } from 'lucide-react'
+import { Menu, X, Moon, Sun, LogOut } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppSelector } from '../../hooks/useAppSelector'
 import { useAppDispatch } from '../../hooks/useAppDispatch'
-import { toggleCart } from '../../store/slices/cartSlice'
 import { toggleTheme } from '../../store/slices/uiSlice'
-import { selectCartItemCount } from '../../store/slices/cartSlice'
 import { logout } from '../../store/slices/userSlice'
 import { signOutUser } from '../../services/firebaseAuth'
 
@@ -14,7 +12,6 @@ const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const cartItemCount = useAppSelector(selectCartItemCount)
   const theme = useAppSelector(state => state.ui.theme)
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated)
   const user = useAppSelector(state => state.user.user)
@@ -82,22 +79,7 @@ const Header: React.FC = () => {
               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
             </button>
 
-            {/* Cart */}
-            <button
-              onClick={() => {
-                console.log('Cart button clicked, dispatching toggleCart')
-                dispatch(toggleCart())
-              }}
-              className="relative p-2 text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition-colors"
-              aria-label="Open cart"
-            >
-              <ShoppingCart size={20} />
-              {cartItemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-teal-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartItemCount}
-                </span>
-              )}
-            </button>
+            {/* Cart removed */}
 
             {/* User Account */}
             <div className="flex items-center space-x-3">
