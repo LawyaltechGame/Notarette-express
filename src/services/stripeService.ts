@@ -100,3 +100,28 @@ class StripeService {
 
 export const stripeService = new StripeService();
 
+// === Frontend helper to call callable and redirect ===
+import { getFunctions, httpsCallable, connectFunctionsEmulator } from 'firebase/functions'
+import { app } from '../config/firebase'
+
+export type CheckoutItemInput = {
+  serviceId: string
+  quantity: number
+  addOnIds?: string[]
+  optionKeys?: string[]
+  extraCopies?: number
+}
+
+export async function createCheckoutAndRedirect(items: CheckoutItemInput[]) {
+  const functions = getFunctions(app, 'us-central1')
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    try {
+      connectFunctionsEmulator(functions, '127.0.0.1', 5001)
+    } catch {}
+  }
+  const callable = httpsCallable<{ items: CheckoutItemInput[] }, { url: string }>(functions, 'createCheckout')
+  const { data } = await callable({ items })
+  if (!data?.url) throw new Error('No checkout URL returned')
+  window.location.assign(data.url)
+}
+

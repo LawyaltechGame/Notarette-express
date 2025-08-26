@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import { Shield, CheckCircle, Calendar } from 'lucide-react'
+import { createCheckoutAndRedirect } from '../services/stripeService'
 
 const Checkout: React.FC = () => {
   const [payload, setPayload] = useState<any>(null)
@@ -98,11 +99,28 @@ const Checkout: React.FC = () => {
               variant="danger"
               className="w-full py-3"
               onClick={() => {
-                const url = payload?.stripeCheckoutUrl || payload?.paymentLink
-                if (url) {
-                  window.open(url, '_blank', 'noopener,noreferrer')
-                } else {
-                  alert('Stripe checkout link is not configured yet. Please contact support or try again later.')
+                try {
+                  if (!payload) {
+                    alert('Missing checkout payload. Please start again.')
+                    return
+                  }
+                  const serviceId = payload.serviceSlug
+                  if (!serviceId) {
+                    alert('Missing service. Please start again.')
+                    return
+                  }
+                  const addOnIds = Array.isArray(payload?.addons)
+                    ? payload.addons.map((a: any) => a.key)
+                    : []
+                  const optionKeys = Array.isArray(payload?.selectedOptions)
+                    ? payload.selectedOptions.map((o: any) => o.key)
+                    : []
+                  const extraCopies = payload?.extraCopies || 0
+                  const items = [{ serviceId, quantity: 1, addOnIds, optionKeys, extraCopies }]
+                  createCheckoutAndRedirect(items)
+                } catch (e) {
+                  console.error(e)
+                  alert('Failed to start Stripe Checkout. Please try again.')
                 }
               }}
             >
