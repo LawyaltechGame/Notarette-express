@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useAppSelector } from '../../hooks/useAppSelector'
 import { useAppDispatch } from '../../hooks/useAppDispatch'
 import { toggleTheme } from '../../store/slices/uiSlice'
+import { appwriteAccount } from '../../lib/appwrite'
 import { logout } from '../../store/slices/userSlice'
-import { signOutUser } from '../../services/firebaseAuth'
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -28,9 +28,15 @@ const Header: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await signOutUser()
+      // End Appwrite session (ignore if none exists)
+      try {
+        await appwriteAccount.deleteSession('current')
+      } catch {}
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('LOCAL_USER')
+      }
       dispatch(logout())
-      navigate('/')
+      navigate('/login', { replace: true })
     } catch (error) {
       console.error('Logout error:', error)
     }

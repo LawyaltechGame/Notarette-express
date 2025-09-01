@@ -1,66 +1,65 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import { User as FirebaseUser } from 'firebase/auth'
-import { useAppDispatch } from '../hooks/useAppDispatch'
-import { useAppSelector } from '../hooks/useAppSelector'
-import { loginSuccess, logout } from '../store/slices/userSlice'
-import { onAuthStateChange, getCurrentUserProfile } from '../services/firebaseAuth'
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { useAppSelector } from "../hooks/useAppSelector";
+import { loginSuccess, logout as logoutAction } from "../store/slices/userSlice";
 
-interface AuthContextType {
-  loading: boolean
-  isAuthenticated: boolean
-}
+type AuthContextType = {
+  loading: boolean;
+  isAuthenticated: boolean;
+};
 
 const AuthContext = createContext<AuthContextType>({
   loading: true,
-  isAuthenticated: false
-})
+  isAuthenticated: false,
+});
 
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = () => useContext(AuthContext);
 
-interface AuthProviderProps {
-  children: React.ReactNode
-}
+export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector((s) => s.user.isAuthenticated);
+  const [loading, setLoading] = useState(true);
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const dispatch = useAppDispatch()
-  const [loading, setLoading] = useState(true)
-  
-  // Get authentication state from Redux store
-  const isAuthenticated = useAppSelector(state => state.user.isAuthenticated)
-
+  // One-time hydration on mount
   useEffect(() => {
-    const unsubscribe = onAuthStateChange(async (firebaseUser: FirebaseUser | null) => {
-      if (firebaseUser) {
-        try {
-          // Get user profile from Firestore
-          const userProfile = await getCurrentUserProfile(firebaseUser.uid)
-          
-          if (userProfile) {
-            dispatch(loginSuccess({ user: userProfile }))
-          } else {
-            dispatch(logout())
-          }
-        } catch (error) {
-          console.error('Error getting user profile:', error)
-          dispatch(logout())
+    let cancelled = false;
+
+    const hydrate = async () => {
+      setLoading(true);
+      try {
+        const stored = typeof window !== "undefined" ? localStorage.getItem("LOCAL_USER") : null;
+        if (!cancelled && stored) {
+          const user = JSON.parse(stored);
+          dispatch(loginSuccess({ user }));
+        } else if (!cancelled) {
+          dispatch(logoutAction());
         }
-      } else {
-        dispatch(logout())
+      } catch {
+        if (!cancelled) {
+          dispatch(logoutAction());
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      setLoading(false)
-    })
+    };
 
-    return () => unsubscribe()
-  }, [dispatch])
+    hydrate();
 
-  const value = {
-    loading,
-    isAuthenticated
-  }
+    // Optional: re-check when tab becomes visible (handles cookies cleared / new login in another tab)
+    const onVisible = () => {
+      if (document.visibilityState === "visible") {
+        hydrate();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  )
-}
+    return () => {
+      cancelled = true;
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [dispatch]);
+
+  const value = { loading, isAuthenticated };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};

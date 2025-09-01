@@ -1,5 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AuthUser } from '../../services/firebaseAuth'
+
+export interface AuthUser {
+  uid: string
+  email: string | null
+  firstName: string
+  lastName: string
+  phone: string
+  address?: string
+  city?: string
+  state?: string
+  zipCode?: string
+}
 
 interface UserState {
   user: AuthUser | null
@@ -30,6 +41,11 @@ const userSlice = createSlice({
       state.isAuthenticated = true
       state.loading = false
       state.error = null
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('LOCAL_USER', JSON.stringify(action.payload.user))
+        }
+      } catch {}
     },
     loginFailure: (state, action: PayloadAction<string>) => {
       state.user = null

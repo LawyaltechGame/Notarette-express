@@ -16,8 +16,7 @@ import Contact from './pages/Contact'
 import HowItWorksPage from './pages/HowItWorks'
 import TestimonialsPage from './pages/Testimonials'
 import FAQ from './pages/FAQ'
-import Login from './pages/Login'
-import Register from './pages/Register'
+import Authentication from './pages/Authentication'
 import PaymentSuccess from './pages/PaymentSuccess'
 import NotFound from './pages/NotFound'
 import ServiceForm from './pages/ServiceForm'
@@ -49,12 +48,12 @@ function App() {
                 {/* Public routes - redirect to services if already authenticated */}
                 <Route path="/login" element={
                   <ProtectedRoute requireAuth={false}>
-                    <Login />
+                    <Authentication />
                   </ProtectedRoute>
                 } />
                 <Route path="/register" element={
                   <ProtectedRoute requireAuth={false}>
-                    <Register />
+                    <Authentication />
                   </ProtectedRoute>
                 } />
                 

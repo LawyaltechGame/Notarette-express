@@ -22,10 +22,5 @@ export const store = configureStore({
     getDefaultMiddleware().concat(persistenceMiddleware),
 })
 
-// cart load removed
-
-// Log initial store state
-console.log('Initial store state:', store.getState())
-
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
