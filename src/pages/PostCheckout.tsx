@@ -36,7 +36,7 @@ const PostCheckout: React.FC = () => {
         setIsLoading(true);
         setError(null);
         
-        // Use mock service instead of Firebase Functions
+        // Use mock service instead of backend API
         const result = await stripeService.checkSession(sessionId);
         setData(result);
         

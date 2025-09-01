@@ -61,8 +61,8 @@ This approach provides a secure, focused experience for users who come specifica
 - **Styling**: Tailwind CSS, Framer Motion
 - **State Management**: Redux Toolkit
 - **Forms**: React Hook Form with Zod validation
-- **Authentication**: Firebase Authentication
-- **Database**: Firestore (Firebase)
+- **Authentication**: Appwrite Authentication
+- **Database**: Appwrite Database
 - **Payment**: Stripe
 - **Appointments**: Cal.com integration
 - **Meetings**: Whereby integration
@@ -73,7 +73,7 @@ This approach provides a secure, focused experience for users who come specifica
 
 - Node.js 18+ 
 - npm or yarn
-- Firebase account (for authentication and database)
+- Appwrite account (for authentication and database)
 - Stripe account (for payment processing)
 - Cal.com account (for appointment booking)
 
@@ -90,12 +90,12 @@ This approach provides a secure, focused experience for users who come specifica
    npm install
    ```
 
-3. **Firebase Setup**
-   - Create a Firebase project at [firebase.google.com](https://firebase.google.com)
+3. **Appwrite Setup**
+   - Create an Appwrite project at [appwrite.io](https://appwrite.io)
    - Enable Authentication (Email/Password)
-   - Enable Firestore Database
-   - Get your Firebase config from Project Settings
-   - Update the Firebase configuration in `src/config/firebase.ts`
+   - Enable Database
+   - Get your Appwrite config from Project Settings
+   - Update the Appwrite configuration in `src/lib/appwrite.ts`
 
 4. **Environment Setup**
    Create a `.env` file in the root directory:

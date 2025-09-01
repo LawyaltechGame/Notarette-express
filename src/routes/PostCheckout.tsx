@@ -37,7 +37,7 @@ const PostCheckout: React.FC = () => {
           return;
         }
 
-        // Call the Firebase Function to verify payment
+        // Call the payment verification service
         const data = await stripeService.checkSession(sessionId);
         setSessionData(data);
 

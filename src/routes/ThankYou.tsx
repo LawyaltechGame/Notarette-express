@@ -39,7 +39,7 @@ const ThankYou: React.FC = () => {
           return
         }
 
-        // If no cached data but we have session_id, fetch from Firebase Function
+        // If no cached data but we have session_id, fetch from payment service
         if (sessionId) {
           const data = await stripeService.checkSession(sessionId)
 

@@ -1,43 +1,43 @@
 # 🚀 Stripe Payment Links Integration Setup
 
-This guide will help you set up Stripe Payment Links integration with Firebase Functions (Spark plan) and React.
+This guide will help you set up Stripe Payment Links integration with a backend API and React.
 
 ## 📋 Prerequisites
 
-- Firebase project with Functions and Hosting enabled
+- Backend API with payment verification endpoints
 - Stripe account (test or live)
-- React app with Firebase Authentication already configured
+- React app with authentication already configured
 
-## 🔧 Firebase Functions Setup
+## 🔧 Backend API Setup
 
 ### 1. Install Dependencies
 
 ```bash
-cd functions
 npm install stripe@^14.0.0
 ```
 
 ### 2. Environment Configuration
 
-#### Development (Local Emulator)
-Create `functions/.env.local`:
+#### Development
+Create `.env.local`:
 ```bash
 STRIPE_SECRET_KEY=sk_test_your_test_key_here
 ```
 
 #### Production
 ```bash
-firebase functions:config:set stripe.secret_key="sk_live_your_live_key_here"
+STRIPE_SECRET_KEY=sk_live_your_live_key_here
 ```
 
-### 3. Deploy Functions
+### 3. Deploy Backend
 
 ```bash
 # Development
-firebase emulators:start --only functions,hosting
+npm run dev
 
 # Production
-firebase deploy --only functions
+npm run build
+npm start
 ```
 
 ## 🎯 Stripe Configuration
@@ -83,23 +83,22 @@ Service cards now show:
 
 1. User clicks "Buy Now" → Opens Stripe Payment Link
 2. User completes payment → Stripe redirects to `/post-checkout`
-3. `/post-checkout` verifies payment via Firebase Function
+3. `/post-checkout` verifies payment via backend API
 4. If successful → Redirects to `/thank-you`
 5. `/thank-you` shows order details and Cal.com booking link
 
 ## 🔒 Security Features
 
-- **Input Validation**: All Firebase Functions validate input data
+- **Input Validation**: All backend endpoints validate input data
 - **Error Handling**: Comprehensive error handling for Stripe API calls
-- **Session Verification**: Payment verification via Firebase Functions
+- **Session Verification**: Payment verification via backend API
 - **No Client Secrets**: Stripe secret key only on server side
 
 ## 🚀 Deployment
 
-### Firebase Hosting
+### Frontend Deployment
 ```bash
 npm run build
-firebase deploy --only hosting
 ```
 
 ### Vercel
@@ -114,10 +113,10 @@ vercel --prod
 - Verify redirects work correctly
 - Test payment failure scenarios
 
-### 2. Test Firebase Functions
+### 2. Test Backend API
 ```bash
-firebase emulators:start --only functions
-# Test getPrices and checkSession functions
+npm run dev
+# Test getPrices and checkSession endpoints
 ```
 
 ### 3. Test Frontend Integration
@@ -145,28 +144,28 @@ firebase emulators:start --only functions
 1. **Prices not loading**
    - Check Stripe API key
    - Verify price IDs in services data
-   - Check Firebase Functions logs
+   - Check backend API logs
 
 2. **Payment verification fails**
    - Verify session ID format
    - Check Stripe webhook configuration
-   - Review Firebase Function logs
+   - Review backend API logs
 
 3. **Redirects not working**
    - Verify success URLs in Stripe
-   - Check Firebase hosting configuration
+   - Check frontend hosting configuration
    - Ensure SPA routing is configured
 
 ### Debug Steps
 
 1. Check browser console for errors
-2. Review Firebase Functions logs
+2. Review backend API logs
 3. Verify Stripe Dashboard for payment status
 4. Test with Stripe test mode first
 
 ## 📚 API Reference
 
-### Firebase Functions
+### Backend API Endpoints
 
 #### `getPrices`
 ```typescript
@@ -199,17 +198,17 @@ Opens Stripe payment link
 ✅ Payment verification succeeds  
 ✅ Thank you page shows order details  
 ✅ Cal.com booking integration works  
-✅ Works on Firebase Spark plan  
+✅ Works with any backend API  
 ✅ Deploys to Vercel successfully  
 
 ## 📞 Support
 
 For issues:
-1. Check Firebase Functions logs
+1. Check backend API logs
 2. Verify Stripe Dashboard
 3. Review browser console errors
 4. Test with Stripe test mode
 
 ---
 
-**Note**: This integration works entirely on Firebase's free Spark plan since it only makes outbound HTTPS calls to Stripe's API, which is allowed.
+**Note**: This integration works with any backend API that can make outbound HTTPS calls to Stripe's API.
