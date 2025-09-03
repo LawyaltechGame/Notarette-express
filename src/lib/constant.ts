@@ -1,5 +1,5 @@
  export const ENVObj = {
     VITE_APPWRITE_PROJECT_ID: import.meta.env.VITE_APPWRITE_PROJECT_ID,
     VITE_APPWRITE_ENDPOINT: import.meta.env.VITE_APPWRITE_ENDPOINT,
-    
+    VITE_APPWRITE_FUNCTION_ID: import.meta.env.VITE_APPWRITE_FUNCTION_ID,
  }

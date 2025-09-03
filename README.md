@@ -38,22 +38,22 @@ This approach provides a secure, focused experience for users who come specifica
 
 ## Services Offered
 
-1. **Power of Attorney** - $35.00
-2. **Certified Copy of Document** - $20.00
-3. **Certified Copy of Passport/ID** - $25.00
-4. **Online Content Notarization** - $30.00
-5. **Signature Notarization** - $25.00
-6. **Apostille Services** - $50.00
-7. **Contract Certification** - $40.00
-8. **Notarized Sworn Translation** - $60.00
-9. **Company Registration** - $80.00
-10. **Vital Certificates Replacement** - $45.00
+1. **Power of Attorney** - €35.00
+2. **Certified Copy of Document** - €20.00
+3. **Certified Copy of Passport/ID** - €25.00
+4. **Online Content Notarization** - €30.00
+5. **Signature Notarization** - €25.00
+6. **Apostille Services** - €50.00
+7. **Contract Certification** - €40.00
+8. **Notarized Sworn Translation** - €60.00
+9. **Company Registration** - €80.00
+10. **Vital Certificates Replacement** - €45.00
 
 ## Add-ons Available
 
-- **Extra Pages**: $5.00 per additional page
-- **Courier Service**: $15.00 for document delivery
-- **Rush Service**: $20.00 for expedited processing
+- **Extra Pages**: €5.00 per additional page
+- **Courier Service**: €15.00 for document delivery
+- **Rush Service**: €20.00 for expedited processing
 
 ## Technology Stack
 

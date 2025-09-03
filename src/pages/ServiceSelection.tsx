@@ -12,17 +12,17 @@ const ServiceSelection: React.FC = () => {
 
   const baseOptions = React.useMemo(() => {
     return [
-      { key: 'base', title:  'Certified Copy', subtitle: 'Official service with notary seal', price: service ? service.priceCents : 2000, currency: service?.currency || 'INR' },
-      { key: 'signature', title: 'Signature Notarization', subtitle: 'Verify and notarize signatures', price: 4900, currency: service?.currency || 'INR' },
-      { key: 'true-content', title: 'True Content Verification', subtitle: 'Verify document authenticity', price: 3900, currency: service?.currency || 'INR' },
+      { key: 'base', title:  'Certified Copy', subtitle: 'Official service with notary seal', price: service ? service.priceCents : 2000, currency: service?.currency || 'EUR' },
+      { key: 'signature', title: 'Signature Notarization', subtitle: 'Verify and notarize signatures', price: 4900, currency: service?.currency || 'EUR' },
+      { key: 'true-content', title: 'True Content Verification', subtitle: 'Verify document authenticity', price: 3900, currency: service?.currency || 'EUR' },
     ]
   }, [service])
 
   const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(new Set(['base']))
   const [extraCopies, setExtraCopies] = React.useState<number>(0) // 0 means not selected
 
-  const currency = service?.currency || 'INR'
-  const fmt = (cents: number, curr: string) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: curr }).format(cents / 100)
+  const currency = service?.currency || 'EUR'
+  const fmt = (cents: number, curr: string) => new Intl.NumberFormat('en-IE', { style: 'currency', currency: curr }).format(cents / 100)
 
   const toggleKey = (key: string) => {
     setSelectedKeys(prev => {

@@ -26,8 +26,8 @@ export const services: Service[] = [
     id: '1',
     name: 'Power of Attorney',
     slug: 'power-of-attorney',
-    priceCents: 1000, // ₹10.00 (1000 paise)
-    currency: 'INR',
+    priceCents: 3500, // €35.00
+    currency: 'EUR',
     description: 'Legally binding power of attorney notarization',
     longDescription: 'Professional notarization of power of attorney documents with full legal compliance and identity verification.',
     features: [
@@ -40,9 +40,9 @@ export const services: Service[] = [
     turnaroundTime: '2-4 hours',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
     options: {
-      extraPagesPriceCents: 500,
-      courierPriceCents: 1500,
-      rushServicePriceCents: 2000,
+      extraPagesPriceCents: 500, // €5.00 per extra page
+      courierPriceCents: 1500, // €15.00 for courier
+      rushServicePriceCents: 2000, // €20.00 for rush service
     },
     faqs: [
       {
@@ -59,8 +59,8 @@ export const services: Service[] = [
     id: '2',
     name: 'Certified Copy of Document',
     slug: 'certified-copy-document',
-    priceCents: 2000, // ₹20.00
-    currency: 'INR',
+    priceCents: 2000, // €20.00
+    currency: 'EUR',
     description: 'Official certified copy of original documents',
     longDescription: 'Create legally certified copies of original documents with notarial certification.',
     features: [
@@ -73,9 +73,9 @@ export const services: Service[] = [
     turnaroundTime: '1-2 hours',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/certified-copy-of-document-meeting-test',
     options: {
-      extraPagesPriceCents: 500, // ₹5.00 per extra page
-      courierPriceCents: 1500, // ₹15.00 for courier
-      rushServicePriceCents: 2000, // ₹20.00 for rush service
+      extraPagesPriceCents: 500, // €5.00 per extra page
+      courierPriceCents: 1500, // €15.00 for courier
+      rushServicePriceCents: 2000, // €20.00 for rush service
     },
     faqs: [
       {
@@ -92,8 +92,8 @@ export const services: Service[] = [
     id: '3',
     name: 'Certified Copy of Passport/ID',
     slug: 'certified-copy-passport-id',
-    priceCents: 2500, // $25.00
-    currency: 'USD',
+    priceCents: 2500, // €25.00
+    currency: 'EUR',
     description: 'Certified copy of passport or government ID',
     longDescription: 'Create legally certified copies of passports, driver licenses, and other government-issued identification documents.',
     features: [
@@ -125,8 +125,8 @@ export const services: Service[] = [
     id: '4',
     name: 'Company Formation Documents',
     slug: 'company-formation-documents',
-    priceCents: 5000, // $50.00
-    currency: 'USD',
+    priceCents: 5000, // €50.00
+    currency: 'EUR',
     description: 'Notarization of company formation and business documents',
     longDescription: 'Professional notarization of company formation documents, articles of incorporation, and business agreements.',
     features: [
@@ -158,8 +158,8 @@ export const services: Service[] = [
     id: '5',
     name: 'Apostille Services',
     slug: 'apostille-services',
-    priceCents: 8000, // $80.00
-    currency: 'USD',
+    priceCents: 8000, // €80.00
+    currency: 'EUR',
     description: 'International document authentication and apostille services',
     longDescription: 'Professional apostille services for international document authentication and legalization.',
     features: [
@@ -191,8 +191,8 @@ export const services: Service[] = [
     id: '6',
     name: 'Document Translation & Notarization',
     slug: 'document-translation-notarization',
-    priceCents: 6000, // $60.00
-    currency: 'USD',
+    priceCents: 6000, // €60.00
+    currency: 'EUR',
     description: 'Professional translation and notarization services',
     longDescription: 'Professional translation services combined with notarial certification for international use.',
     features: [
@@ -224,8 +224,8 @@ export const services: Service[] = [
     id: '7',
     name: 'Real Estate Document Notarization',
     slug: 'real-estate-document-notarization',
-    priceCents: 4500, // $45.00
-    currency: 'USD',
+    priceCents: 4500, // €45.00
+    currency: 'EUR',
     description: 'Notarization of real estate and property documents',
     longDescription: 'Professional notarization of real estate contracts, deeds, mortgages, and property-related documents.',
     features: [
@@ -257,8 +257,8 @@ export const services: Service[] = [
     id: '8',
     name: 'Estate Planning Document Notarization',
     slug: 'estate-planning-document-notarization',
-    priceCents: 5500, // $55.00
-    currency: 'USD',
+    priceCents: 5500, // €55.00
+    currency: 'EUR',
     description: 'Notarization of wills, trusts, and estate planning documents',
     longDescription: 'Professional notarization of wills, trusts, power of attorney documents, and other estate planning instruments.',
     features: [

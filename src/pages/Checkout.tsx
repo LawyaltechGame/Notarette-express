@@ -6,6 +6,7 @@ import { createCheckoutAndRedirect } from '../services/stripeService'
 
 const Checkout: React.FC = () => {
   const [payload, setPayload] = useState<any>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     try {
@@ -14,8 +15,8 @@ const Checkout: React.FC = () => {
     } catch {}
   }, [])
 
-  const currency = payload?.currency || 'INR'
-  const fmt = (cents: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency }).format((cents || 0) / 100)
+  const currency = payload?.currency || 'EUR'
+  const fmt = (cents: number) => new Intl.NumberFormat('en-IE', { style: 'currency', currency }).format((cents || 0) / 100)
 
   const subtotal = payload?.subtotalCents || 0
   const vat = payload?.vatCents ?? Math.round(subtotal * 0.21)
@@ -98,15 +99,19 @@ const Checkout: React.FC = () => {
             <Button
               variant="danger"
               className="w-full py-3"
+              disabled={isSubmitting}
               onClick={() => {
                 try {
                   if (!payload) {
                     alert('Missing checkout payload. Please start again.')
                     return
                   }
+                  if (isSubmitting) return
+                  setIsSubmitting(true)
                   const serviceId = payload.serviceSlug
                   if (!serviceId) {
                     alert('Missing service. Please start again.')
+                    setIsSubmitting(false)
                     return
                   }
                   const addOnIds = Array.isArray(payload?.addons)
@@ -117,14 +122,15 @@ const Checkout: React.FC = () => {
                     : []
                   const extraCopies = payload?.extraCopies || 0
                   const items = [{ serviceId, quantity: 1, addOnIds, optionKeys, extraCopies }]
-                  createCheckoutAndRedirect(items)
+                  createCheckoutAndRedirect(items).catch(() => {}).finally(() => setIsSubmitting(false))
                 } catch (e) {
                   console.error(e)
                   alert('Failed to start Stripe Checkout. Please try again.')
+                  setIsSubmitting(false)
                 }
               }}
             >
-              Pay Now and Securely
+              {isSubmitting ? 'Opening Stripe…' : 'Pay Now and Securely'}
             </Button>
 
             <ul className="text-xs text-gray-500 mt-4 list-disc list-inside">

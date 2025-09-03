@@ -121,7 +121,7 @@ const ThankYou: React.FC = () => {
                     <p className="text-sm text-gray-500">Quantity: {item.qty}</p>
                   </div>
                   <span className="text-gray-900 font-medium">
-                    {formatPrice(orderData.amount || 0, orderData.currency || 'INR')}
+                    {formatPrice(orderData.amount || 0, orderData.currency || 'EUR')}
                   </span>
                 </div>
               ))}
@@ -130,7 +130,7 @@ const ThankYou: React.FC = () => {
             <div className="flex justify-between items-center pt-4 border-t border-gray-200">
               <span className="text-lg font-semibold text-gray-900">Total</span>
               <span className="text-2xl font-bold text-blue-600">
-                {formatPrice(orderData.amount || 0, orderData.currency || 'INR')}
+                {formatPrice(orderData.amount || 0, orderData.currency || 'EUR')}
               </span>
             </div>
           </motion.div>

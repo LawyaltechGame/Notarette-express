@@ -25,8 +25,8 @@ const AddOns: React.FC = () => {
 
   const [selected, setSelected] = React.useState<Set<string>>(new Set())
 
-  const currency = initial?.currency || 'INR'
-  const fmt = (cents: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency }).format(cents / 100)
+  const currency = initial?.currency || 'EUR'
+  const fmt = (cents: number) => new Intl.NumberFormat('en-IE', { style: 'currency', currency }).format(cents / 100)
 
   const baseSubtotal = initial?.subtotalCents || 0
   const addonsCents = Array.from(selected).reduce((sum, key) => {

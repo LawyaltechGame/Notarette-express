@@ -1,4 +1,8 @@
-// Stripe service (frontend-only mock helpers until a backend is connected)
+// Stripe service integrated with Appwrite Functions
+
+import { client, appwriteAccount } from '../lib/appwrite';
+import { Functions } from 'appwrite';
+import { ENVObj } from '../lib/constant';
 
 // const STRIPE_PUBLISHABLE_KEY = 'pk_test_51RzArkGTuyVGItJwSanfj2QFq1qbCAfN0to2K6GeWh9kR1R764pTI4m6w1wcMP7N8S62pXua9IZxatUvikg8V6gQ00xpJ2XW5Q';
 
@@ -16,6 +20,7 @@ export interface StripeSession {
   currency: string | null;
   items: { name: string; qty: number; priceId: string }[];
   customer: { email: string | null; name: string | null };
+  calLink?: string | null;
 }
 
 class StripeService {
@@ -33,14 +38,14 @@ class StripeService {
       const mockPrices: StripePrice[] = [
         {
           priceId: 'price_1NxY0000000000000000000000000001',
-          unitAmount: 3000, // ₹30.00 in cents
-          currency: 'INR',
+          unitAmount: 3000, // €30.00 in cents
+          currency: 'EUR',
           productName: 'Power of Attorney',
         },
         {
           priceId: 'price_placeholder_2',
-          unitAmount: 4000, // ₹40.00 in cents (real Stripe price)
-          currency: 'INR',
+          unitAmount: 4000, // €40.00 in cents (real Stripe price)
+          currency: 'EUR',
           productName: 'Certified Copy of Document',
         },
         // Add more mock prices as needed
@@ -53,28 +58,33 @@ class StripeService {
     }
   }
 
-  async checkSession(_sessionId: string): Promise<StripeSession> {
+  async checkSession(sessionId: string): Promise<StripeSession> {
     try {
-      // For now, return mock session data
-      // In production, you'd implement this with a free backend service
-      
-      console.log('Using mock session data for development');
-      
+      const functionId = ENVObj.VITE_APPWRITE_FUNCTION_ID || 'payments-with-stripe';
+      const functions = new Functions(client);
+
+      const response = await functions.createExecution(
+        functionId,
+        JSON.stringify({ sessionId }),
+        false
+      );
+
+      if (!response.responseBody) {
+        throw new Error('Empty response from verification function');
+      }
+
+      const result = JSON.parse(response.responseBody);
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
       return {
-        paid: true, // Mock successful payment
-        amount: 4000, // ₹40.00 for Certified Copy of Document
-        currency: 'INR',
-        items: [
-          {
-            name: 'Certified Copy of Document',
-            qty: 1,
-            priceId: 'price_placeholder_2',
-          },
-        ],
-        customer: {
-          email: 'test@example.com',
-          name: 'Test Customer',
-        },
+        paid: !!result.paid,
+        amount: result.amount ?? null,
+        currency: (result.currency || 'eur').toUpperCase(),
+        items: Array.isArray(result.items) ? result.items : [],
+        customer: result.customer || { email: null, name: null },
+        calLink: result.calLink || null,
       };
     } catch (error) {
       console.error('Error checking session:', error);
@@ -83,7 +93,7 @@ class StripeService {
   }
 
   formatPrice(cents: number, currency: string): string {
-    return new Intl.NumberFormat('en-IN', {
+    return new Intl.NumberFormat('en-IE', {
       style: 'currency',
       currency: currency,
     }).format(cents / 100);
@@ -105,8 +115,124 @@ export type CheckoutItemInput = {
   extraCopies?: number
 }
 
-// Placeholder: Replace this with a call to your backend endpoint that creates a Stripe Checkout Session
-export async function createCheckoutAndRedirect(_items: CheckoutItemInput[]) {
-  throw new Error('Checkout is not configured. Set up a backend to create Stripe Checkout sessions.')
+// Connect to Appwrite Function for Stripe Checkout
+export async function createCheckoutAndRedirect(items: CheckoutItemInput[]) {
+  try {
+    // Get the current user session
+    const session = await appwriteAccount.getSession('current');
+    
+    if (!session) {
+      throw new Error('User not authenticated. Please log in first.');
+    }
+
+    // Get the function ID from environment or use a default
+    const functionId = ENVObj.VITE_APPWRITE_FUNCTION_ID || 'payments-with-stripe';
+    
+    // Prepare the request payload
+    const payload = {
+      successUrl: `${window.location.origin}/post-checkout?session_id={CHECKOUT_SESSION_ID}`,
+      failureUrl: `${window.location.origin}/checkout`,
+      items: items,
+      idempotencyKey: `fe_${Date.now()}_${Math.random().toString(36).slice(2)}`
+    };
+
+    // Call the Appwrite Function
+    const functions = new Functions(client);
+    console.log('Calling Appwrite Function:', functionId);
+    console.log('Payload:', payload);
+    
+    const response = await functions.createExecution(
+      functionId,
+      JSON.stringify(payload),
+      false // async
+    );
+
+    console.log('Appwrite Function Response:', response);
+    console.log('Response Body:', response.responseBody);
+
+    // Check if response is valid
+    // if (!response.responseBody) {
+    //   // If response body is empty, it might be a successful redirect
+    //   // The function is working (we saw it in the CLI test), so let's redirect to Stripe
+    //   const stripeUrl = 'https://checkout.stripe.com/pay/cs_test_a100d03UAQNBb4DCIIlvxDZIJYBLTHmAF39nIzmgvKtBgYhF9r6By9vzEt#fidkdWxOYHwnPyd1blpxYHZxWjA0VjdTTWFOR2c0VzxWU0xUSm11fDJSSWJNTV9gZFVcd1MzYmBIQW1BUHV2R0t1aH9obWJDREFCQEFNbXRKPXBWZD0xSnA1NVI2bmpHPERSTERmd39fbDR8NTVDdz1gaUhoSicpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl';
+    //   window.location.href = stripeUrl;
+    //   return;
+    // }
+
+    // If the response is "Not Found", the function might not be deployed
+    if (response.responseBody === 'Not Found') {
+      throw new Error(`Function not found or not deployed. Function ID: ${functionId}`);
+    }
+
+    let result;
+    try {
+      result = JSON.parse(response.responseBody);
+    } catch (parseError) {
+      console.error('Failed to parse response:', response.responseBody);
+      throw new Error(`Invalid response from function: ${response.responseBody}`);
+    }
+    
+    // If the function returns a redirect URL, redirect to it
+    if (result.url) {
+      window.location.href = result.url;
+      return;
+    }
+    
+    // If it returns a checkout session URL directly
+    if (result.checkoutUrl) {
+      window.location.href = result.checkoutUrl;
+      return;
+    }
+    
+    throw new Error('Invalid response from payment function');
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    throw new Error('Failed to create checkout session. Please try again.');
+  }
+}
+
+// Test function to verify Appwrite Function connection
+export async function testAppwriteFunction() {
+  try {
+    const functionId = ENVObj.VITE_APPWRITE_FUNCTION_ID || 'payments-with-stripe';
+    const functions = new Functions(client);
+    
+    console.log('Testing Appwrite Function connection...');
+    console.log('Function ID:', functionId);
+    console.log('Appwrite Endpoint:', ENVObj.VITE_APPWRITE_ENDPOINT);
+    console.log('Project ID:', ENVObj.VITE_APPWRITE_PROJECT_ID);
+    
+    const response = await functions.createExecution(
+      functionId,
+      JSON.stringify({ test: true }),
+      false
+    );
+    
+    console.log('Test Response:', response);
+    console.log('Response Body:', response.responseBody);
+    return response;
+  } catch (error) {
+    console.error('Test failed:', error);
+    throw error;
+  }
+}
+
+// Debug function to test checkout specifically
+export async function debugCheckout() {
+  try {
+    const testItems = [{
+      serviceId: 'test-service',
+      quantity: 1,
+      addOnIds: [],
+      optionKeys: [],
+      extraCopies: 0
+    }];
+    
+    console.log('Debugging checkout with items:', testItems);
+    await createCheckoutAndRedirect(testItems);
+  } catch (error) {
+    console.error('Debug checkout failed:', error);
+    throw error;
+  }
 }
 

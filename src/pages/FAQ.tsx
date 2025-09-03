@@ -69,7 +69,7 @@ const FAQ: React.FC = () => {
     // Pricing & Payment
     {
       question: "How much do your services cost?",
-      answer: "Our pricing varies by service type and ranges from ₹25 to ₹80 (or $25 to $80 USD). Additional fees apply for extra pages, rush service, and courier delivery. All prices are clearly displayed before you place your order, with no hidden fees.",
+      answer: "Our pricing varies by service type and ranges from €20 to €80. Additional fees apply for extra pages, rush service, and courier delivery. All prices are clearly displayed before you place your order, with no hidden fees.",
       category: "pricing"
     },
     {
