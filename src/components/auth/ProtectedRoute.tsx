@@ -8,12 +8,14 @@ interface ProtectedRouteProps {
   children: React.ReactNode
   requireAuth?: boolean
   redirectTo?: string
+  redirectIfAuthenticated?: boolean
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
   children, 
   requireAuth = true, 
-  redirectTo = '/services' 
+  redirectTo = '/services',
+  redirectIfAuthenticated = true
 }) => {
   const { loading } = useAuth()
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated)
@@ -39,9 +41,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  // If route is for unauthenticated users only (like login/register) and user is authenticated
-  if (!requireAuth && isAuthenticated) {
-    // Redirect to services page
+  // If route is intended for guests only (e.g., login/register) and user is authenticated
+  if (!requireAuth && isAuthenticated && redirectIfAuthenticated) {
     return <Navigate to={redirectTo} replace />
   }
 

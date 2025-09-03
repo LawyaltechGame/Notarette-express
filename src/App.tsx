@@ -22,6 +22,7 @@ import NotFound from './pages/NotFound'
 import ServiceForm from './pages/ServiceForm'
 import DocumentType from './pages/DocumentType'
 import ServiceSelection from './pages/ServiceSelection'
+import PostCheckout from './routes/PostCheckout'
 import AddOns from './pages/AddOns'
 import './index.css'
 
@@ -104,7 +105,7 @@ function App() {
                   </ProtectedRoute>
                 } />
                 <Route path="/thank-you" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requireAuth={false} redirectIfAuthenticated={false}>
                     <ThankYou />
                   </ProtectedRoute>
                 } />
@@ -114,7 +115,12 @@ function App() {
                   </ProtectedRoute>
                 } />
                 
-                {/* Stripe post-checkout removed */}
+                {/* Stripe post-checkout (public so Stripe redirect works when not authenticated) */}
+                <Route path="/post-checkout" element={
+                  <ProtectedRoute requireAuth={false} redirectIfAuthenticated={false}>
+                    <PostCheckout />
+                  </ProtectedRoute>
+                } />
                 
                 {/* Hidden routes - these pages exist on WordPress website */}
                 <Route path="/about" element={

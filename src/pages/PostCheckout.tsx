@@ -45,12 +45,6 @@ const PostCheckout: React.FC = () => {
           
           // Cart removed: skip removing paid service
           
-          // If a Cal.com booking link is provided, send user to booking before thank you
-          if (result.calLink) {
-            window.location.href = result.calLink;
-            return;
-          }
-
           navigate(`/thank-you?session_id=${sessionId}`, { replace: true });
         } else {
           // Payment failed, restore cart and redirect to checkout

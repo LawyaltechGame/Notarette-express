@@ -11,6 +11,7 @@ interface OrderData {
   currency: string | null;
   items: { name: string; qty: number; priceId: string }[];
   customer: { email: string | null; name: string | null };
+  calLink?: string | null;
 }
 
 const ThankYou: React.FC = () => {
@@ -57,8 +58,8 @@ const ThankYou: React.FC = () => {
   }, []);
 
   const handleBookAppointment = () => {
-    // Open Cal.com booking link
-    window.open('https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test', '_blank');
+    const url = (orderData as any)?.calLink || 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test';
+    window.open(url, '_blank');
   };
 
   const handleContinueServices = () => {
@@ -144,9 +145,7 @@ const ThankYou: React.FC = () => {
         >
           <div className="text-center mb-6">
             <Calendar className="w-16 h-16 text-blue-600 mx-auto mb-4" />
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-              Book Your Appointment
-            </h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-2">Book Your Appointment</h2>
             <p className="text-gray-600">
               Schedule your notarization session with our certified notary.
             </p>
@@ -161,6 +160,11 @@ const ThankYou: React.FC = () => {
               Book Appointment
               <ExternalLink className="w-5 h-5 ml-2" />
             </button>
+            {orderData?.calLink && (
+              <div className="text-sm text-blue-600 underline break-all">
+                <a href={orderData.calLink} target="_blank" rel="noreferrer">{orderData.calLink}</a>
+              </div>
+            )}
             
             <p className="text-sm text-gray-500">
               You'll be redirected to Cal.com to select your preferred time slot.
