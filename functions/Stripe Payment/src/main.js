@@ -170,6 +170,9 @@ export default async ({ req, res, log, error }) => {
     // For now we support single main service item from the client payload
     const first = items[0];
     const serviceSlug = first?.serviceId;
+    const optionKeys = Array.isArray(first?.optionKeys) ? first.optionKeys : [];
+    const extraCopies = Number(first?.extraCopies || 0);
+    const addOnIds = Array.isArray(first?.addOnIds) ? first.addOnIds : [];
     const service = findServiceBySlug(serviceSlug);
     if (!service) {
       log(`Unknown service slug received: ${serviceSlug}`);
@@ -181,35 +184,101 @@ export default async ({ req, res, log, error }) => {
     // Build a stable idempotency key to prevent duplicate sessions on retries
     const idempotencyKey = clientIdempotencyKey || `ck_${serviceSlug}_${Math.floor(Date.now() / 30000)}`; // 30s window fallback
 
-    const vatCents = Math.round(service.priceCents * 0.21);
+    // Build dynamic line items based on UI pricing to keep parity
+    const lineItems = [];
+    let subtotalCents = 0;
+
+    // Selected service types from Service Selection
+    // base → service.priceCents, signature → 4900, true-content → 3900
+    const selectedServiceTypes = new Set(optionKeys);
+    if (selectedServiceTypes.has('base')) {
+      lineItems.push({
+        price_data: {
+          currency: service.currency,
+          product_data: { name: service.name },
+          unit_amount: service.priceCents
+        },
+        quantity: 1
+      });
+      subtotalCents += service.priceCents;
+    }
+    if (selectedServiceTypes.has('signature')) {
+      lineItems.push({
+        price_data: {
+          currency: service.currency,
+          product_data: { name: 'Signature Notarization' },
+          unit_amount: 4900
+        },
+        quantity: 1
+      });
+      subtotalCents += 4900;
+    }
+    if (selectedServiceTypes.has('true-content')) {
+      lineItems.push({
+        price_data: {
+          currency: service.currency,
+          product_data: { name: 'True Content Verification' },
+          unit_amount: 3900
+        },
+        quantity: 1
+      });
+      subtotalCents += 3900;
+    }
+
+    // Extra certified copies: €15.00 per copy
+    if (extraCopies > 0) {
+      const amount = 1500 * extraCopies;
+      lineItems.push({
+        price_data: {
+          currency: service.currency,
+          product_data: { name: `Extra Copies × ${extraCopies}` },
+          unit_amount: amount
+        },
+        quantity: 1
+      });
+      subtotalCents += amount;
+    }
+
+    // Add-ons from AddOns page: courier 1500, apostille 8900, express 2500
+    const addonPriceByKey = { courier: 1500, apostille: 8900, express: 2500 };
+    for (const addKey of addOnIds) {
+      const amount = addonPriceByKey[addKey] || 0;
+      if (amount > 0) {
+        lineItems.push({
+          price_data: {
+            currency: service.currency,
+            product_data: { name: addKey === 'courier' ? 'Courier Delivery' : addKey === 'apostille' ? 'Apostille Service' : 'Express 24h Processing' },
+            unit_amount: amount
+          },
+          quantity: 1
+        });
+        subtotalCents += amount;
+      }
+    }
+
+    const vatCents = Math.round(subtotalCents * 0.21);
+    lineItems.push({
+      price_data: {
+        currency: service.currency,
+        product_data: { name: 'VAT (21%)' },
+        unit_amount: vatCents
+      },
+      quantity: 1
+    });
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      line_items: [
-        {
-          price_data: {
-            currency: service.currency,
-            product_data: { name: service.name },
-            unit_amount: service.priceCents
-          },
-          quantity: 1
-        },
-        {
-          price_data: {
-            currency: service.currency,
-            product_data: { name: 'VAT (21%)' },
-            unit_amount: vatCents
-          },
-          quantity: 1
-        }
-      ],
+      line_items: lineItems,
       success_url: successUrl || `${req.headers['x-forwarded-proto'] || 'https'}://${req.headers.host}/post-checkout?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: failureUrl || `${req.headers['x-forwarded-proto'] || 'https'}://${req.headers.host}/checkout`,
       metadata: {
         serviceSlug,
         calLink,
-        subtotalCents: String(service.priceCents),
+        subtotalCents: String(subtotalCents),
         vatCents: String(vatCents),
-        totalCents: String(service.priceCents + vatCents)
+        totalCents: String(subtotalCents + vatCents),
+        optionKeys: optionKeys.join(','),
+        extraCopies: String(extraCopies)
       }
     }, { idempotencyKey });
 

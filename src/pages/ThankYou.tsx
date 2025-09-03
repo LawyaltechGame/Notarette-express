@@ -89,7 +89,7 @@ const ThankYou: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-[#111827] py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -97,7 +97,7 @@ const ThankYou: React.FC = () => {
           className="text-center mb-12"
         >
           <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-6" />
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-green-500 mb-4">
             Thank You for Your Order!
           </h1>
           <p className="text-xl text-gray-600">
@@ -160,11 +160,11 @@ const ThankYou: React.FC = () => {
               Book Appointment
               <ExternalLink className="w-5 h-5 ml-2" />
             </button>
-            {orderData?.calLink && (
+            {/* {orderData?.calLink && (
               <div className="text-sm text-blue-600 underline break-all">
                 <a href={orderData.calLink} target="_blank" rel="noreferrer">{orderData.calLink}</a>
               </div>
-            )}
+            )} */}
             
             <p className="text-sm text-gray-500">
               You'll be redirected to Cal.com to select your preferred time slot.
