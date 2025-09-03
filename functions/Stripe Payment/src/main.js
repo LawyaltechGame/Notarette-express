@@ -147,8 +147,12 @@ export default async ({ req, res, log, error }) => {
         items: (session.line_items?.data || []).map(li => ({
           name: li.description,
           qty: li.quantity || 1,
-          priceId: li.price?.id || ''
+          priceId: li.price?.id || '',
+          amountCents: (typeof li.amount_total === 'number' ? li.amount_total : (li.price?.unit_amount || 0) * (li.quantity || 1))
         })),
+        subtotalCents: session.metadata?.subtotalCents ? Number(session.metadata.subtotalCents) : null,
+        vatCents: session.metadata?.vatCents ? Number(session.metadata.vatCents) : null,
+        totalCents: session.metadata?.totalCents ? Number(session.metadata.totalCents) : (typeof session.amount_total === 'number' ? session.amount_total : null),
         calLink
       };
       log(`Verify response: paid=${paid}, amount=${amount}, currency=${currency}, calLink=${calLink || 'none'}`);

@@ -9,9 +9,12 @@ interface OrderData {
   paid: boolean;
   amount: number | null;
   currency: string | null;
-  items: { name: string; qty: number; priceId: string }[];
+  items: { name: string; qty: number; priceId: string; amountCents?: number }[];
   customer: { email: string | null; name: string | null };
   calLink?: string | null;
+  subtotalCents?: number | null;
+  vatCents?: number | null;
+  totalCents?: number | null;
 }
 
 const ThankYou: React.FC = () => {
@@ -115,24 +118,37 @@ const ThankYou: React.FC = () => {
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">Order Summary</h2>
             
             <div className="space-y-4 mb-6">
-              {orderData.items.map((item, index) => (
-                <div key={index} className="flex justify-between items-center py-3 border-b border-gray-200">
-                  <div>
-                    <p className="font-medium text-gray-900">{item.name}</p>
-                    <p className="text-sm text-gray-500">Quantity: {item.qty}</p>
+              {orderData.items.map((item, index) => {
+                const showQty = !(item.name || '').toLowerCase().startsWith('vat');
+                return (
+                  <div key={index} className="flex justify-between items-center py-3 border-b border-gray-200">
+                    <div>
+                      <p className="font-medium text-gray-900">{item.name}</p>
+                      {showQty && (
+                        <p className="text-sm text-gray-500">Quantity: {item.qty}</p>
+                      )}
+                    </div>
+                    <span className="text-gray-900 font-medium">
+                      {formatPrice(item.amountCents ?? 0, orderData.currency || 'EUR')}
+                    </span>
                   </div>
-                  <span className="text-gray-900 font-medium">
-                    {formatPrice(orderData.amount || 0, orderData.currency || 'EUR')}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            <div className="flex justify-between items-center pt-4 border-t border-gray-200">
-              <span className="text-lg font-semibold text-gray-900">Total</span>
-              <span className="text-2xl font-bold text-blue-600">
-                {formatPrice(orderData.amount || 0, orderData.currency || 'EUR')}
-              </span>
+            <div className="space-y-2 borde-t border-gray-200 pt-4">
+              {/* <div className="flex justify-between items-center">
+                <span className="text-gray-700">Subtotal</span>
+                <span className="text-gray-900 font-medium">{formatPrice(orderData.subtotalCents ?? 0, orderData.currency || 'EUR')}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700">VAT (21%)</span>
+                <span className="text-gray-900 font-medium">{formatPrice(orderData.vatCents ?? 0, orderData.currency || 'EUR')}</span>
+              </div> */}
+              <div className="flex justify-between items-center">
+                <span className="text-lg font-semibold text-gray-900">Total</span>
+                <span className="text-2xl font-bold text-blue-600">{formatPrice((orderData.totalCents ?? (orderData.amount || 0)), orderData.currency || 'EUR')}</span>
+              </div>
             </div>
           </motion.div>
         )}
