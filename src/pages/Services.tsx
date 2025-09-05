@@ -162,12 +162,7 @@ const Services: React.FC = () => {
               </ul>
               <button
                 onClick={() => {
-                  if (submittedForSlug === card.slug) {
-                    navigate(`/services/${card.slug}/document-type`)
-                  } else {
-                    localStorage.setItem('intake_form_pending', card.slug)
-                    window.location.assign('https://forms.gle/3ZN3BcZXqpiLR8Kx6')
-                  }
+                  navigate(`/services/${card.slug}/start`)
                 }}
                 className={`w-full inline-flex items-center justify-center px-4 py-2 rounded-lg ${index===1 ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-600 hover:bg-blue-700'} text-white font-medium transition-colors`}
               >

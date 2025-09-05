@@ -6,10 +6,26 @@ import { useNavigate } from 'react-router-dom'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import Badge from '../components/ui/Badge'
+import { databases } from '../lib/appwrite'
+import { Query } from 'appwrite'
+import { ENVObj } from '../lib/constant'
 
 const Portal: React.FC = () => {
   const orders = useAppSelector(state => state.order.orders)
   const navigate = useNavigate()
+  const user = useAppSelector(s => s.user.user)
+  const [docs, setDocs] = React.useState<any[]>([])
+  const [loadingDocs, setLoadingDocs] = React.useState(false)
+  const handleDownload = async (fileId: string) => {
+    try {
+      console.log('Download clicked for fileId:', fileId)
+      console.log('Navigating to:', `/download/${fileId}`)
+      // Navigate to our custom download route instead of direct Appwrite URL
+      navigate(`/download/${fileId}`)
+    } catch (e) {
+      console.warn('Download failed', e)
+    }
+  }
 
   // Check if user has any real orders
   const hasOrders = orders && orders.length > 0
@@ -79,6 +95,27 @@ const Portal: React.FC = () => {
         return <AlertCircle className="w-5 h-5 text-gray-600" />
     }
   }
+
+  React.useEffect(() => {
+    const fetchDocs = async () => {
+      try {
+        setLoadingDocs(true)
+        if (!ENVObj.VITE_APPWRITE_DATABASE_ID || !ENVObj.VITE_APPWRITE_COLLECTION_ID || !user?.email) return
+        const res = await databases.listDocuments(
+          ENVObj.VITE_APPWRITE_DATABASE_ID,
+          ENVObj.VITE_APPWRITE_COLLECTION_ID,
+          [Query.equal('clientEmail', user.email)]
+        )
+        const rows = res.documents || []
+        setDocs(rows)
+      } catch (e) {
+        console.warn('Fetch notarized docs failed', e)
+      } finally {
+        setLoadingDocs(false)
+      }
+    }
+    fetchDocs()
+  }, [user?.email])
 
   const getServiceIcon = (serviceName: string) => {
     if (serviceName.includes('Power of Attorney')) return <Shield className="w-5 h-5 text-blue-600" />
@@ -527,6 +564,49 @@ const Portal: React.FC = () => {
                 Browse Services
               </Button>
             </div>
+          </Card>
+        </motion.div>
+
+        {/* Notarized Documents */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mt-8"
+        >
+          <Card>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Notarized Documents</h2>
+            </div>
+            {loadingDocs ? (
+              <div className="text-sm text-gray-600 dark:text-gray-400">Loading…</div>
+            ) : docs.length === 0 ? (
+              <div className="text-sm text-gray-600 dark:text-gray-400">No notarized documents yet.</div>
+            ) : (
+              <div className="space-y-3">
+                {docs.map((d:any) => (
+                  <div key={d.$id} className="flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                    <div>
+                      <div className="font-semibold text-gray-900 dark:text-white">{d.folderName || 'Notarized Upload'}</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">{new Date(d.createdAt || d.$createdAt).toLocaleString()}</div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {(() => {
+                        let files: any[] = []
+                        try {
+                          files = Array.isArray(d.files) ? d.files : JSON.parse(d.files || '[]')
+                        } catch {}
+                        return files
+                      })().map((f:any) => (
+                        <button key={f.fileId} onClick={() => handleDownload(f.fileId)} className="inline-flex items-center px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 rounded hover:bg-gray-200">
+                          <Download className="w-4 h-4 mr-1" /> {f.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </Card>
         </motion.div>
       </div>

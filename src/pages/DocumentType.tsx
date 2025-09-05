@@ -34,6 +34,9 @@ const DocumentType: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   const [selected, setSelected] = React.useState<string | null>(null)
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior })
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">

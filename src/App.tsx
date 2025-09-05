@@ -11,6 +11,7 @@ import ServiceDetail from './pages/ServiceDetail'
 import Checkout from './pages/Checkout'
 import ThankYou from './pages/ThankYou'
 import Portal from './pages/Portal'
+import NotaryDashboard from './pages/NotaryDashboard'
 import About from './pages/About'
 import Contact from './pages/Contact'
 import HowItWorksPage from './pages/HowItWorks'
@@ -24,6 +25,7 @@ import DocumentType from './pages/DocumentType'
 import ServiceSelection from './pages/ServiceSelection'
 import PostCheckout from './routes/PostCheckout'
 import AddOns from './pages/AddOns'
+import DownloadPage from './pages/DownloadPage'
 import './index.css'
 
 // Note: About, Contact, and How It Works pages are hidden from navigation
@@ -114,11 +116,25 @@ function App() {
                     <Portal />
                   </ProtectedRoute>
                 } />
+
+                {/* Notary-only dashboard */}
+                <Route path="/notary" element={
+                  <ProtectedRoute>
+                    <NotaryDashboard />
+                  </ProtectedRoute>
+                } />
                 
                 {/* Stripe post-checkout (public so Stripe redirect works when not authenticated) */}
                 <Route path="/post-checkout" element={
                   <ProtectedRoute requireAuth={false} redirectIfAuthenticated={false}>
                     <PostCheckout />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Download proxy route (public for file downloads) */}
+                <Route path="/download/:fileId" element={
+                  <ProtectedRoute requireAuth={false} redirectIfAuthenticated={false}>
+                    <DownloadPage />
                   </ProtectedRoute>
                 } />
                 

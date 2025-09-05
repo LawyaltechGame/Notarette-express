@@ -1,4 +1,4 @@
-import { Client, Account} from 'appwrite';
+import { Client, Account, Databases, Storage} from 'appwrite';
 import { ENVObj } from './constant';
 
 export const client = new Client();
@@ -16,3 +16,5 @@ client
 
 export const appwriteAccount = new Account(client);
 export {ID} from 'appwrite';
+export const databases = new Databases(client);
+export const storage = new Storage(client);

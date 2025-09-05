@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Menu, X, Moon, Sun, LogOut } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -7,6 +7,9 @@ import { useAppDispatch } from '../../hooks/useAppDispatch'
 import { toggleTheme } from '../../store/slices/uiSlice'
 import { appwriteAccount } from '../../lib/appwrite'
 import { logout } from '../../store/slices/userSlice'
+import { ENVObj } from '../../lib/constant'
+import { Teams } from 'appwrite'
+import { client } from '../../lib/appwrite'
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -15,20 +18,57 @@ const Header: React.FC = () => {
   const theme = useAppSelector(state => state.ui.theme)
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated)
   const user = useAppSelector(state => state.user.user)
+  const [showNotaryLink, setShowNotaryLink] = useState(false)
+
+  useEffect(() => {
+    // Simple heuristic: if user visited notary dashboard successfully once, persist a flag to show link
+    try {
+      const flag = localStorage.getItem('IS_NOTARY')
+      setShowNotaryLink(flag === '1')
+    } catch {}
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+    const checkTeam = async () => {
+      try {
+        if (!isAuthenticated || !ENVObj.VITE_NOTARY_TEAM_ID) return
+        const teams = new Teams(client)
+        const memberships = await teams.listMemberships(ENVObj.VITE_NOTARY_TEAM_ID)
+        const email = (user?.email || '').toLowerCase()
+        const inTeam = memberships.memberships?.some(m => (m.userEmail || m.userName || '').toLowerCase() === email)
+        if (!cancelled && inTeam) {
+          setShowNotaryLink(true)
+          try { localStorage.setItem('IS_NOTARY', '1') } catch {}
+        }
+      } catch {}
+    }
+    checkTeam()
+    return () => { cancelled = true }
+  }, [isAuthenticated, user?.email])
+
+  // Fallback: allow explicit email list to show link in case team API has delay
+  useEffect(() => {
+    try {
+      const list = String(ENVObj.VITE_NOTARY_EMAILS || '')
+        .toLowerCase()
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean)
+      const email = (user?.email || '').toLowerCase()
+      if (email && list.includes(email)) setShowNotaryLink(true)
+    } catch {}
+  }, [user?.email])
 
   const navigation = [
-    // { name: 'Home', href: '/home' }, // Hidden - Login is now default
     { name: 'Services', href: '/services' },
-    // { name: 'How It Works', href: '/how-it-works' }, // Hidden - exists on WordPress
     { name: 'Testimonials', href: '/testimonials' },
     { name: 'FAQ', href: '/faq' },
-    // { name: 'About', href: '/about' }, // Hidden - exists on WordPress
-    // { name: 'Contact', href: '/contact' }, // Hidden - exists on WordPress
+    ...(showNotaryLink ? [{ name: 'Notary Panel', href: '/notary' }] as const : []),
   ]
 
   const handleLogout = async () => {
     try {
-      // End Appwrite session (ignore if none exists)
       try {
         await appwriteAccount.deleteSession('current')
       } catch {}
@@ -42,7 +82,6 @@ const Header: React.FC = () => {
     }
   }
 
-  // Don't show header on login page
   if (!isAuthenticated) {
     return null
   }
@@ -51,7 +90,6 @@ const Header: React.FC = () => {
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100 dark:bg-gray-900/80 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
           <Link to="/services" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xs">NE</span>
@@ -61,7 +99,6 @@ const Header: React.FC = () => {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             {navigation.map((item) => (
               <Link
@@ -74,9 +111,7 @@ const Header: React.FC = () => {
             ))}
           </nav>
 
-          {/* Actions */}
           <div className="flex items-center space-x-4">
-            {/* Theme Toggle */}
             <button
               onClick={() => dispatch(toggleTheme())}
               className="p-2 text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition-colors"
@@ -85,9 +120,6 @@ const Header: React.FC = () => {
               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
             </button>
 
-            {/* Cart removed */}
-
-            {/* User Account */}
             <div className="flex items-center space-x-3">
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm">
@@ -106,7 +138,6 @@ const Header: React.FC = () => {
               </button>
             </div>
 
-            {/* CTA Button */}
             <Link
               to="/services"
               className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors"
@@ -114,7 +145,6 @@ const Header: React.FC = () => {
               Get Notarized
             </Link>
 
-            {/* Mobile menu button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden p-2 text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400"
@@ -126,7 +156,6 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
