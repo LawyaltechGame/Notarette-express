@@ -9,6 +9,7 @@ import Badge from '../components/ui/Badge'
 import { databases } from '../lib/appwrite'
 import { Query } from 'appwrite'
 import { ENVObj } from '../lib/constant'
+import { FileService, FileMetadata } from '../services/fileService'
 
 const Portal: React.FC = () => {
   const orders = useAppSelector(state => state.order.orders)
@@ -16,16 +17,66 @@ const Portal: React.FC = () => {
   const user = useAppSelector(s => s.user.user)
   const [docs, setDocs] = React.useState<any[]>([])
   const [loadingDocs, setLoadingDocs] = React.useState(false)
+  const [notarizedFiles, setNotarizedFiles] = React.useState<FileMetadata[]>([])
+  const [loadingNotarizedFiles, setLoadingNotarizedFiles] = React.useState(false)
+
+  // Fetch notarized files for the current client
+  const fetchNotarizedFiles = async () => {
+    if (!user?.email) return
+    
+    setLoadingNotarizedFiles(true)
+    try {
+      console.log(`Fetching notarized files for client: ${user.email}`)
+      const files = await FileService.getNotarizedFiles(user.email)
+      setNotarizedFiles(files)
+      console.log(`Found ${files.length} notarized files`)
+    } catch (error) {
+      console.error('Error fetching notarized files:', error)
+      setNotarizedFiles([])
+    } finally {
+      setLoadingNotarizedFiles(false)
+    }
+  }
+
+  // Download notarized file
+  const downloadNotarizedFile = async (file: FileMetadata) => {
+    try {
+      console.log(`Downloading notarized file: ${file.name}`)
+      await FileService.downloadFile(file.fileId, file.name)
+    } catch (error) {
+      console.error('Error downloading notarized file:', error)
+      alert('Failed to download file. Please try again.')
+    }
+  }
+
+  // Download all notarized files as ZIP
+  const downloadAllNotarizedFiles = async () => {
+    if (notarizedFiles.length === 0) {
+      alert('No notarized files available for download')
+      return
+    }
+
+    try {
+      console.log(`Downloading ${notarizedFiles.length} notarized files as ZIP`)
+      await FileService.downloadFilesAsZip(notarizedFiles, `${user?.email || 'client'}_notarized_documents.zip`)
+    } catch (error) {
+      console.error('Error downloading notarized files ZIP:', error)
+      alert('Failed to download ZIP file. Please try again.')
+    }
+  }
+
   const handleDownload = async (fileId: string) => {
     try {
       console.log('Download clicked for fileId:', fileId)
+      
+      // Always use individual file download method
       console.log('Navigating to:', `/download/${fileId}`)
-      // Navigate to our custom download route instead of direct Appwrite URL
       navigate(`/download/${fileId}`)
     } catch (e) {
       console.warn('Download failed', e)
     }
   }
+
 
   // Check if user has any real orders
   const hasOrders = orders && orders.length > 0
@@ -114,7 +165,13 @@ const Portal: React.FC = () => {
         setLoadingDocs(false)
       }
     }
+    
+    const fetchNotarizedFilesData = async () => {
+      await fetchNotarizedFiles()
+    }
+    
     fetchDocs()
+    fetchNotarizedFilesData()
   }, [user?.email])
 
   const getServiceIcon = (serviceName: string) => {
@@ -585,24 +642,89 @@ const Portal: React.FC = () => {
             ) : (
               <div className="space-y-3">
                 {docs.map((d:any) => (
-                  <div key={d.$id} className="flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                    <div>
-                      <div className="font-semibold text-gray-900 dark:text-white">{d.folderName || 'Notarized Upload'}</div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">{new Date(d.createdAt || d.$createdAt).toLocaleString()}</div>
+                  <div key={d.$id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <div className="font-semibold text-gray-900 dark:text-white">{d.folderName || 'Notarized Upload'}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">{new Date(d.createdAt || d.$createdAt).toLocaleString()}</div>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {(() => {
                         let files: any[] = []
                         try {
                           files = Array.isArray(d.files) ? d.files : JSON.parse(d.files || '[]')
                         } catch {}
-                        return files
-                      })().map((f:any) => (
-                        <button key={f.fileId} onClick={() => handleDownload(f.fileId)} className="inline-flex items-center px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 rounded hover:bg-gray-200">
-                          <Download className="w-4 h-4 mr-1" /> {f.name}
-                        </button>
-                      ))}
+                        
+                        // Show individual download buttons for each file
+                        return files.map((f:any) => (
+                          <button 
+                            key={f.fileId} 
+                            onClick={() => handleDownload(f.fileId)} 
+                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                          >
+                            <Download className="w-3 h-3 mr-1" /> 
+                            {f.name}
+                          </button>
+                        ))
+                      })()}
                     </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+        </motion.div>
+
+        {/* Notarized Files from Storage */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-8"
+        >
+          <Card className="p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Notarized Files</h2>
+              {notarizedFiles.length > 0 && (
+                <Button
+                  onClick={downloadAllNotarizedFiles}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Download All as ZIP
+                </Button>
+              )}
+            </div>
+            {loadingNotarizedFiles ? (
+              <div className="text-sm text-gray-600 dark:text-gray-400">Loading notarized files...</div>
+            ) : notarizedFiles.length === 0 ? (
+              <div className="text-sm text-gray-600 dark:text-gray-400">No notarized files available yet.</div>
+            ) : (
+              <div className="space-y-4">
+                {notarizedFiles.map((file, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <FileText className="w-5 h-5 text-blue-600" />
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white">{file.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type || 'Unknown type'}
+                        </p>
+                        {file.uploadedAt && (
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
+                            Uploaded: {new Date(file.uploadedAt).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => downloadNotarizedFile(file)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Download
+                    </Button>
                   </div>
                 ))}
               </div>

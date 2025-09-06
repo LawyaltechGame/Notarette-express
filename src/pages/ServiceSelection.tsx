@@ -3,12 +3,14 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import { getServiceBySlug } from '../data/services'
+import { useFormSubmission } from '../hooks/useFormSubmission'
 
 const ServiceSelection: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   const [] = useSearchParams()
   const service = slug ? getServiceBySlug(slug) : undefined
+  const { updateSubmission } = useFormSubmission()
 
   const baseOptions = React.useMemo(() => {
     return [
@@ -125,7 +127,20 @@ const ServiceSelection: React.FC = () => {
                 <Button
                   variant="primary"
                   disabled={!canContinue}
-                  onClick={() => {
+                  onClick={async () => {
+                    try {
+                      // Update form submission with selected services
+                      await updateSubmission({
+                        selectedOptions: JSON.stringify(Array.from(selectedKeys)),
+                        extraCopies: extraCopies,
+                        currentStep: 'addons_selected'
+                      })
+                      console.log('Service selection updated in Appwrite')
+                    } catch (error) {
+                      console.error('Error updating service selection:', error)
+                      // Continue anyway - don't block user flow
+                    }
+
                     const payload = {
                       serviceTitle: service?.name || 'Service',
                       serviceSlug: slug,

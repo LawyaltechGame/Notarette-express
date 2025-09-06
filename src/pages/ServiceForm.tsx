@@ -1,8 +1,11 @@
 import React from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import Card from '../components/ui/Card'
-import Button from '../components/ui/Button'
 import { getServiceBySlug } from '../data/services'
+import { formService, FormSubmission } from '../services/formService'
+import { storage, ID } from '../lib/appwrite'
+import { Permission, Role } from 'appwrite'
+import { ENVObj } from '../lib/constant'
+import { useAppSelector } from '../hooks/useAppSelector'
 
 const MAX_FILES = 5
 const MAX_FILE_SIZE_BYTES = 1073741824 // 1 GB
@@ -11,6 +14,7 @@ const ServiceForm: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   const service = slug ? getServiceBySlug(slug) : undefined
+  const user = useAppSelector(state => state.user.user)
 
   const [fullName, setFullName] = React.useState('')
   const [email, setEmail] = React.useState('')
@@ -55,8 +59,83 @@ const ServiceForm: React.FC = () => {
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault()
     if (!validate()) return
+    
     try {
       setSubmitting(true)
+      console.log('Starting form submission...')
+      
+      const uploadedFiles: Array<{ fileId: string; name: string; size: number; type?: string; folderPath?: string }> = []
+      if (files.length > 0) {
+        console.log(`Uploading ${files.length} files to storage...`)
+        
+        // Create folder structure: client-uploads/{clientEmail}/{submissionId}/
+        const submissionId = ID.unique()
+        const folderPath = `client-uploads/${email}/${submissionId}`
+        
+        try {
+          for (const file of files) {
+            try {
+              const fileId = ID.unique()
+              const response = await storage.createFile(
+                ENVObj.VITE_APPWRITE_BUCKET_ID!,
+                fileId,
+                file,
+                [
+                  Permission.read(Role.users())
+                ]
+              )
+              // push an object (not JSON string)
+              uploadedFiles.push({
+                fileId: response.$id,
+                name: file.name,
+                size: file.size,
+                type: file.type || '',
+                folderPath: folderPath
+              })
+              console.log(`File uploaded to ${folderPath}: ${file.name} (${response.$id})`)
+            } catch (fileError) {
+              console.error(`Error uploading file ${file.name}:`, fileError)
+              // fallback: record the file metadata with a temp id (upload failed)
+              uploadedFiles.push({
+                fileId: `temp_${Date.now()}_${Math.floor(Math.random() * 10000)}`,
+                name: file.name,
+                size: file.size,
+                type: file.type || '',
+                folderPath: folderPath
+              })
+              console.log(`File info stored (not uploaded): ${file.name}`)
+            }
+          }
+        } catch (error) {
+          console.warn('File upload loop failed, continuing without files:', error)
+        }
+      }
+      
+      // Create form submission in database
+      console.log('Creating form submission in database...')
+      const submissionData: Omit<FormSubmission, '$id' | 'createdAt' | 'updatedAt'> = {
+        clientEmail: user?.email || email,
+        fullName,
+        email,
+        documentTitle: documentTitle || undefined,
+        documentType: documentType as 'personal' | 'corporate' | 'legal' | 'others',
+        documentDescription: description || undefined,
+        // store ONE JSON string representing the array of file objects
+        uploadedFiles: JSON.stringify(uploadedFiles),
+        additionalNotes: notes || undefined,
+        currentStep: 'form_submitted',
+        serviceId: service?.id,
+        serviceSlug: slug,
+        status: 'in_progress'
+      }
+      
+      const submission = await formService.createSubmission(submissionData)
+      console.log('Form submission created:', submission.$id)
+      
+      // Store submission ID in session storage for the flow
+      sessionStorage.setItem('current_submission_id', submission.$id!)
+      
+      // Also store the legacy payload for backward compatibility
       const payload = {
         serviceSlug: slug,
         fullName,
@@ -65,10 +144,17 @@ const ServiceForm: React.FC = () => {
         documentType,
         description,
         notes,
-        files: files.map(f => ({ name: f.name, size: f.size, type: f.type }))
+        files: files.map(f => ({ name: f.name, size: f.size, type: f.type })),
+        submissionId: submission.$id
       }
       sessionStorage.setItem('notary_manual_form', JSON.stringify(payload))
+      
+      console.log('Form submitted successfully, navigating to next step...')
       navigate(`/services/${slug}/document-type`)
+      
+    } catch (error) {
+      console.error('Form submission error:', error)
+      alert(`Form submission failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setSubmitting(false)
     }

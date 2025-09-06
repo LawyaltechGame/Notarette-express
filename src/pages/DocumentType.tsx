@@ -2,6 +2,7 @@ import React from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
+import { useFormSubmission } from '../hooks/useFormSubmission'
 
 const options = [
   {
@@ -34,9 +35,18 @@ const DocumentType: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   const [selected, setSelected] = React.useState<string | null>(null)
+  const { submission, updateSubmission } = useFormSubmission()
+  
   React.useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior })
   }, [])
+
+  // Set initial selection from submission if available
+  React.useEffect(() => {
+    if (submission?.documentType) {
+      setSelected(submission.documentType)
+    }
+  }, [submission])
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
@@ -93,7 +103,21 @@ const DocumentType: React.FC = () => {
             <Button
               variant="primary"
               disabled={!selected}
-              onClick={() => navigate(`/services/${slug || ''}/service-selection${selected ? `?docType=${selected}` : ''}`)}
+              onClick={async () => {
+                if (selected) {
+                  try {
+                    // Update submission with selected document type
+                    await updateSubmission({
+                      documentType: selected as 'personal' | 'corporate' | 'legal' | 'others',
+                      currentStep: 'service_selected'
+                    })
+                  } catch (error) {
+                    console.error('Error updating submission:', error)
+                    // Continue anyway - don't block user flow
+                  }
+                }
+                navigate(`/services/${slug || ''}/service-selection${selected ? `?docType=${selected}` : ''}`)
+              }}
             >
               Continue
             </Button>

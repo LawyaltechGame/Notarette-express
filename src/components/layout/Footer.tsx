@@ -28,7 +28,6 @@ const Footer: React.FC = () => {
     support: [
       { name: 'Help Center', href: '/help' },
       { name: 'FAQs', href: '/faqs' },
-      { name: 'Client Portal', href: '/portal' },
       // { name: 'Book a Call', href: '/contact' }, // Hidden - exists on WordPress
     ],
     legal: [

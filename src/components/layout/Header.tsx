@@ -65,6 +65,8 @@ const Header: React.FC = () => {
     { name: 'Testimonials', href: '/testimonials' },
     { name: 'FAQ', href: '/faq' },
     ...(showNotaryLink ? [{ name: 'Notary Panel', href: '/notary' }] as const : []),
+    // Only show Client Portal if user is NOT a notary
+    ...(!showNotaryLink ? [{ name: 'Client Portal', href: '/portal' }] as const : []),
   ]
 
   const handleLogout = async () => {

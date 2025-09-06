@@ -3,10 +3,12 @@ import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import { Shield, CheckCircle, Calendar } from 'lucide-react'
 import { createCheckoutAndRedirect } from '../services/stripeService'
+import { useFormSubmission } from '../hooks/useFormSubmission'
 
 const Checkout: React.FC = () => {
   const [payload, setPayload] = useState<any>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { updateSubmission } = useFormSubmission()
 
   useEffect(() => {
     try {
@@ -100,7 +102,7 @@ const Checkout: React.FC = () => {
               variant="danger"
               className="w-full py-3"
               disabled={isSubmitting}
-              onClick={() => {
+              onClick={async () => {
                 try {
                   if (!payload) {
                     alert('Missing checkout payload. Please start again.')
@@ -108,6 +110,18 @@ const Checkout: React.FC = () => {
                   }
                   if (isSubmitting) return
                   setIsSubmitting(true)
+
+                  // Update form submission to mark as checkout initiated
+                  try {
+                    await updateSubmission({
+                      currentStep: 'checkout'
+                    })
+                    console.log('Checkout step updated in Appwrite')
+                  } catch (error) {
+                    console.error('Error updating checkout step:', error)
+                    // Continue anyway - don't block payment
+                  }
+
                   const serviceId = payload.serviceSlug
                   if (!serviceId) {
                     alert('Missing service. Please start again.')

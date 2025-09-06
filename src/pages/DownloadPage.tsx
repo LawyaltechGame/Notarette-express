@@ -37,20 +37,26 @@ const DownloadPage: React.FC = () => {
         console.log('DownloadPage: File info:', fileInfo)
         setFileName(fileInfo.name)
 
-        // Get the file download URL (not view URL)
-        const fileUrl = storage.getFileDownload(bucketId, fileId)
-        // console.log('DownloadPage: Download URL:', fileUrl.toString())
+        // Use direct view URL method for better PDF compatibility
+        const baseUrl = ENVObj.VITE_APPWRITE_ENDPOINT
+        const projectId = ENVObj.VITE_APPWRITE_PROJECT_ID
+        const viewUrl = `${baseUrl}/storage/buckets/${bucketId}/files/${fileId}/view?project=${projectId}`
         
-        // Create a temporary link and trigger download
+        console.log('DownloadPage: Using direct view URL:', viewUrl)
+        
+        // Create a temporary link with the direct view URL
         const link = document.createElement('a')
-        link.href = fileUrl.toString()
+        link.href = viewUrl
         link.download = fileInfo.name
+        link.target = '_blank'
         link.style.display = 'none'
         
         // Append to body, click, and remove
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+        
+        console.log(`Downloaded file using direct URL: ${fileInfo.name}`)
 
         // Redirect back to portal after a short delay
         setTimeout(() => {
@@ -58,9 +64,35 @@ const DownloadPage: React.FC = () => {
         }, 2000)
 
       } catch (err: any) {
-        console.error('Download failed:', err)
-        setError(err.message || 'Failed to download file')
-        setLoading(false)
+        console.error('Download failed, trying fallback method:', err)
+        
+        // Fallback: Try direct view URL method
+        try {
+          console.log('Attempting fallback download method...')
+          
+          // Get bucket ID again for fallback
+          const fallbackBucketId = ENVObj.VITE_APPWRITE_BUCKET_ID as string
+          
+          // Construct direct view URL as fallback
+          const baseUrl = ENVObj.VITE_APPWRITE_ENDPOINT
+          const projectId = ENVObj.VITE_APPWRITE_PROJECT_ID
+          const viewUrl = `${baseUrl}/storage/buckets/${fallbackBucketId}/files/${fileId}/view?project=${projectId}`
+          
+          console.log('Fallback URL:', viewUrl)
+          
+          // Open the direct URL in a new tab
+          window.open(viewUrl, '_blank')
+          
+          // Redirect back to portal after a short delay
+          setTimeout(() => {
+            navigate('/portal')
+          }, 2000)
+          
+        } catch (fallbackErr: any) {
+          console.error('Fallback download also failed:', fallbackErr)
+          setError('Both download methods failed. Please try again.')
+          setLoading(false)
+        }
       }
     }
 

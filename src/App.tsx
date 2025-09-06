@@ -112,7 +112,7 @@ function App() {
                   </ProtectedRoute>
                 } />
                 <Route path="/portal" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute clientOnly>
                     <Portal />
                   </ProtectedRoute>
                 } />

@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 // cart removed
 import { stripeService } from '../services/stripeService';
+import { useFormSubmission } from '../hooks/useFormSubmission';
 
 interface CheckSessionResponse {
   paid: boolean;
@@ -17,6 +18,7 @@ const PostCheckout: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { updateSubmission } = useFormSubmission();
   
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +44,42 @@ const PostCheckout: React.FC = () => {
         
         if (result.paid) {
           sessionStorage.setItem('lastOrder', JSON.stringify(result));
+          
+          // Update form submission to mark as completed
+          try {
+            console.log('Attempting to update form submission to completed...')
+            const updateResult = await updateSubmission({
+              currentStep: 'completed',
+              status: 'completed',
+              sessionId: sessionId,
+              orderId: sessionId // Using sessionId as orderId for now
+            })
+            console.log('Form submission marked as completed in Appwrite:', updateResult)
+          } catch (error) {
+            console.error('Error updating form submission completion:', error)
+            // Try to find and update the most recent submission for this user
+            try {
+              console.log('Trying fallback: find most recent submission...')
+              const { formService } = await import('../services/formService')
+              const userEmail = result.customer?.email
+              if (userEmail) {
+                const submissions = await formService.getSubmissionsByEmail(userEmail)
+                if (submissions.length > 0) {
+                  const latestSubmission = submissions[0]
+                  console.log('Found latest submission:', latestSubmission.$id)
+                  await formService.updateSubmission(latestSubmission.$id!, {
+                    currentStep: 'completed',
+                    status: 'completed',
+                    sessionId: sessionId,
+                    orderId: sessionId
+                  })
+                  console.log('Fallback update successful')
+                }
+              }
+            } catch (fallbackError) {
+              console.error('Fallback update also failed:', fallbackError)
+            }
+          }
           
           // Cart removed: skip removing paid service
           

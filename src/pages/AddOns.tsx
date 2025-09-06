@@ -2,6 +2,7 @@ import React from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
+import { useFormSubmission } from '../hooks/useFormSubmission'
 
 const addonsList = [
   { key: 'courier', title: 'Courier Delivery', subtitle: 'Physical delivery within 3 business days', priceCents: 1500 },
@@ -12,6 +13,7 @@ const addonsList = [
 const AddOns: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
+  const { updateSubmission } = useFormSubmission()
 
   const initial = React.useMemo(() => {
     try {
@@ -99,7 +101,19 @@ const AddOns: React.FC = () => {
                 <Button variant="ghost" onClick={() => navigate(`/services/${slug}/service-selection`)}>Back</Button>
                 <Button
                   variant="primary"
-                  onClick={() => {
+                  onClick={async () => {
+                    try {
+                      // Update form submission with selected add-ons
+                      await updateSubmission({
+                        selectedAddOns: JSON.stringify(Array.from(selected)),
+                        currentStep: 'checkout'
+                      })
+                      console.log('Add-ons selection updated in Appwrite')
+                    } catch (error) {
+                      console.error('Error updating add-ons selection:', error)
+                      // Continue anyway - don't block user flow
+                    }
+
                     const raw = sessionStorage.getItem('notary_wizard_selection')
                     const base = raw ? JSON.parse(raw) : {}
                     const addons = Array.from(selected).map(key => {

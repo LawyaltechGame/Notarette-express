@@ -4,6 +4,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 
 import { motion } from 'framer-motion';
 import { CheckCircle, Calendar, ExternalLink, ArrowRight } from 'lucide-react';
+import { useFormSubmission } from '../hooks/useFormSubmission';
 
 interface OrderData {
   paid: boolean;
@@ -21,6 +22,7 @@ const ThankYou: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const cartItems: any[] = []
+  const { updateSubmission } = useFormSubmission();
   
   const [orderData, setOrderData] = useState<OrderData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,7 +42,44 @@ const ThankYou: React.FC = () => {
         const savedOrder = sessionStorage.getItem('lastOrder');
         if (savedOrder) {
           try {
-            setOrderData(JSON.parse(savedOrder));
+            const order = JSON.parse(savedOrder);
+            setOrderData(order);
+            
+            // Update form submission to mark as completed
+            console.log('ThankYou page - Updating form submission to completed...');
+            try {
+              const updateResult = await updateSubmission({
+                currentStep: 'completed',
+                status: 'completed',
+                sessionId: sessionId,
+                orderId: sessionId
+              });
+              console.log('ThankYou page - Form submission marked as completed:', updateResult);
+            } catch (updateError) {
+              console.error('ThankYou page - Error updating form submission:', updateError);
+              // Try fallback method
+              try {
+                console.log('ThankYou page - Trying fallback: find most recent submission...');
+                const { formService } = await import('../services/formService');
+                const userEmail = order.customer?.email;
+                if (userEmail) {
+                  const submissions = await formService.getSubmissionsByEmail(userEmail);
+                  if (submissions.length > 0) {
+                    const latestSubmission = submissions[0];
+                    console.log('ThankYou page - Found latest submission:', latestSubmission.$id);
+                    await formService.updateSubmission(latestSubmission.$id!, {
+                      currentStep: 'completed',
+                      status: 'completed',
+                      sessionId: sessionId,
+                      orderId: sessionId
+                    });
+                    console.log('ThankYou page - Fallback update successful');
+                  }
+                }
+              } catch (fallbackError) {
+                console.error('ThankYou page - Fallback update also failed:', fallbackError);
+              }
+            }
           } catch (parseError) {
             console.error('Error parsing saved order:', parseError);
           }
