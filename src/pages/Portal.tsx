@@ -15,10 +15,20 @@ const Portal: React.FC = () => {
   const orders = useAppSelector(state => state.order.orders)
   const navigate = useNavigate()
   const user = useAppSelector(s => s.user.user)
-  const [docs, setDocs] = React.useState<any[]>([])
-  const [loadingDocs, setLoadingDocs] = React.useState(false)
+  // Notarized Documents section removed; keep placeholders if needed in future
   const [notarizedFiles, setNotarizedFiles] = React.useState<FileMetadata[]>([])
   const [loadingNotarizedFiles, setLoadingNotarizedFiles] = React.useState(false)
+  const [notarizationStatus, setNotarizationStatus] = React.useState<string>('')
+
+  const normalizeNotarizationStatus = (val: any): 'started' | 'pending' | 'completed' | '' => {
+    const s = String(val || '').toLowerCase().trim()
+    if (!s) return ''
+    if (s.includes('complete')) return 'completed'
+    if (s.includes('start')) return 'started'
+    if (s.includes('pend')) return 'pending'
+    if (s === 'completed' || s === 'started' || s === 'pending') return s as any
+    return ''
+  }
 
   // Fetch notarized files for the current client
   const fetchNotarizedFiles = async () => {
@@ -27,14 +37,78 @@ const Portal: React.FC = () => {
     setLoadingNotarizedFiles(true)
     try {
       console.log(`Fetching notarized files for client: ${user.email}`)
-      const files = await FileService.getNotarizedFiles(user.email)
-      setNotarizedFiles(files)
-      console.log(`Found ${files.length} notarized files`)
+      // Primary: fetch from storage by client prefix
+      const filesFromStorage = await FileService.getNotarizedFiles(user.email)
+      if (filesFromStorage.length > 0) {
+        setNotarizedFiles(filesFromStorage)
+        console.log(`Found ${filesFromStorage.length} notarized files (storage)`)
+        return
+      }
+
+      // Fallback: derive from database docs (files JSON stored when notary uploaded)
+      if (ENVObj.VITE_APPWRITE_DATABASE_ID && ENVObj.VITE_APPWRITE_COLLECTION_ID) {
+        console.log('Storage returned 0. Falling back to database records...')
+        const res = await databases.listDocuments(
+          ENVObj.VITE_APPWRITE_DATABASE_ID,
+          ENVObj.VITE_APPWRITE_COLLECTION_ID,
+          [Query.equal('clientEmail', (user.email || '').toLowerCase())]
+        )
+        const rows = res.documents || []
+        const collected: FileMetadata[] = []
+        for (const row of rows) {
+          let arr: any[] = []
+          try {
+            arr = Array.isArray(row.files) ? row.files : JSON.parse(row.files || '[]')
+          } catch {}
+          for (const item of arr) {
+            if (item && item.fileId) {
+              collected.push({
+                fileId: item.fileId,
+                name: item.name || 'notarized.pdf',
+                size: item.size || 0,
+                type: item.type || undefined,
+                folderPath: item.folderPath || undefined,
+                uploadedAt: row.createdAt || row.$createdAt
+              })
+            }
+          }
+        }
+        console.log(`Found ${collected.length} notarized files (database fallback)`)
+        setNotarizedFiles(collected)
+      } else {
+        setNotarizedFiles([])
+      }
     } catch (error) {
       console.error('Error fetching notarized files:', error)
       setNotarizedFiles([])
     } finally {
       setLoadingNotarizedFiles(false)
+    }
+  }
+
+  // Fetch latest notarization status from notary uploads collection
+  const fetchNotarizationStatus = async () => {
+    if (!user?.email) return
+    try {
+      if (!ENVObj.VITE_APPWRITE_DATABASE_ID || !ENVObj.VITE_APPWRITE_COLLECTION_ID) return
+      const res = await databases.listDocuments(
+        ENVObj.VITE_APPWRITE_DATABASE_ID,
+        ENVObj.VITE_APPWRITE_COLLECTION_ID,
+        [
+          Query.equal('clientEmail', (user.email || '').toLowerCase()),
+          Query.orderDesc('$createdAt'),
+          Query.limit(1)
+        ]
+      )
+      const latest = res.documents?.[0]
+      if (latest && latest.notarizationStatus) {
+        setNotarizationStatus(normalizeNotarizationStatus(latest.notarizationStatus))
+      } else {
+        setNotarizationStatus('')
+      }
+    } catch (e) {
+      console.warn('Fetch notarization status failed', e)
+      setNotarizationStatus('')
     }
   }
 
@@ -65,17 +139,7 @@ const Portal: React.FC = () => {
     }
   }
 
-  const handleDownload = async (fileId: string) => {
-    try {
-      console.log('Download clicked for fileId:', fileId)
-      
-      // Always use individual file download method
-      console.log('Navigating to:', `/download/${fileId}`)
-      navigate(`/download/${fileId}`)
-    } catch (e) {
-      console.warn('Download failed', e)
-    }
-  }
+  // handleDownload no longer used (direct download via FileService)
 
 
   // Check if user has any real orders
@@ -147,31 +211,27 @@ const Portal: React.FC = () => {
     }
   }
 
+  // Formatting helpers for notarized files
+  const formatDateDDMMYY = (date: Date) => {
+    const dd = String(date.getDate()).padStart(2, '0')
+    const mm = String(date.getMonth() + 1).padStart(2, '0')
+    const yy = String(date.getFullYear()).slice(-2)
+    return `${dd}-${mm}-${yy}`
+  }
+
+  const formatTime12h = (date: Date) => {
+    let hours = date.getHours()
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    const ampm = hours >= 12 ? 'PM' : 'AM'
+    hours = hours % 12
+    hours = hours ? hours : 12
+    return `${hours}:${minutes} ${ampm}`
+  }
+
   React.useEffect(() => {
-    const fetchDocs = async () => {
-      try {
-        setLoadingDocs(true)
-        if (!ENVObj.VITE_APPWRITE_DATABASE_ID || !ENVObj.VITE_APPWRITE_COLLECTION_ID || !user?.email) return
-        const res = await databases.listDocuments(
-          ENVObj.VITE_APPWRITE_DATABASE_ID,
-          ENVObj.VITE_APPWRITE_COLLECTION_ID,
-          [Query.equal('clientEmail', user.email)]
-        )
-        const rows = res.documents || []
-        setDocs(rows)
-      } catch (e) {
-        console.warn('Fetch notarized docs failed', e)
-      } finally {
-        setLoadingDocs(false)
-      }
-    }
-    
-    const fetchNotarizedFilesData = async () => {
-      await fetchNotarizedFiles()
-    }
-    
-    fetchDocs()
-    fetchNotarizedFilesData()
+    // Only fetch notarized files now
+    fetchNotarizedFiles()
+    fetchNotarizationStatus()
   }, [user?.email])
 
   const getServiceIcon = (serviceName: string) => {
@@ -624,57 +684,7 @@ const Portal: React.FC = () => {
           </Card>
         </motion.div>
 
-        {/* Notarized Documents */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-8"
-        >
-          <Card>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Notarized Documents</h2>
-            </div>
-            {loadingDocs ? (
-              <div className="text-sm text-gray-600 dark:text-gray-400">Loading…</div>
-            ) : docs.length === 0 ? (
-              <div className="text-sm text-gray-600 dark:text-gray-400">No notarized documents yet.</div>
-            ) : (
-              <div className="space-y-3">
-                {docs.map((d:any) => (
-                  <div key={d.$id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <div className="font-semibold text-gray-900 dark:text-white">{d.folderName || 'Notarized Upload'}</div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">{new Date(d.createdAt || d.$createdAt).toLocaleString()}</div>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {(() => {
-                        let files: any[] = []
-                        try {
-                          files = Array.isArray(d.files) ? d.files : JSON.parse(d.files || '[]')
-                        } catch {}
-                        
-                        // Show individual download buttons for each file
-                        return files.map((f:any) => (
-                          <button 
-                            key={f.fileId} 
-                            onClick={() => handleDownload(f.fileId)} 
-                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                          >
-                            <Download className="w-3 h-3 mr-1" /> 
-                            {f.name}
-                          </button>
-                        ))
-                      })()}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </Card>
-        </motion.div>
+        {/* Notarized Documents section removed per request; using Notarized Files only */}
 
         {/* Notarized Files from Storage */}
         <motion.div
@@ -685,7 +695,19 @@ const Portal: React.FC = () => {
         >
           <Card className="p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Notarized Files</h2>
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Notarized Files</h2>
+                {notarizationStatus && (
+                  <span className={`text-xs px-2 py-1 rounded-full inline-flex items-center gap-1 ${
+                    notarizationStatus === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
+                    notarizationStatus === 'started' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' :
+                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                  }`}>
+                    <span>{notarizationStatus === 'completed' ? '✅' : notarizationStatus === 'started' ? '▶' : '⏳'}</span>
+                    <span>{`Notarization: ${notarizationStatus}`}</span>
+                  </span>
+                )}
+              </div>
               {notarizedFiles.length > 0 && (
                 <Button
                   onClick={downloadAllNotarizedFiles}
@@ -701,33 +723,64 @@ const Portal: React.FC = () => {
             ) : notarizedFiles.length === 0 ? (
               <div className="text-sm text-gray-600 dark:text-gray-400">No notarized files available yet.</div>
             ) : (
-              <div className="space-y-4">
-                {notarizedFiles.map((file, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <FileText className="w-5 h-5 text-blue-600" />
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white">{file.name}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type || 'Unknown type'}
-                        </p>
-                        {file.uploadedAt && (
-                          <p className="text-xs text-gray-400 dark:text-gray-500">
-                            Uploaded: {new Date(file.uploadedAt).toLocaleDateString()}
-                          </p>
-                        )}
+              (() => {
+                // Sort newest first
+                const sorted = [...notarizedFiles].sort((a, b) => {
+                  const ta = a.uploadedAt ? new Date(a.uploadedAt).getTime() : 0
+                  const tb = b.uploadedAt ? new Date(b.uploadedAt).getTime() : 0
+                  return tb - ta
+                })
+
+                // Group by date string (dd-mm-yy)
+                const groups: Record<string, typeof sorted> = {}
+                sorted.forEach((f) => {
+                  const d = f.uploadedAt ? new Date(f.uploadedAt) : new Date()
+                  const key = formatDateDDMMYY(d)
+                  if (!groups[key]) groups[key] = []
+                  groups[key].push(f)
+                })
+
+                const dateKeys = Object.keys(groups)
+
+                return (
+                  <div className="space-y-6">
+                    {dateKeys.map((dateKey, groupIdx) => (
+                      <div key={dateKey} className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            {dateKey}
+                          </h4>
+                          {groupIdx === 0 && (
+                            <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">
+                              Latest
+                            </span>
+                          )}
+                        </div>
+                        {groups[dateKey].map((file, index) => (
+                          <div key={`${dateKey}-${index}`} className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+                            <div className="flex items-center space-x-3">
+                              <FileText className="w-5 h-5 text-blue-600" />
+                              <div>
+                                <p className="font-medium text-gray-900 dark:text-white">Notarized Document</p>
+                                {file.uploadedAt && (
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">Uploaded at {formatTime12h(new Date(file.uploadedAt))}</p>
+                                )}
+                              </div>
+                            </div>
+                            <Button
+                              onClick={() => downloadNotarizedFile(file)}
+                              className="bg-blue-600 hover:bg-blue-700 text-white"
+                            >
+                              <Download className="w-4 h-4 mr-2" />
+                              {`Download File ${index + 1}`}
+                            </Button>
+                          </div>
+                        ))}
                       </div>
-                    </div>
-                    <Button
-                      onClick={() => downloadNotarizedFile(file)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      <Download className="w-4 h-4 mr-2" />
-                      Download
-                    </Button>
+                    ))}
                   </div>
-                ))}
-              </div>
+                )
+              })()
             )}
           </Card>
         </motion.div>

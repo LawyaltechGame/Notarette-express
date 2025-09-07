@@ -13,10 +13,8 @@ import { FileService } from '../services/fileService'
 const NotaryDashboard: React.FC = () => {
   const user = useAppSelector(s => s.user.user)
   const [clientEmail, setClientEmail] = React.useState('')
-  const [sessionId, setSessionId] = React.useState('')
+  
   const [files, setFiles] = React.useState<File[]>([])
-  const [folderName, setFolderName] = React.useState('')
-  const [uploadType, setUploadType] = React.useState<'single' | 'folder'>('single')
   const [submitting, setSubmitting] = React.useState(false)
   const [requests, setRequests] = React.useState<any[]>([])
   const [loadingRequests, setLoadingRequests] = React.useState(false)
@@ -28,16 +26,70 @@ const NotaryDashboard: React.FC = () => {
 
   const MAX_FILES = 5
 
+  const normalizeNotarizationStatus = (val: any): 'started' | 'pending' | 'completed' => {
+    const s = String(val || '').toLowerCase().trim()
+    if (s.includes('complete')) return 'completed'
+    if (s.includes('start')) return 'started'
+    if (s.includes('pend')) return 'pending'
+    if (s === 'completed' || s === 'started' || s === 'pending') return s as any
+    return 'pending'
+  }
+
+  // Helpers for date grouping and filtering to last 7 days
+  const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate())
+  const formatDateDDMMYY = (date: Date) => {
+    const dd = String(date.getDate()).padStart(2, '0')
+    const mm = String(date.getMonth() + 1).padStart(2, '0')
+    const yy = String(date.getFullYear()).slice(-2)
+    return `${dd}-${mm}-${yy}`
+  }
+  const weekAgo = React.useMemo(() => {
+    const d = new Date()
+    d.setDate(d.getDate() - 7)
+    return d
+  }, [])
+
+  const filteredGroupedSubmissions = React.useMemo(() => {
+    const withinWeek = formSubmissions.filter((s) => {
+      const ds = new Date(s.createdAt || s.$createdAt || Date.now())
+      return ds >= weekAgo
+    })
+    const groups: Record<string, { label: string; items: any[]; sortKey: number }> = {}
+    for (const s of withinWeek) {
+      const d = new Date(s.createdAt || s.$createdAt || Date.now())
+      const key = startOfDay(d).toISOString()
+      if (!groups[key]) groups[key] = { label: formatDateDDMMYY(d), items: [], sortKey: startOfDay(d).getTime() }
+      groups[key].items.push(s)
+    }
+    return Object.values(groups).sort((a, b) => b.sortKey - a.sortKey)
+  }, [formSubmissions, weekAgo])
+
+  const filteredGroupedRequests = React.useMemo(() => {
+    const withinWeek = requests.filter((r) => {
+      const ds = new Date(r.createdAt || r.$createdAt || Date.now())
+      return ds >= weekAgo
+    })
+    const groups: Record<string, { label: string; items: any[]; sortKey: number }> = {}
+    for (const r of withinWeek) {
+      const d = new Date(r.createdAt || r.$createdAt || Date.now())
+      const key = startOfDay(d).toISOString()
+      if (!groups[key]) groups[key] = { label: formatDateDDMMYY(d), items: [], sortKey: startOfDay(d).getTime() }
+      groups[key].items.push(r)
+    }
+    return Object.values(groups).sort((a, b) => b.sortKey - a.sortKey)
+  }, [requests, weekAgo])
+
   // Fetch all requests from the database
   const fetchRequests = async () => {
     if (!ENVObj.VITE_APPWRITE_DATABASE_ID || !ENVObj.VITE_APPWRITE_COLLECTION_ID) return
     
     try {
       setLoadingRequests(true)
+      const oneWeekAgoIso = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
       const response = await databases.listDocuments(
         ENVObj.VITE_APPWRITE_DATABASE_ID,
         ENVObj.VITE_APPWRITE_COLLECTION_ID,
-        [Query.orderDesc('$createdAt')]
+        [Query.orderDesc('$createdAt'), Query.greaterThan('$createdAt', oneWeekAgoIso)]
       )
       setRequests(response.documents)
     } catch (error) {
@@ -53,10 +105,11 @@ const NotaryDashboard: React.FC = () => {
     
     try {
       setLoadingSubmissions(true)
+      const oneWeekAgoIso = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
       const response = await databases.listDocuments(
         ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID,
         ENVObj.VITE_FORM_SUBMISSIONS_TABLE_ID,
-        [Query.orderDesc('$createdAt')]
+        [Query.orderDesc('$createdAt'), Query.greaterThan('$createdAt', oneWeekAgoIso)]
       )
       setFormSubmissions(response.documents)
     } catch (error) {
@@ -78,43 +131,6 @@ const NotaryDashboard: React.FC = () => {
     setSelectedSubmission(null)
   }
 
-  // Download all client files as folder (individual downloads for now)
-  const downloadClientFilesAsZip = async (uploadedFiles: any[], clientName: string) => {
-    if (!uploadedFiles || uploadedFiles.length === 0) {
-      alert('No files to download')
-      return
-    }
-
-    try {
-      console.log(`Downloading ${uploadedFiles.length} files from ${clientName} individually`)
-      
-      if (uploadedFiles.length === 1) {
-        // If only one file, download it directly
-        await downloadIndividualFile(uploadedFiles[0].fileId, uploadedFiles[0].name)
-        return
-      }
-
-      // For multiple files, download them individually (no ZIP for now)
-      console.log(`Downloading ${uploadedFiles.length} files individually...`)
-      
-      for (let i = 0; i < uploadedFiles.length; i++) {
-        const file = uploadedFiles[i]
-        if (file.fileId) {
-          console.log(`Downloading file ${i + 1}/${uploadedFiles.length}: ${file.name}`)
-          // Add a small delay between downloads to prevent browser blocking
-          if (i > 0) {
-            await new Promise(resolve => setTimeout(resolve, 500))
-          }
-          await downloadIndividualFile(file.fileId, file.name)
-        }
-      }
-      
-      console.log(`Successfully downloaded all ${uploadedFiles.length} files individually`)
-    } catch (err) {
-      console.error('Error downloading files:', err)
-      alert(`Failed to download files: ${err instanceof Error ? err.message : String(err)}`)
-    }
-  }
 
 
   // Fallback: Download individual file (for testing)
@@ -146,26 +162,18 @@ const NotaryDashboard: React.FC = () => {
     fetchFormSubmissions()
   }, [])
 
-  // Clear files when switching upload types
-  React.useEffect(() => {
-    setFiles([])
-  }, [uploadType])
+  // no-op effect removed (no upload type toggle anymore)
 
   const onFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const newFiles = Array.from(e.target.files || [])
     console.log('New files selected:', newFiles.length, 'files')
     console.log('New file names:', newFiles.map(f => f.name))
     
-    if (uploadType === 'folder') {
-      // For multiple files mode, add to existing files (up to MAX_FILES)
-      setFiles(prevFiles => {
-        const combined = [...prevFiles, ...newFiles]
-        return combined.slice(0, MAX_FILES)
-      })
-    } else {
-      // For single file mode, replace
-      setFiles(newFiles.slice(0, 1))
-    }
+    // Always allow adding multiple files (accumulate up to MAX_FILES)
+    setFiles(prevFiles => {
+      const combined = [...prevFiles, ...newFiles]
+      return combined.slice(0, MAX_FILES)
+    })
     
     // Clear the input so the same files can be selected again
     e.target.value = ''
@@ -174,12 +182,12 @@ const NotaryDashboard: React.FC = () => {
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault()
     console.log('Form submitted!')
-    console.log('Client email:', clientEmail)
+    const normalizedEmail = clientEmail.trim().toLowerCase()
+    console.log('Client email:', normalizedEmail)
     console.log('Files count:', files.length)
-    console.log('Upload type:', uploadType)
-    console.log('Folder name:', folderName)
+    // No upload type/folder name now
     
-    if (!clientEmail.trim()) {
+    if (!normalizedEmail) {
       console.log('No client email provided')
       alert('Please enter client email')
       return
@@ -199,24 +207,23 @@ const NotaryDashboard: React.FC = () => {
       console.log('Database ID:', dbId)
       console.log('Collection ID:', colId)
       
-      let uploadBatchId = sessionId || ID.unique()
+      let uploadBatchId = ID.unique()
       let folderDocId: string | null = null
       
-      // Auto-generate folder name if not provided and uploading multiple files
-      const finalFolderName = folderName || (files.length > 1 ? `Notarized_Documents_${new Date().toISOString().split('T')[0]}` : '')
-      console.log('Final folder name:', finalFolderName)
+      // No folder name; keep empty for record purposes
+      const finalFolderName = ''
       
       if (dbId && colId) {
         console.log('Creating database document...')
         const doc = await databases.createDocument(dbId, colId, ID.unique(), {
           type: 'notarized_upload',
           uploadBatchId,
-          clientEmail,
+          clientEmail: normalizedEmail,
           folderName: finalFolderName,
           uploadedBy: user?.email || null,
           createdAt: new Date().toISOString(),
           files: '[]',
-          uploadType: uploadType
+          uploadType: files.length > 1 ? 'folder' : 'single'
         })
         folderDocId = doc.$id
         console.log('Database document created:', folderDocId)
@@ -228,26 +235,28 @@ const NotaryDashboard: React.FC = () => {
       console.log('Bucket ID:', bucketId)
       console.log('Uploading', files.length, 'files to storage...')
       
-      const folderNameValue = folderName.trim() || `session_${sessionId}`
-      const folderPath = `notarized-docs/${clientEmail}/${sessionId}/${folderNameValue}`
+      // Only client-based prefix; no extra folders
+      const folderPath = `notarized-docs/${normalizedEmail}`
       
       const uploaded: Array<{ fileId: string; name: string; folderPath: string }> = []
       for (let i = 0; i < files.length; i++) {
         const f = files[i]
         console.log(`Uploading file ${i + 1}/${files.length}:`, f.name, 'Size:', f.size)
         try {
+          // Prefix filename with logical folder path so client portal can find by folder prefix
+          const fileWithPath = new File([f], `${folderPath}/${f.name}`, { type: f.type })
           const res = await storage.createFile(
             String(bucketId), 
             ID.unique(), 
-            f,
+            fileWithPath,
             [
               Permission.read(Role.users())
             ]
           )
           console.log(`File uploaded successfully to ${folderPath}:`, res.$id)
           uploaded.push({ 
-            fileId: res.$id, 
-            name: f.name,
+            fileId: res.$id,
+            name: `${folderPath}/${f.name}`,
             folderPath: folderPath
           })
         } catch (fileError) {
@@ -282,12 +291,9 @@ const NotaryDashboard: React.FC = () => {
       }
       
       console.log('Upload process completed successfully!')
-      alert(`Documents uploaded successfully as ${uploadType === 'folder' ? 'multiple files batch' : 'single file'}`)
+      alert('Documents uploaded successfully')
       setFiles([])
-      setFolderName('')
       setClientEmail('')
-      setSessionId('')
-      setUploadType('single')
       // Refresh the requests list
       fetchRequests()
     } catch (err) {
@@ -306,7 +312,7 @@ const NotaryDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[90vw] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <div className="flex justify-between items-center">
             <div>
@@ -320,84 +326,31 @@ const NotaryDashboard: React.FC = () => {
           <Card>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Upload Notarized Documents</h2>
             <form className="space-y-4" onSubmit={onSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <input value={clientEmail} onChange={e=>setClientEmail(e.target.value)} type="email" placeholder="Client Email" className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white" />
-                <input value={sessionId} onChange={e=>setSessionId(e.target.value)} type="text" placeholder="Order / Session ID (optional)" className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white" />
               </div>
               
-              {/* Upload Type Selection */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Upload Type</label>
-                <div className="flex space-x-4">
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      value="single"
-                      checked={uploadType === 'single'}
-                      onChange={(e) => {
-                        setUploadType(e.target.value as 'single' | 'folder')
-                        setFiles([]) // Clear files when switching types
-                      }}
-                      className="mr-2"
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Single File</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      value="folder"
-                      checked={uploadType === 'folder'}
-                      onChange={(e) => {
-                        setUploadType(e.target.value as 'single' | 'folder')
-                        setFiles([]) // Clear files when switching types
-                      }}
-                      className="mr-2"
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Multiple Files (Batch)</span>
-                  </label>
-                </div>
-                {uploadType === 'folder' && (
-                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
-                    <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">
-                      📁 Multiple Files Upload Mode
-                    </p>
-                    <p className="text-xs text-blue-500 dark:text-blue-300 mt-1">
-                      Select multiple files at once. They will be uploaded as a batch and downloaded as a ZIP file by the client.
-                    </p>
-                  </div>
-                )}
-              </div>
+              {/* Multiple files are always allowed; no upload type toggle */}
 
-              {/* Folder Name Input - only show for folder uploads or when multiple files */}
-              {(uploadType === 'folder' || files.length > 1) && (
-                <input 
-                  value={folderName} 
-                  onChange={e=>setFolderName(e.target.value)} 
-                  type="text" 
-                  placeholder={uploadType === 'folder' ? "Folder Name (required)" : "Folder Name (optional)"} 
-                  className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
-                />
-              )}
+              {/* No folder name field */}
 
               {/* File Input */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {uploadType === 'folder' ? 'Select Multiple Files' : 'Select File'} 
-                  {uploadType === 'folder' && (
-                    <span className="text-xs text-gray-500 ml-1">
-                      ({files.length}/{MAX_FILES} selected)
-                    </span>
-                  )}
+                  Select Files 
+                  <span className="text-xs text-gray-500 ml-1">
+                    ({files.length}/{MAX_FILES} selected)
+                  </span>
                 </label>
                 <input 
                   ref={fileInputRef}
                   onChange={onFileChange} 
                   type="file" 
-                  multiple={uploadType === 'folder'}
-                  disabled={uploadType === 'folder' && files.length >= MAX_FILES}
+                  multiple
+                  disabled={files.length >= MAX_FILES}
                   className="block w-full text-sm text-gray-900 dark:text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-300 disabled:opacity-50 disabled:cursor-not-allowed" 
                 />
-                {uploadType === 'folder' && files.length >= MAX_FILES && (
+                {files.length >= MAX_FILES && (
                   <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
                     Maximum {MAX_FILES} files reached. Remove some files to add more.
                   </p>
@@ -407,30 +360,23 @@ const NotaryDashboard: React.FC = () => {
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       Selected {files.length} file(s)
                     </p>
-                    {uploadType === 'folder' && (
-                      <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                        📁 These files will be downloaded as a ZIP by the client
-                      </p>
-                    )}
                     <div className="max-h-32 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded p-2 text-xs mt-2">
                       {files.map((f, index) => (
                         <div key={index} className="flex items-center justify-between text-gray-700 dark:text-gray-300 py-1">
                           <span className="truncate flex-1">{f.name}</span>
-                          {uploadType === 'folder' && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setFiles(prev => prev.filter((_, i) => i !== index))
-                              }}
-                              className="ml-2 text-red-500 hover:text-red-700 text-xs"
-                            >
-                              ✕
-                            </button>
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setFiles(prev => prev.filter((_, i) => i !== index))
+                            }}
+                            className="ml-2 text-red-500 hover:text-red-700 text-xs"
+                          >
+                            ✕
+                          </button>
                         </div>
                       ))}
                     </div>
-                    {uploadType === 'folder' && files.length > 0 && (
+                    {files.length > 0 && (
                       <div className="mt-2 flex space-x-2">
                         <button
                           type="button"
@@ -457,14 +403,14 @@ const NotaryDashboard: React.FC = () => {
                 )}
               </div>
 
-              <Button type="submit" disabled={submitting || (uploadType === 'folder' && !folderName.trim())}>
+              <Button type="submit" disabled={submitting}>
                 {submitting ? (
                   <div className="flex items-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                     Uploading {files.length} file(s)...
                   </div>
                 ) : (
-                  `Upload ${uploadType === 'folder' ? 'Multiple Files' : 'File'}`
+                  'Upload Files'
                 )}
               </Button>
             </form>
@@ -493,29 +439,53 @@ const NotaryDashboard: React.FC = () => {
               <p className="text-gray-500 dark:text-gray-400 mt-2">Loading submissions...</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm">
-                <thead>
-                  <tr className="text-left text-gray-500 dark:text-gray-400">
-                    <th className="py-3 pr-4 font-medium">Client Name</th>
-                    <th className="py-3 pr-4 font-medium">Email</th>
-                    <th className="py-3 pr-4 font-medium">Document Type</th>
-                    <th className="py-3 pr-4 font-medium">Status</th>
-                    <th className="py-3 pr-4 font-medium">Current Step</th>
-                    <th className="py-3 pr-4 font-medium">Services</th>
-                    <th className="py-3 pr-4 font-medium">Date</th>
-                    <th className="py-3 pr-4 font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="text-gray-800 dark:text-gray-200">
-                  {formSubmissions.length === 0 ? (
-                    <tr>
-                      <td colSpan={8} className="py-8 text-center text-gray-500 dark:text-gray-400">
-                        No form submissions found
-                      </td>
-                    </tr>
-                  ) : (
-                    formSubmissions.map((submission) => {
+            <div className="space-y-6">
+              {formSubmissions.length === 0 ? (
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">No form submissions found (last 7 days)</div>
+              ) : (
+                (() => {
+                  const groups: Record<string, any[]> = {}
+                  formSubmissions.forEach(s => {
+                    const d = new Date(s.createdAt || s.$createdAt || Date.now())
+                    const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`
+                    if (!groups[key]) groups[key] = []
+                    groups[key].push(s)
+                  })
+                  const ordered = Object.entries(groups)
+                    .map(([k, items]) => ({ key: k, date: new Date(items[0].createdAt || items[0].$createdAt || Date.now()), items }))
+                    .sort((a,b)=>b.date.getTime()-a.date.getTime())
+                  return ordered.map(group => (
+                    <div key={group.key}>
+                      <div className="mb-3 flex items-center justify-between">
+                        <div className="w-full">
+                          <div className="relative">
+                            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                              <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
+                            </div>
+                            <div className="relative flex justify-start">
+                              <span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100 border border-gray-200 dark:border-gray-600 shadow-sm">
+                                {formatDateDDMMYY(group.date)} • {group.items.length} submission{group.items.length!==1?'s':''}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full text-sm">
+                          <thead>
+                            <tr className="text-left text-gray-500 dark:text-gray-400">
+                              <th className="py-3 pr-4 font-medium">Client Name</th>
+                              <th className="py-3 pr-4 font-medium">Email</th>
+                              <th className="py-3 pr-4 font-medium">Document Type</th>
+                              <th className="py-3 pr-4 font-medium">Status</th>
+                              <th className="py-3 pr-4 font-medium">Current Step</th>
+                              <th className="py-3 pr-4 font-medium">Services</th>
+                              <th className="py-3 pr-4 font-medium">Date</th>
+                              <th className="py-3 pr-4 font-medium">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="text-gray-800 dark:text-gray-200">
+                            {group.items.map((submission:any) => {
                       const selectedOptions = parseSelectedOptions(submission.selectedOptions || '[]')
                       const selectedAddOns = parseSelectedAddOns(submission.selectedAddOns || '[]')
                       
@@ -589,10 +559,14 @@ const NotaryDashboard: React.FC = () => {
                           </td>
                         </tr>
                       )
-                    })
-                  )}
-                </tbody>
-              </table>
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ))
+                })()
+              )}
             </div>
           )}
         </div>
@@ -600,7 +574,7 @@ const NotaryDashboard: React.FC = () => {
         {/* Request Management Section */}
         <div className="mt-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Request Management</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Notarized Uploads</h2>
             <Button onClick={fetchRequests} disabled={loadingRequests} className="text-sm">
               {loadingRequests ? 'Refreshing...' : 'Refresh'}
             </Button>
@@ -612,30 +586,55 @@ const NotaryDashboard: React.FC = () => {
               <p className="text-gray-500 dark:text-gray-400 mt-2">Loading requests...</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm">
-                <thead>
-                  <tr className="text-left text-gray-500 dark:text-gray-400">
-                    <th className="py-3 pr-4 font-medium">Client Email</th>
-                    <th className="py-3 pr-4 font-medium">Session ID</th>
-                    <th className="py-3 pr-4 font-medium">Type</th>
-                    <th className="py-3 pr-4 font-medium">Folder</th>
-                    <th className="py-3 pr-4 font-medium">Status</th>
-                    <th className="py-3 pr-4 font-medium">Files</th>
-                    <th className="py-3 pr-4 font-medium">Uploaded By(Notary)</th>
-                    <th className="py-3 pr-4 font-medium">Date</th>
-                    <th className="py-3 pr-4 font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="text-gray-800 dark:text-gray-200">
-                  {requests.length === 0 ? (
-                    <tr>
-                      <td colSpan={9} className="py-8 text-center text-gray-500 dark:text-gray-400">
-                        No requests found
-                      </td>
-                    </tr>
-                  ) : (
-                    requests.map((request) => {
+            <div className="space-y-6">
+              {requests.length === 0 ? (
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">No uploads found (last 7 days)</div>
+              ) : (
+                (() => {
+                  const groups: Record<string, any[]> = {}
+                  requests.forEach(r => {
+                    const d = new Date(r.createdAt || r.$createdAt || Date.now())
+                    const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`
+                    if (!groups[key]) groups[key] = []
+                    groups[key].push(r)
+                  })
+                  const ordered = Object.entries(groups)
+                    .map(([k, items]) => ({ key: k, date: new Date(items[0].createdAt || items[0].$createdAt || Date.now()), items }))
+                    .sort((a,b)=>b.date.getTime()-a.date.getTime())
+                  return ordered.map(group => (
+                    <div key={group.key}>
+                      <div className="mb-3 flex items-center justify-between">
+                        <div className="w-full">
+                          <div className="relative">
+                            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                              <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
+                            </div>
+                            <div className="relative flex justify-start">
+                              <span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100 border border-gray-200 dark:border-gray-600 shadow-sm">
+                                {formatDateDDMMYY(group.date)} • {group.items.length} upload{group.items.length!==1?'s':''}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full text-sm">
+                          <thead>
+                            <tr className="text-left text-gray-500 dark:text-gray-400">
+                              <th className="py-3 pr-4 font-medium">Client Email</th>
+                              <th className="py-3 pr-4 font-medium">Session ID</th>
+                              <th className="py-3 pr-4 font-medium">Type</th>
+                              <th className="py-3 pr-4 font-medium">Folder</th>
+                              <th className="py-3 pr-4 font-medium">Status</th>
+                              <th className="py-3 pr-4 font-medium">Notarization Status</th>
+                              <th className="py-3 pr-4 font-medium">Files</th>
+                              <th className="py-3 pr-4 font-medium">Uploaded By(Notary)</th>
+                              <th className="py-3 pr-4 font-medium">Date</th>
+                              <th className="py-3 pr-4 font-medium">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="text-gray-800 dark:text-gray-200">
+                            {group.items.map((request:any) => {
                       const files = (() => {
                         try {
                           return Array.isArray(request.files) ? request.files : JSON.parse(request.files || '[]')
@@ -657,13 +656,15 @@ const NotaryDashboard: React.FC = () => {
                           <td className="py-3 pr-4">{request.clientEmail || 'N/A'}</td>
                           <td className="py-3 pr-4">{request.uploadBatchId || 'N/A'}</td>
                           <td className="py-3 pr-4">
-                            <span className={`px-2 py-1 text-xs rounded-full ${
-                              request.uploadType === 'folder' 
-                                ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
-                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                            }`}>
-                              {request.uploadType === 'folder' ? 'Folder' : 'Single Files'}
-                            </span>
+                            {files.length <= 1 ? (
+                              <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                                Single File
+                              </span>
+                            ) : (
+                              <span className="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                                Multiple Files
+                              </span>
+                            )}
                           </td>
                           <td className="py-3 pr-4">{request.folderName || 'Default'}</td>
                           <td className="py-3 pr-4">
@@ -674,6 +675,35 @@ const NotaryDashboard: React.FC = () => {
                             }`}>
                               {status}
                             </span>
+                          </td>
+                          {/* Notarization Status (editable) */}
+                          <td className="py-3 pr-4">
+                            <div className="inline-flex items-center space-x-2">
+                              <select
+                                value={normalizeNotarizationStatus(request.notarizationStatus)}
+                                onChange={async (e) => {
+                                  const value = normalizeNotarizationStatus(e.target.value)
+                                  try {
+                                    await databases.updateDocument(
+                                      ENVObj.VITE_APPWRITE_DATABASE_ID!,
+                                      ENVObj.VITE_APPWRITE_COLLECTION_ID!,
+                                      request.$id,
+                                      { notarizationStatus: value }
+                                    )
+                                    // Optimistically update local state
+                                    setRequests(prev => prev.map(r => r.$id === request.$id ? { ...r, notarizationStatus: value } : r))
+                                  } catch (err) {
+                                    console.error('Failed to update notarization status', err)
+                                    alert('Failed to update status. Please try again.')
+                                  }
+                                }}
+                                className="text-xs bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded px-2 py-1"
+                              >
+                                <option value="started">▶ Notarization Started</option>
+                                <option value="pending">⏳ Pending</option>
+                                <option value="completed">✅ Notarization Completed</option>
+                              </select>
+                            </div>
                           </td>
                           <td className="py-3 pr-4">{files.length} file(s)</td>
                           <td className="py-3 pr-4">{request.uploadedBy || 'N/A'}</td>
@@ -706,10 +736,14 @@ const NotaryDashboard: React.FC = () => {
                           </td>
                         </tr>
                       )
-                    })
-                  )}
-                </tbody>
-              </table>
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ))
+                })()
+              )}
             </div>
           )}
         </div>
@@ -757,7 +791,7 @@ const NotaryDashboard: React.FC = () => {
                     </div>
                     <div>
                       <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Description</label>
-                      <p className="text-gray-900 dark:text-white">{selectedSubmission.description || 'N/A'}</p>
+                      <p className="text-gray-900 dark:text-white">{selectedSubmission.documentDescription || 'N/A'}</p>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Additional Notes</label>
@@ -849,6 +883,30 @@ const NotaryDashboard: React.FC = () => {
                       </div>
                     )}
                   </div>
+                  {/* Courier Address (if provided) */}
+                  {selectedSubmission.courierAddress && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Courier Address</label>
+                      <div className="mt-2 text-sm text-gray-900 dark:text-white space-y-1">
+                        {(() => {
+                          let addr: any = null
+                          try { addr = typeof selectedSubmission.courierAddress === 'string' ? JSON.parse(selectedSubmission.courierAddress) : selectedSubmission.courierAddress } catch {}
+                          if (!addr) return <p className="text-gray-500 dark:text-gray-400">N/A</p>
+                          return (
+                            <div>
+                              {addr.name && <p className="font-medium">{addr.name}</p>}
+                              {addr.line1 && <p>{addr.line1}</p>}
+                              {addr.line2 && <p>{addr.line2}</p>}
+                              {(addr.city || addr.state || addr.postalCode) && (
+                                <p>{[addr.city, addr.state, addr.postalCode].filter(Boolean).join(', ')}</p>
+                              )}
+                              {addr.country && <p>{addr.country}</p>}
+                            </div>
+                          )
+                        })()}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -885,45 +943,26 @@ const NotaryDashboard: React.FC = () => {
                       <div className="space-y-3">
                         {(() => {
                           const files = parseUploadedFiles(selectedSubmission.uploadedFiles || '[]')
-                          if (files.length === 1) {
+                          if (files.length > 0) {
                             return (
-                              <button
-                                onClick={() => downloadIndividualFile(files[0].fileId, files[0].name)}
-                                className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors flex items-center justify-center space-x-2"
-                              >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                                <span>Download File</span>
-                              </button>
-                            )
-                          } else if (files.length > 1) {
-                            return (
-                              <div className="space-y-3">
-                                <button
-                                  onClick={() => downloadClientFilesAsZip(files, selectedSubmission.fullName || 'Client')}
-                                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors flex items-center justify-center space-x-2"
-                                >
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-                                  </svg>
-                                  <span>Download All Files</span>
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    files.forEach(file => {
-                                      if (file.fileId) {
-                                        downloadIndividualFile(file.fileId, file.name)
-                                      }
-                                    })
-                                  }}
-                                  className="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-md transition-colors flex items-center justify-center space-x-2"
-                                >
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                  </svg>
-                                  <span>Download Individually</span>
-                                </button>
+                              <div className="space-y-2">
+                                {files.map((file, index) => (
+                                  <button
+                                    key={index}
+                                    onClick={() => downloadIndividualFile(file.fileId, file.name)}
+                                    className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors flex items-center justify-between"
+                                  >
+                                    <div className="flex items-center space-x-3 flex-1 min-w-0">
+                                      <svg className="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                      </svg>
+                                      <span className="truncate text-sm font-medium">{file.name}</span>
+                                    </div>
+                                    <span className="text-xs text-blue-100 ml-2">
+                                      {file.size ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : ''}
+                                    </span>
+                                  </button>
+                                ))}
                               </div>
                             )
                           } else {

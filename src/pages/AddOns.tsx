@@ -26,6 +26,17 @@ const AddOns: React.FC = () => {
   }, [])
 
   const [selected, setSelected] = React.useState<Set<string>>(new Set())
+  const [savingAddress, setSavingAddress] = React.useState(false)
+  const [addressSaved, setAddressSaved] = React.useState(false)
+  const [courierAddress, setCourierAddress] = React.useState({
+    name: '',
+    line1: '',
+    line2: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    country: ''
+  })
 
   const currency = initial?.currency || 'EUR'
   const fmt = (cents: number) => new Intl.NumberFormat('en-IE', { style: 'currency', currency }).format(cents / 100)
@@ -96,6 +107,77 @@ const AddOns: React.FC = () => {
                   )
                 })}
               </div>
+
+              {selected.has('courier') && (
+                <div className="max-w-3xl mx-auto mt-6 p-5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Courier Address</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">We will ship physical documents to this address.</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input
+                      value={courierAddress.name}
+                      onChange={e=>setCourierAddress(v=>({ ...v, name: e.target.value }))}
+                      placeholder="Full Name"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                    />
+                    <input
+                      value={courierAddress.line1}
+                      onChange={e=>setCourierAddress(v=>({ ...v, line1: e.target.value }))}
+                      placeholder="Address Line 1"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                    />
+                    <input
+                      value={courierAddress.line2}
+                      onChange={e=>setCourierAddress(v=>({ ...v, line2: e.target.value }))}
+                      placeholder="Address Line 2 (optional)"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                    />
+                    <input
+                      value={courierAddress.city}
+                      onChange={e=>setCourierAddress(v=>({ ...v, city: e.target.value }))}
+                      placeholder="City"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                    />
+                    <input
+                      value={courierAddress.state}
+                      onChange={e=>setCourierAddress(v=>({ ...v, state: e.target.value }))}
+                      placeholder="State / Province"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                    />
+                    <input
+                      value={courierAddress.postalCode}
+                      onChange={e=>setCourierAddress(v=>({ ...v, postalCode: e.target.value }))}
+                      placeholder="Postal Code"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                    />
+                    <input
+                      value={courierAddress.country}
+                      onChange={e=>setCourierAddress(v=>({ ...v, country: e.target.value }))}
+                      placeholder="Country"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                    />
+                  </div>
+                  <div className="flex items-center justify-end mt-4">
+                    <Button
+                      variant="secondary"
+                      onClick={async () => {
+                        try {
+                          setSavingAddress(true)
+                          await updateSubmission({ courierAddress: JSON.stringify(courierAddress) })
+                          setAddressSaved(true)
+                          setTimeout(()=>setAddressSaved(false), 2500)
+                        } catch (err) {
+                          console.error('Failed to save courier address', err)
+                          alert('Failed to save address. Please try again.')
+                        } finally {
+                          setSavingAddress(false)
+                        }
+                      }}
+                    >
+                      {savingAddress ? 'Saving…' : (addressSaved ? 'Saved' : 'Save Address')}
+                    </Button>
+                  </div>
+                </div>
+              )}
 
               <div className="flex items-center justify-between mt-8 max-w-3xl mx-auto">
                 <Button variant="ghost" onClick={() => navigate(`/services/${slug}/service-selection`)}>Back</Button>

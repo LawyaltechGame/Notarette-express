@@ -24,16 +24,17 @@ export class FileService {
     }
 
     try {
-      console.log(`Fetching files from folder: ${folderPath}`)
+      const target = (folderPath || '').trim().toLowerCase()
+      console.log(`Fetching files from folder: ${target}`)
       
       // List all files in the bucket
       const response = await storage.listFiles(this.bucketId)
       const files: FileMetadata[] = []
 
-      // Filter files that match the folder path
+      // Filter files that match the folder path (case-insensitive)
       for (const file of response.files) {
-        // Check if file name starts with the folder path
-        if (file.name.startsWith(folderPath)) {
+        const fileName = (file.name || '').toLowerCase()
+        if (fileName.startsWith(target) || fileName.includes(`${target}/`)) {
           files.push({
             fileId: file.$id,
             name: file.name,
@@ -45,7 +46,7 @@ export class FileService {
         }
       }
 
-      console.log(`Found ${files.length} files in folder: ${folderPath}`)
+      console.log(`Found ${files.length} files in folder: ${target}`)
       return files
     } catch (error) {
       console.error('Error fetching files by folder:', error)
@@ -69,7 +70,7 @@ export class FileService {
    * @returns Array of notarized files
    */
   static async getNotarizedFiles(clientEmail: string): Promise<FileMetadata[]> {
-    const folderPath = `notarized-docs/${clientEmail}`
+    const folderPath = `notarized-docs/${(clientEmail || '').trim().toLowerCase()}`
     return this.getFilesByFolder(folderPath)
   }
 

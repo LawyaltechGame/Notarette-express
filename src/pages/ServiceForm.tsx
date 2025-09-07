@@ -25,6 +25,10 @@ const ServiceForm: React.FC = () => {
   const [files, setFiles] = React.useState<File[]>([])
   const [submitting, setSubmitting] = React.useState(false)
   const [errors, setErrors] = React.useState<Record<string, string>>({})
+  const emailMismatch = React.useMemo(() => {
+    if (!user?.email || !email) return false
+    return email.toLowerCase() !== user.email.toLowerCase()
+  }, [user?.email, email])
 
   const resetForm = () => {
     setFullName('')
@@ -42,6 +46,7 @@ const ServiceForm: React.FC = () => {
     if (!fullName.trim()) next.fullName = 'Full name is required'
     if (!email.trim()) next.email = 'Email is required'
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = 'Enter a valid email'
+    if (user?.email && email.toLowerCase() !== user.email.toLowerCase()) next.email = 'Email must match the account email you used to sign in'
     if (!documentTitle.trim()) next.documentTitle = 'Document title is required'
     if (!documentType) next.documentType = 'Please select a document type'
     if (files.length === 0) next.files = 'Please upload at least one document'
@@ -53,7 +58,20 @@ const ServiceForm: React.FC = () => {
 
   const onFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const selected = Array.from(e.target.files || [])
-    setFiles(selected.slice(0, MAX_FILES))
+    setFiles(prevFiles => {
+      const combined = [...prevFiles, ...selected]
+      return combined.slice(0, MAX_FILES)
+    })
+    // Clear the input so the same files can be selected again
+    e.target.value = ''
+  }
+
+  const removeFile = (index: number) => {
+    setFiles(prevFiles => prevFiles.filter((_, i) => i !== index))
+  }
+
+  const clearAllFiles = () => {
+    setFiles([])
   }
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
@@ -222,6 +240,9 @@ const ServiceForm: React.FC = () => {
                       }`}
                       placeholder="jane@example.com"
                     />
+                    {user?.email && emailMismatch && !errors.email && (
+                      <p className="text-xs text-yellow-300 mt-1">The email should match your signed-in account: {user.email}</p>
+                    )}
                     {errors.email && (
                       <p className="text-sm text-red-600 font-medium">{errors.email}</p>
                     )}
@@ -317,25 +338,43 @@ const ServiceForm: React.FC = () => {
               <div className="space-y-6 pt-8 border-t border-gray-700">
                 <div className="border-l-4 border-purple-500 pl-4">
                   <h2 className="text-xl font-semibold text-white mb-1">Upload Documents</h2>
-                  <p className="text-sm text-gray-300">Upload the documents that need to be notarized</p>
+                  <p className="text-sm text-gray-300">Upload one or more documents that need to be notarized</p>
                 </div>
 
                 <div className="space-y-4">
                   <label className="block text-sm font-semibold text-gray-200">
                     Select Files <span className="text-red-500">*</span>
                     <span className="text-xs text-gray-500 font-normal ml-2">
-                      (max {MAX_FILES} files, up to 1 GB each)
+                      (multiple files allowed, max {MAX_FILES} files, up to 1 GB each)
                     </span>
                   </label>
                   
                   <div className="relative">
               <input
+                      ref={(input) => {
+                        if (input) {
+                          input.setAttribute('data-testid', 'file-input')
+                        }
+                      }}
                       type="file"
                       multiple
                       onChange={onFileChange}
                       className="block w-full text-sm text-gray-200 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-blue-500 file:to-indigo-500 file:text-white hover:file:from-blue-600 hover:file:to-indigo-600 file:transition-all file:duration-200 file:shadow-lg hover:file:shadow-xl file:cursor-pointer cursor-pointer border-2 border-dashed border-gray-600 rounded-xl p-6 bg-[#1f2937] hover:border-gray-500 hover:bg-[#111827] transition-all duration-200"
                     />
-                  </div>
+            </div>
+                  
+                  {files.length > 0 && files.length < MAX_FILES && (
+                    <button
+                      type="button"
+              onClick={() => {
+                        const input = document.querySelector('input[data-testid="file-input"]') as HTMLInputElement
+                        input?.click()
+                      }}
+                      className="w-full px-4 py-2 text-sm font-medium text-blue-400 border border-blue-400 rounded-lg hover:bg-blue-400 hover:text-white transition-colors"
+                    >
+                      + Add More Files ({MAX_FILES - files.length} remaining)
+                    </button>
+                  )}
                   
                   {errors.files && (
                     <p className="text-sm text-red-600 font-medium">{errors.files}</p>
@@ -343,17 +382,43 @@ const ServiceForm: React.FC = () => {
                   
                   {files.length > 0 && (
                     <div className="bg-[#0f172a] rounded-xl p-4 space-y-3 border border-gray-700">
-                      <h4 className="font-semibold text-gray-200">Selected Files ({files.length})</h4>
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-semibold text-gray-200">Selected Files ({files.length}/{MAX_FILES})</h4>
+                        <button
+                          type="button"
+                          onClick={clearAllFiles}
+                          className="text-xs text-red-400 hover:text-red-300 font-medium"
+                        >
+                          Clear All
+                        </button>
+                      </div>
                       <ul className="space-y-2">
                         {files.map((f, i) => (
                           <li key={i} className="flex items-center justify-between bg-[#111827] p-3 rounded-lg border border-gray-700 shadow-sm">
-                            <span className="font-medium text-gray-200 truncate mr-3">{f.name}</span>
-                            <span className="text-sm text-gray-300 bg-[#1f2937] px-2 py-1 rounded-full">
-                              {(f.size / (1024 * 1024)).toFixed(1)} MB
-                            </span>
+                            <div className="flex items-center flex-1 min-w-0">
+                              <span className="font-medium text-gray-200 truncate mr-3">{f.name}</span>
+                              <span className="text-sm text-gray-300 bg-[#1f2937] px-2 py-1 rounded-full">
+                                {(f.size / (1024 * 1024)).toFixed(1)} MB
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => removeFile(i)}
+                              className="ml-2 text-red-400 hover:text-red-300 p-1"
+                              title="Remove file"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
                           </li>
                         ))}
                       </ul>
+                      {files.length < MAX_FILES && (
+                        <p className="text-xs text-gray-400 text-center">
+                          You can add {MAX_FILES - files.length} more file{MAX_FILES - files.length !== 1 ? 's' : ''}
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
