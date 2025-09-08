@@ -48,11 +48,17 @@ const ThankYou: React.FC = () => {
             // Update form submission to mark as completed
             console.log('ThankYou page - Updating form submission to completed...');
             try {
+              const totalCents = (order.totalCents ?? order.amount ?? 0) as number
+              const currency = order.currency || 'EUR'
+              const total = Number((totalCents / 100).toFixed(2))
               const updateResult = await updateSubmission({
                 currentStep: 'completed',
                 status: 'completed',
                 sessionId: sessionId,
-                orderId: sessionId
+                orderId: sessionId,
+                totalAmountCents: totalCents,
+                currency: currency,
+                totalAmount: total
               });
               console.log('ThankYou page - Form submission marked as completed:', updateResult);
             } catch (updateError) {
@@ -71,7 +77,10 @@ const ThankYou: React.FC = () => {
                       currentStep: 'completed',
                       status: 'completed',
                       sessionId: sessionId,
-                      orderId: sessionId
+                      orderId: sessionId,
+                      totalAmountCents: (order.totalCents ?? order.amount ?? 0) as number,
+                      currency: order.currency || 'EUR',
+                      totalAmount: Number(((order.totalCents ?? order.amount ?? 0) / 100).toFixed(2))
                     });
                     console.log('ThankYou page - Fallback update successful');
                   }

@@ -1,0 +1,10 @@
+{
+  "name": "purge-old-files",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "node-appwrite": "^13.0.0"
+  }
+}
+
+

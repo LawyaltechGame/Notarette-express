@@ -20,6 +20,11 @@ const NotaryDashboard: React.FC = () => {
   const [loadingRequests, setLoadingRequests] = React.useState(false)
   const [formSubmissions, setFormSubmissions] = React.useState<any[]>([])
   const [loadingSubmissions, setLoadingSubmissions] = React.useState(false)
+  // Pagination state
+  const [submissionsPage, setSubmissionsPage] = React.useState(1)
+  const [submissionsPageSize, setSubmissionsPageSize] = React.useState(10)
+  const [requestsPage, setRequestsPage] = React.useState(1)
+  const [requestsPageSize, setRequestsPageSize] = React.useState(10)
   const [selectedSubmission, setSelectedSubmission] = React.useState<any>(null)
   const [showDetailsModal, setShowDetailsModal] = React.useState(false)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
@@ -35,49 +40,46 @@ const NotaryDashboard: React.FC = () => {
     return 'pending'
   }
 
-  // Helpers for date grouping and filtering to last 7 days
-  const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate())
-  const formatDateDDMMYY = (date: Date) => {
-    const dd = String(date.getDate()).padStart(2, '0')
-    const mm = String(date.getMonth() + 1).padStart(2, '0')
-    const yy = String(date.getFullYear()).slice(-2)
-    return `${dd}-${mm}-${yy}`
-  }
+  // Helpers for week filtering
   const weekAgo = React.useMemo(() => {
     const d = new Date()
     d.setDate(d.getDate() - 7)
     return d
   }, [])
 
-  const filteredGroupedSubmissions = React.useMemo(() => {
+  // Deprecated grouped view kept previously; now using flat list with pagination
+
+  // Flat, sorted arrays for pagination by rows (last 7 days)
+  const submissionsFlat = React.useMemo(() => {
     const withinWeek = formSubmissions.filter((s) => {
       const ds = new Date(s.createdAt || s.$createdAt || Date.now())
       return ds >= weekAgo
     })
-    const groups: Record<string, { label: string; items: any[]; sortKey: number }> = {}
-    for (const s of withinWeek) {
-      const d = new Date(s.createdAt || s.$createdAt || Date.now())
-      const key = startOfDay(d).toISOString()
-      if (!groups[key]) groups[key] = { label: formatDateDDMMYY(d), items: [], sortKey: startOfDay(d).getTime() }
-      groups[key].items.push(s)
-    }
-    return Object.values(groups).sort((a, b) => b.sortKey - a.sortKey)
+    return withinWeek.sort((a, b) => {
+      const ta = new Date(a.createdAt || a.$createdAt || Date.now()).getTime()
+      const tb = new Date(b.createdAt || b.$createdAt || Date.now()).getTime()
+      return tb - ta
+    })
   }, [formSubmissions, weekAgo])
 
-  const filteredGroupedRequests = React.useMemo(() => {
+  // Flat, sorted arrays (new) for pagination by rows
+  
+
+  // Deprecated grouped view kept previously; now using flat list with pagination
+
+  const requestsFlat = React.useMemo(() => {
     const withinWeek = requests.filter((r) => {
       const ds = new Date(r.createdAt || r.$createdAt || Date.now())
       return ds >= weekAgo
     })
-    const groups: Record<string, { label: string; items: any[]; sortKey: number }> = {}
-    for (const r of withinWeek) {
-      const d = new Date(r.createdAt || r.$createdAt || Date.now())
-      const key = startOfDay(d).toISOString()
-      if (!groups[key]) groups[key] = { label: formatDateDDMMYY(d), items: [], sortKey: startOfDay(d).getTime() }
-      groups[key].items.push(r)
-    }
-    return Object.values(groups).sort((a, b) => b.sortKey - a.sortKey)
+    return withinWeek.sort((a, b) => {
+      const ta = new Date(a.createdAt || a.$createdAt || Date.now()).getTime()
+      const tb = new Date(b.createdAt || b.$createdAt || Date.now()).getTime()
+      return tb - ta
+    })
   }, [requests, weekAgo])
+
+  
 
   // Fetch all requests from the database
   const fetchRequests = async () => {
@@ -428,9 +430,20 @@ const NotaryDashboard: React.FC = () => {
         <div className="mt-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Client Form Submissions</h2>
-            <Button onClick={fetchFormSubmissions} disabled={loadingSubmissions} className="text-sm">
-              {loadingSubmissions ? 'Refreshing...' : 'Refresh'}
-            </Button>
+            <div className="flex items-center gap-2">
+              <select
+                value={submissionsPageSize}
+                onChange={(e)=>{ setSubmissionsPageSize(Number(e.target.value)); setSubmissionsPage(1) }}
+                className="text-xs bg-white dark:bg-gray-100 border border-gray-300 dark:border-gray-700 rounded px-2 py-1"
+              >
+                <option value={10}>10 / page</option>
+                <option value={25}>25 / page</option>
+                <option value={50}>50 / page</option>
+              </select>
+              <Button onClick={fetchFormSubmissions} disabled={loadingSubmissions} className="text-sm">
+                {loadingSubmissions ? 'Refreshing...' : 'Refresh'}
+              </Button>
+            </div>
           </div>
           
           {loadingSubmissions ? (
@@ -440,36 +453,15 @@ const NotaryDashboard: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-6">
-              {formSubmissions.length === 0 ? (
+              {submissionsFlat.length === 0 ? (
                 <div className="text-center py-8 text-gray-500 dark:text-gray-400">No form submissions found (last 7 days)</div>
               ) : (
                 (() => {
-                  const groups: Record<string, any[]> = {}
-                  formSubmissions.forEach(s => {
-                    const d = new Date(s.createdAt || s.$createdAt || Date.now())
-                    const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`
-                    if (!groups[key]) groups[key] = []
-                    groups[key].push(s)
-                  })
-                  const ordered = Object.entries(groups)
-                    .map(([k, items]) => ({ key: k, date: new Date(items[0].createdAt || items[0].$createdAt || Date.now()), items }))
-                    .sort((a,b)=>b.date.getTime()-a.date.getTime())
-                  return ordered.map(group => (
-                    <div key={group.key}>
-                      <div className="mb-3 flex items-center justify-between">
-                        <div className="w-full">
-                          <div className="relative">
-                            <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                              <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
-                            </div>
-                            <div className="relative flex justify-start">
-                              <span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100 border border-gray-200 dark:border-gray-600 shadow-sm">
-                                {formatDateDDMMYY(group.date)} • {group.items.length} submission{group.items.length!==1?'s':''}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                  const start = (submissionsPage - 1) * submissionsPageSize
+                  const end = start + submissionsPageSize
+                  const pageItems = submissionsFlat.slice(start, end)
+                  return (
+                    <>
                       <div className="overflow-x-auto">
                         <table className="min-w-full text-sm">
                           <thead>
@@ -485,7 +477,7 @@ const NotaryDashboard: React.FC = () => {
                             </tr>
                           </thead>
                           <tbody className="text-gray-800 dark:text-gray-200">
-                            {group.items.map((submission:any) => {
+                            {pageItems.map((submission:any) => {
                       const selectedOptions = parseSelectedOptions(submission.selectedOptions || '[]')
                       const selectedAddOns = parseSelectedAddOns(submission.selectedAddOns || '[]')
                       
@@ -563,8 +555,18 @@ const NotaryDashboard: React.FC = () => {
                           </tbody>
                         </table>
                       </div>
-                    </div>
-                  ))
+                      <div className="flex items-center justify-between mt-4">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          Showing {start + 1}-{Math.min(end, submissionsFlat.length)} of {submissionsFlat.length}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <Button className="text-sm" disabled={submissionsPage===1} onClick={()=>setSubmissionsPage(p=>Math.max(1, p-1))}>Previous</Button>
+                          <span className="text-xs">Page {submissionsPage}</span>
+                          <Button className="text-sm" disabled={end>=submissionsFlat.length} onClick={()=>setSubmissionsPage(p=>p+1)}>Next</Button>
+                        </div>
+                      </div>
+                    </>
+                  )
                 })()
               )}
             </div>
@@ -575,9 +577,20 @@ const NotaryDashboard: React.FC = () => {
         <div className="mt-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Notarized Uploads</h2>
-            <Button onClick={fetchRequests} disabled={loadingRequests} className="text-sm">
-              {loadingRequests ? 'Refreshing...' : 'Refresh'}
-            </Button>
+            <div className="flex items-center gap-2">
+              <select
+                value={requestsPageSize}
+                onChange={(e)=>{ setRequestsPageSize(Number(e.target.value)); setRequestsPage(1) }}
+                className="text-xs bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded px-2 py-1"
+              >
+                <option value={10}>10 / page</option>
+                <option value={25}>25 / page</option>
+                <option value={50}>50 / page</option>
+              </select>
+              <Button onClick={fetchRequests} disabled={loadingRequests} className="text-sm">
+                {loadingRequests ? 'Refreshing...' : 'Refresh'}
+              </Button>
+            </div>
           </div>
           
           {loadingRequests ? (
@@ -587,44 +600,22 @@ const NotaryDashboard: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-6">
-              {requests.length === 0 ? (
+              {requestsFlat.length === 0 ? (
                 <div className="text-center py-8 text-gray-500 dark:text-gray-400">No uploads found (last 7 days)</div>
               ) : (
                 (() => {
-                  const groups: Record<string, any[]> = {}
-                  requests.forEach(r => {
-                    const d = new Date(r.createdAt || r.$createdAt || Date.now())
-                    const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`
-                    if (!groups[key]) groups[key] = []
-                    groups[key].push(r)
-                  })
-                  const ordered = Object.entries(groups)
-                    .map(([k, items]) => ({ key: k, date: new Date(items[0].createdAt || items[0].$createdAt || Date.now()), items }))
-                    .sort((a,b)=>b.date.getTime()-a.date.getTime())
-                  return ordered.map(group => (
-                    <div key={group.key}>
-                      <div className="mb-3 flex items-center justify-between">
-                        <div className="w-full">
-                          <div className="relative">
-                            <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                              <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
-                            </div>
-                            <div className="relative flex justify-start">
-                              <span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100 border border-gray-200 dark:border-gray-600 shadow-sm">
-                                {formatDateDDMMYY(group.date)} • {group.items.length} upload{group.items.length!==1?'s':''}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                  const start = (requestsPage - 1) * requestsPageSize
+                  const end = start + requestsPageSize
+                  const pageItems = requestsFlat.slice(start, end)
+                  return (
+                    <>
                       <div className="overflow-x-auto">
                         <table className="min-w-full text-sm">
                           <thead>
                             <tr className="text-left text-gray-500 dark:text-gray-400">
                               <th className="py-3 pr-4 font-medium">Client Email</th>
-                              <th className="py-3 pr-4 font-medium">Session ID</th>
+                              <th className="py-3 pr-4 font-medium">Upload Batch ID</th>
                               <th className="py-3 pr-4 font-medium">Type</th>
-                              <th className="py-3 pr-4 font-medium">Folder</th>
                               <th className="py-3 pr-4 font-medium">Status</th>
                               <th className="py-3 pr-4 font-medium">Notarization Status</th>
                               <th className="py-3 pr-4 font-medium">Files</th>
@@ -634,7 +625,7 @@ const NotaryDashboard: React.FC = () => {
                             </tr>
                           </thead>
                           <tbody className="text-gray-800 dark:text-gray-200">
-                            {group.items.map((request:any) => {
+                            {pageItems.map((request:any) => {
                       const files = (() => {
                         try {
                           return Array.isArray(request.files) ? request.files : JSON.parse(request.files || '[]')
@@ -666,7 +657,7 @@ const NotaryDashboard: React.FC = () => {
                               </span>
                             )}
                           </td>
-                          <td className="py-3 pr-4">{request.folderName || 'Default'}</td>
+                          
                           <td className="py-3 pr-4">
                             <span className={`px-2 py-1 text-xs rounded-full ${
                               status === 'Pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
@@ -740,8 +731,18 @@ const NotaryDashboard: React.FC = () => {
                           </tbody>
                         </table>
                       </div>
-                    </div>
-                  ))
+                      <div className="flex items-center justify-between mt-4">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          Showing {start + 1}-{Math.min(end, requestsFlat.length)} of {requestsFlat.length}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <Button className="text-sm" disabled={requestsPage===1} onClick={()=>setRequestsPage(p=>Math.max(1, p-1))}>Previous</Button>
+                          <span className="text-xs">Page {requestsPage}</span>
+                          <Button className="text-sm" disabled={end>=requestsFlat.length} onClick={()=>setRequestsPage(p=>p+1)}>Next</Button>
+                        </div>
+                      </div>
+                    </>
+                  )
                 })()
               )}
             </div>

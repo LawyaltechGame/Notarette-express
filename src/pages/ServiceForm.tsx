@@ -8,7 +8,7 @@ import { ENVObj } from '../lib/constant'
 import { useAppSelector } from '../hooks/useAppSelector'
 
 const MAX_FILES = 5
-const MAX_FILE_SIZE_BYTES = 1073741824 // 1 GB
+const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024 // 50 MB
 
 const ServiceForm: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
@@ -51,17 +51,34 @@ const ServiceForm: React.FC = () => {
     if (!documentType) next.documentType = 'Please select a document type'
     if (files.length === 0) next.files = 'Please upload at least one document'
     if (files.length > MAX_FILES) next.files = `Maximum ${MAX_FILES} files allowed`
-    if (files.some(f => f.size > MAX_FILE_SIZE_BYTES)) next.files = 'Each file must be under 1 GB'
+    if (files.some(f => f.size > MAX_FILE_SIZE_BYTES)) next.files = 'Each file must be 50 MB or smaller'
     setErrors(next)
     return Object.keys(next).length === 0
   }
 
   const onFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const selected = Array.from(e.target.files || [])
+    const oversized = selected.filter(f => f.size > MAX_FILE_SIZE_BYTES)
+    const validSelected = selected.filter(f => f.size <= MAX_FILE_SIZE_BYTES)
+
     setFiles(prevFiles => {
-      const combined = [...prevFiles, ...selected]
-      return combined.slice(0, MAX_FILES)
+      const combinedValid = [...prevFiles, ...validSelected]
+      const limited = combinedValid.slice(0, MAX_FILES)
+      return limited
     })
+
+    if (oversized.length > 0) {
+      setErrors(prev => ({
+        ...prev,
+        files: 'One or more files are too large. Each file must be 50 MB or smaller.'
+      }))
+    } else {
+      setErrors(prev => {
+        const { files, ...rest } = prev
+        return rest
+      })
+    }
+
     // Clear the input so the same files can be selected again
     e.target.value = ''
   }
@@ -345,7 +362,7 @@ const ServiceForm: React.FC = () => {
                   <label className="block text-sm font-semibold text-gray-200">
                     Select Files <span className="text-red-500">*</span>
                     <span className="text-xs text-gray-500 font-normal ml-2">
-                      (multiple files allowed, max {MAX_FILES} files, up to 1 GB each)
+                      (multiple files allowed, max {MAX_FILES} files, up to 50 MB each)
                     </span>
                   </label>
                   

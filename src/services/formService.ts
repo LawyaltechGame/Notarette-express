@@ -22,6 +22,9 @@ export interface FormSubmission {
   extraCopies?: number
   sessionId?: string
   orderId?: string
+  totalAmountCents?: number
+  currency?: string
+  totalAmount?: number
   status: 'draft' | 'in_progress' | 'completed' | 'cancelled'
   createdAt: string
   updatedAt: string
