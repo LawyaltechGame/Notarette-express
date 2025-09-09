@@ -98,6 +98,43 @@ export default async ({ req, res, log, error }) => {
     return res.json({ ok: true });
   }
 
+  // Create a refund for a paid Checkout Session or Payment Intent
+  if (body.refund && (body.sessionId || body.paymentIntentId)) {
+    try {
+      const stripe = new Stripe(stripeSecret, { apiVersion: '2024-06-20' });
+      let paymentIntentId = body.paymentIntentId || null;
+      if (!paymentIntentId && body.sessionId) {
+        const session = await stripe.checkout.sessions.retrieve(body.sessionId, { expand: ['payment_intent'] });
+        if (!session || !session.payment_intent) {
+          error(`Refund: No payment_intent found for session ${body.sessionId}`);
+          return res.json({ error: 'Payment not found for this session' }, 404);
+        }
+        paymentIntentId = typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent.id;
+      }
+
+      if (!paymentIntentId) {
+        return res.json({ error: 'Missing payment_intent for refund' }, 400);
+      }
+
+      const params = { payment_intent: paymentIntentId };
+      // Optional partial refund amount in cents
+      if (typeof body.amountCents === 'number' && body.amountCents > 0) {
+        params.amount = Math.floor(body.amountCents);
+      }
+      // Optional reason: requested_by_customer | duplicate | fraudulent
+      if (typeof body.reason === 'string' && body.reason) {
+        params.reason = body.reason;
+      }
+
+      const refund = await stripe.refunds.create(params);
+      log(`Refund created: ${refund.id} for payment_intent ${paymentIntentId}`);
+      return res.json({ ok: true, refund });
+    } catch (e) {
+      error(`Refund error: ${e?.message || e}`);
+      return res.json({ error: 'Failed to create refund' }, 500);
+    }
+  }
+
   // Verify a session and persist order
   if (body.sessionId) {
     try {

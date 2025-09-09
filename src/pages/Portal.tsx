@@ -454,7 +454,7 @@ const Portal: React.FC = () => {
             <div className="flex items-start gap-3 p-4 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-200">
               <AlertCircle className="w-5 h-5 mt-0.5" />
               <p className="text-sm">
-                For security and compliance, uploaded and notarized documents are stored for <span className="font-semibold">7 days</span>. Please download your completed documents promptly.
+                For security and compliance, client uploaded and their notarized documents are stored for <span className="font-semibold">7 days</span>. Please download your completed documents promptly.
               </p>
             </div>
           </div>

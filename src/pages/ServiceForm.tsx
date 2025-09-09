@@ -41,6 +41,26 @@ const ServiceForm: React.FC = () => {
     setErrors({})
   }
 
+  const friendlyTitleFromSlug = React.useCallback((s?: string) => {
+    const key = (s || '').toLowerCase()
+    switch (key) {
+      case 'signature-verification':
+        return 'Signature Verification'
+      case 'apostille-service':
+      case 'apostille-services':
+        return 'Apostille Service'
+      case 'other-documents':
+      case 'others':
+        return 'Other Documents'
+      default:
+        return null
+    }
+  }, [])
+
+  const displayServiceName = React.useMemo(() => {
+    return service?.name || friendlyTitleFromSlug(slug) || null
+  }, [service?.name, friendlyTitleFromSlug, slug])
+
   const validate = () => {
     const next: Record<string, string> = {}
     if (!fullName.trim()) next.fullName = 'Full name is required'
@@ -202,7 +222,7 @@ const ServiceForm: React.FC = () => {
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 mb-8 overflow-hidden">
           <div className="bg-[#111827] px-8 py-6">
             <h1 className="text-3xl font-bold text-yellow-400 mb-2">
-              {service ? `Notarisation Form for ${service.name}` : 'Start Service'}
+              {displayServiceName ? `Notarisation Form for ${displayServiceName}` : 'Start Service'}
           </h1>
             <p className="text-blue-100 text-lg">
               Please complete the form below. Required fields are marked with <span className="text-red-300 font-semibold">*</span>

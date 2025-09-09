@@ -104,6 +104,32 @@ class StripeService {
       window.open(paymentLink, '_blank');
     }
   }
+
+  async refundBySessionId(sessionId: string, amountCents?: number, reason?: string) {
+    const functionId = ENVObj.VITE_APPWRITE_FUNCTION_ID || 'payments-with-stripe'
+    const functions = new Functions(client)
+    const payload: any = { refund: true, sessionId }
+    if (typeof amountCents === 'number') payload.amountCents = amountCents
+    if (reason) payload.reason = reason
+    const exec = await functions.createExecution(functionId, JSON.stringify(payload), false)
+    let result: any = {}
+    try { result = JSON.parse(exec.responseBody || '{}') } catch {}
+    if (!result.ok) throw new Error(result.error || 'Refund failed')
+    return result
+  }
+
+  async refundByPaymentIntentId(paymentIntentId: string, amountCents?: number, reason?: string) {
+    const functionId = ENVObj.VITE_APPWRITE_FUNCTION_ID || 'payments-with-stripe'
+    const functions = new Functions(client)
+    const payload: any = { refund: true, paymentIntentId }
+    if (typeof amountCents === 'number') payload.amountCents = amountCents
+    if (reason) payload.reason = reason
+    const exec = await functions.createExecution(functionId, JSON.stringify(payload), false)
+    let result: any = {}
+    try { result = JSON.parse(exec.responseBody || '{}') } catch {}
+    if (!result.ok) throw new Error(result.error || 'Refund failed')
+    return result
+  }
 }
 
 export const stripeService = new StripeService();
