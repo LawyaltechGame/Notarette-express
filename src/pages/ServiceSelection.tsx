@@ -21,7 +21,6 @@ const ServiceSelection: React.FC = () => {
   }, [service])
 
   const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(new Set(['base']))
-  const [extraCopies, setExtraCopies] = React.useState<number>(0) // 0 means not selected
 
   const currency = service?.currency || 'EUR'
   const fmt = (cents: number, curr: string) => new Intl.NumberFormat('en-IE', { style: 'currency', currency: curr }).format(cents / 100)
@@ -35,12 +34,11 @@ const ServiceSelection: React.FC = () => {
     })
   }
 
-  const canContinue = selectedKeys.size > 0 || extraCopies > 0
+  const canContinue = selectedKeys.size > 0
 
   // Pricing summary
   const selectedOptions = baseOptions.filter(o => selectedKeys.has(o.key))
-  const extrasCents = extraCopies * 1500
-  const subtotalCents = selectedOptions.reduce((sum, o) => sum + o.price, 0) + extrasCents
+  const subtotalCents = selectedOptions.reduce((sum, o) => sum + o.price, 0)
   const vatRate = 0.21
   const vatCents = Math.round(subtotalCents * vatRate)
   const totalCents = subtotalCents + vatCents
@@ -97,29 +95,7 @@ const ServiceSelection: React.FC = () => {
                   )
                 })}
 
-                {/* Extra Certified Copies */}
-                <div className={`w-full p-5 rounded-xl border transition-all bg-white dark:bg-gray-800 ${extraCopies > 0 ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700'}`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="font-semibold text-gray-900 dark:text-white">Extra Certified Copies</div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">(+€15 per copy)</div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <label className="text-sm text-gray-700 dark:text-gray-300">Qty</label>
-                      <select
-                        value={extraCopies}
-                        onChange={(e) => setExtraCopies(Math.max(0, Math.min(5, parseInt(e.target.value) || 0)))}
-                        className="px-2 py-1 border rounded-md bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
-                      >
-                        <option value={0}>0</option>
-                        {[1,2,3,4,5].map(n => (
-                          <option key={n} value={n}>{n}</option>
-                        ))}
-                      </select>
-                      <div className="text-blue-600 font-bold">{fmt(extrasCents, currency)}</div>
-                    </div>
-                  </div>
-                </div>
+                {/* Extra Certified Copies moved to Add-ons page */}
               </div>
 
               <div className="flex items-center justify-between mt-8 max-w-3xl mx-auto">
@@ -132,7 +108,6 @@ const ServiceSelection: React.FC = () => {
                       // Update form submission with selected services
                       await updateSubmission({
                         selectedOptions: JSON.stringify(Array.from(selectedKeys)),
-                        extraCopies: extraCopies,
                         currentStep: 'addons_selected'
                       })
                       console.log('Service selection updated in Appwrite')
@@ -147,8 +122,6 @@ const ServiceSelection: React.FC = () => {
                       calComBookingLink: service?.calComBookingLink || null,
                       selectedKeys: Array.from(selectedKeys),
                       selectedOptions: selectedOptions.map(o => ({ key: o.key, title: o.title, price: o.price })),
-                      extraCopies,
-                      extrasCents,
                       subtotalCents,
                       currency,
                     }
@@ -176,12 +149,7 @@ const ServiceSelection: React.FC = () => {
                     <div className="text-gray-900 dark:text-white font-medium">{fmt(opt.price, currency)}</div>
                   </div>
                 ))}
-                {extraCopies > 0 && (
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="text-gray-900 dark:text-white">Extra Copies × {extraCopies}</div>
-                    <div className="text-gray-900 dark:text-white font-medium">{fmt(extrasCents, currency)}</div>
-                  </div>
-                )}
+                {/* Extra Certified Copies moved to Add-ons page */}
 
                 <div className="pt-3 border-t border-gray-200 dark:border-gray-700 text-sm">
                   <div className="flex items-center justify-between">

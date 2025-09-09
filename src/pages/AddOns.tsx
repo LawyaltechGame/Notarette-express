@@ -25,7 +25,8 @@ const AddOns: React.FC = () => {
     }
   }, [])
 
-  const [selected, setSelected] = React.useState<Set<string>>(new Set())
+  const [selected, setSelected] = React.useState<Set<string>>(new Set(['apostille']))
+  const [extraCopies, setExtraCopies] = React.useState<number>(0)
   const [savingAddress, setSavingAddress] = React.useState(false)
   const [addressSaved, setAddressSaved] = React.useState(false)
   const [courierAddress, setCourierAddress] = React.useState({
@@ -42,10 +43,13 @@ const AddOns: React.FC = () => {
   const fmt = (cents: number) => new Intl.NumberFormat('en-IE', { style: 'currency', currency }).format(cents / 100)
 
   const baseSubtotal = initial?.subtotalCents || 0
-  const addonsCents = Array.from(selected).reduce((sum, key) => {
+  const EXTRA_COPY_PRICE_CENTS = 1000
+  const addonsCentsFromToggles = Array.from(selected).reduce((sum, key) => {
     const a = addonsList.find(x => x.key === key)
     return sum + (a?.priceCents || 0)
   }, 0)
+  const extraCopiesCents = (selected.has('courier') ? extraCopies : 0) * EXTRA_COPY_PRICE_CENTS
+  const addonsCents = addonsCentsFromToggles + extraCopiesCents
   const subtotalCents = baseSubtotal + addonsCents
   const vatCents = Math.round(subtotalCents * 0.21)
   const totalCents = subtotalCents + vatCents
@@ -176,6 +180,22 @@ const AddOns: React.FC = () => {
                       {savingAddress ? 'Saving…' : (addressSaved ? 'Saved' : 'Save Address')}
                     </Button>
                   </div>
+                  <div className="mt-6 pt-5 border-t border-gray-200 dark:border-gray-700">
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Extra Certified Copies</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Optional. Available only with Courier Delivery.</p>
+                    <div className="flex items-center gap-3">
+                      <label className="text-sm text-gray-700 dark:text-gray-300">Number of extra copies</label>
+                      <input
+                        type="number"
+                        min={0}
+                        max={10}
+                        value={extraCopies}
+                        onChange={e => setExtraCopies(Math.max(0, Math.min(10, Number(e.target.value) || 0)))}
+                        className="w-24 px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                      />
+                      <span className="text-sm text-blue-600 font-medium">+{fmt(EXTRA_COPY_PRICE_CENTS)} each</span>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -188,6 +208,7 @@ const AddOns: React.FC = () => {
                       // Update form submission with selected add-ons
                       await updateSubmission({
                         selectedAddOns: JSON.stringify(Array.from(selected)),
+                        extraCertifiedCopies: selected.has('courier') ? extraCopies : 0,
                         currentStep: 'checkout'
                       })
                       console.log('Add-ons selection updated in Appwrite')
@@ -202,6 +223,9 @@ const AddOns: React.FC = () => {
                       const a = addonsList.find(x => x.key === key)
                       return { key, title: a?.title, priceCents: a?.priceCents || 0 }
                     })
+                    if (selected.has('courier') && extraCopies > 0) {
+                      addons.push({ key: 'extraCopies', title: `Extra Certified Copies × ${extraCopies}`, priceCents: extraCopiesCents })
+                    }
                     const payload = {
                       ...base,
                       addons,
@@ -209,6 +233,7 @@ const AddOns: React.FC = () => {
                       subtotalCents,
                       vatCents,
                       totalCents,
+                      extraCopies: selected.has('courier') ? extraCopies : 0,
                     }
                     sessionStorage.setItem('notary_checkout_payload', JSON.stringify(payload))
                     navigate('/checkout')

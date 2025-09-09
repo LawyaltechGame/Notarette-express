@@ -30,6 +30,8 @@ const NotaryDashboard: React.FC = () => {
   const fileInputRef = React.useRef<HTMLInputElement>(null)
 
   const MAX_FILES = 5
+  const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024 // 50 MB
+  const [fileError, setFileError] = React.useState<string>('')
 
   const normalizeNotarizationStatus = (val: any): 'started' | 'pending' | 'completed' => {
     const s = String(val || '').toLowerCase().trim()
@@ -167,16 +169,25 @@ const NotaryDashboard: React.FC = () => {
   // no-op effect removed (no upload type toggle anymore)
 
   const onFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const newFiles = Array.from(e.target.files || [])
-    console.log('New files selected:', newFiles.length, 'files')
-    console.log('New file names:', newFiles.map(f => f.name))
-    
+    const incoming = Array.from(e.target.files || [])
+    console.log('New files selected:', incoming.length, 'files')
+    console.log('New file names:', incoming.map(f => f.name))
+
+    const oversized = incoming.filter(f => f.size > MAX_FILE_SIZE_BYTES)
+    const validIncoming = incoming.filter(f => f.size <= MAX_FILE_SIZE_BYTES)
+
     // Always allow adding multiple files (accumulate up to MAX_FILES)
     setFiles(prevFiles => {
-      const combined = [...prevFiles, ...newFiles]
+      const combined = [...prevFiles, ...validIncoming]
       return combined.slice(0, MAX_FILES)
     })
-    
+
+    if (oversized.length > 0) {
+      setFileError('Each file must be 50 MB or smaller.')
+    } else {
+      setFileError('')
+    }
+
     // Clear the input so the same files can be selected again
     e.target.value = ''
   }
@@ -341,7 +352,7 @@ const NotaryDashboard: React.FC = () => {
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Select Files 
                   <span className="text-xs text-gray-500 ml-1">
-                    ({files.length}/{MAX_FILES} selected)
+                    (multiple files allowed, max {MAX_FILES} files, up to 50 MB each) · {files.length}/{MAX_FILES} selected
                   </span>
                 </label>
                 <input 
@@ -352,6 +363,9 @@ const NotaryDashboard: React.FC = () => {
                   disabled={files.length >= MAX_FILES}
                   className="block w-full text-sm text-gray-900 dark:text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-300 disabled:opacity-50 disabled:cursor-not-allowed" 
                 />
+                {fileError && (
+                  <p className="text-xs text-red-600 dark:text-red-400 mt-1">{fileError}</p>
+                )}
                 {files.length >= MAX_FILES && (
                   <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
                     Maximum {MAX_FILES} files reached. Remove some files to add more.
@@ -561,7 +575,7 @@ const NotaryDashboard: React.FC = () => {
                         </span>
                         <div className="flex items-center gap-2">
                           <Button className="text-sm" disabled={submissionsPage===1} onClick={()=>setSubmissionsPage(p=>Math.max(1, p-1))}>Previous</Button>
-                          <span className="text-xs">Page {submissionsPage}</span>
+                          <span className="text-xs text-white">Page {submissionsPage}</span>
                           <Button className="text-sm" disabled={end>=submissionsFlat.length} onClick={()=>setSubmissionsPage(p=>p+1)}>Next</Button>
                         </div>
                       </div>
@@ -581,7 +595,7 @@ const NotaryDashboard: React.FC = () => {
               <select
                 value={requestsPageSize}
                 onChange={(e)=>{ setRequestsPageSize(Number(e.target.value)); setRequestsPage(1) }}
-                className="text-xs bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded px-2 py-1"
+                className="text-xs bg-white dark:bg-gray-100 border border-gray-300 dark:border-gray-700 rounded px-2 py-1"
               >
                 <option value={10}>10 / page</option>
                 <option value={25}>25 / page</option>
@@ -737,7 +751,7 @@ const NotaryDashboard: React.FC = () => {
                         </span>
                         <div className="flex items-center gap-2">
                           <Button className="text-sm" disabled={requestsPage===1} onClick={()=>setRequestsPage(p=>Math.max(1, p-1))}>Previous</Button>
-                          <span className="text-xs">Page {requestsPage}</span>
+                          <span className="text-xs text-white">Page {requestsPage}</span>
                           <Button className="text-sm" disabled={end>=requestsFlat.length} onClick={()=>setRequestsPage(p=>p+1)}>Next</Button>
                         </div>
                       </div>
