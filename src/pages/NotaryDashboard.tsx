@@ -33,6 +33,7 @@ const NotaryDashboard: React.FC = () => {
   const MAX_FILES = 5
   const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024 // 50 MB
   const [fileError, setFileError] = React.useState<string>('')
+  const [activeTab, setActiveTab] = React.useState<'upload' | 'submissions' | 'uploads'>('upload')
 
   const formatAmount = (submission: any): string => {
     const currency = (submission.currency || 'EUR').toString().toUpperCase()
@@ -371,113 +372,145 @@ const NotaryDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Upload Notarized Documents</h2>
-            <form className="space-y-4" onSubmit={onSubmit}>
-              <div className="grid grid-cols-1 gap-4">
-                <input value={clientEmail} onChange={e=>setClientEmail(e.target.value)} type="email" placeholder="Client Email" className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white" />
-              </div>
-              
-              {/* Multiple files are always allowed; no upload type toggle */}
+        {/* Tabs */}
+        <div className="mb-6 border-b border-gray-200 dark:border-gray-700">
+          <nav className="flex -mb-px space-x-6" aria-label="Tabs">
+            <button
+              onClick={() => setActiveTab('upload')}
+              className={`px-1 pb-2 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'upload'
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+              }`}
+            >
+              Upload Notarization
+            </button>
+            <button
+              onClick={() => setActiveTab('submissions')}
+              className={`px-1 pb-2 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'submissions'
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+              }`}
+            >
+              Client Form Submissions
+            </button>
+            <button
+              onClick={() => setActiveTab('uploads')}
+              className={`px-1 pb-2 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'uploads'
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+              }`}
+            >
+              Notarized Uploads
+            </button>
+          </nav>
+        </div>
 
-              {/* No folder name field */}
+        {activeTab === 'upload' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <Card>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Upload Notarized Documents</h2>
+              <form className="space-y-4" onSubmit={onSubmit}>
+                <div className="grid grid-cols-1 gap-4">
+                  <input value={clientEmail} onChange={e=>setClientEmail(e.target.value)} type="email" placeholder="Client Email" className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white" />
+                </div>
+                
+                {/* Multiple files are always allowed; no upload type toggle */}
 
-              {/* File Input */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Select Files 
-                  <span className="text-xs text-gray-500 ml-1">
-                    (multiple files allowed, max {MAX_FILES} files, up to 50 MB each) · {files.length}/{MAX_FILES} selected
-                  </span>
-                </label>
-                <input 
-                  ref={fileInputRef}
-                  onChange={onFileChange} 
-                  type="file" 
-                  multiple
-                  disabled={files.length >= MAX_FILES}
-                  className="block w-full text-sm text-gray-900 dark:text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-300 disabled:opacity-50 disabled:cursor-not-allowed" 
-                />
-                {fileError && (
-                  <p className="text-xs text-red-600 dark:text-red-400 mt-1">{fileError}</p>
-                )}
-                {files.length >= MAX_FILES && (
-                  <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
-                    Maximum {MAX_FILES} files reached. Remove some files to add more.
-                  </p>
-                )}
-                {files.length > 0 && (
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Selected {files.length} file(s)
+                {/* No folder name field */}
+
+                {/* File Input */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Select Files 
+                    <span className="text-xs text-gray-500 ml-1">
+                      (multiple files allowed, max {MAX_FILES} files, up to 50 MB each) · {files.length}/{MAX_FILES} selected
+                    </span>
+                  </label>
+                  <input 
+                    ref={fileInputRef}
+                    onChange={onFileChange} 
+                    type="file" 
+                    multiple
+                    disabled={files.length >= MAX_FILES}
+                    className="block w-full text-sm text-gray-900 dark:text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-300 disabled:opacity-50 disabled:cursor-not-allowed" 
+                  />
+                  {fileError && (
+                    <p className="text-xs text-red-600 dark:text-red-400 mt-1">{fileError}</p>
+                  )}
+                  {files.length >= MAX_FILES && (
+                    <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                      Maximum {MAX_FILES} files reached. Remove some files to add more.
                     </p>
-                    <div className="max-h-32 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded p-2 text-xs mt-2">
-                      {files.map((f, index) => (
-                        <div key={index} className="flex items-center justify-between text-gray-700 dark:text-gray-300 py-1">
-                          <span className="truncate flex-1">{f.name}</span>
+                  )}
+                  {files.length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Selected {files.length} file(s)
+                      </p>
+                      <div className="max-h-32 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded p-2 text-xs mt-2">
+                        {files.map((f, index) => (
+                          <div key={index} className="flex items-center justify-between text-gray-700 dark:text-gray-300 py-1">
+                            <span className="truncate flex-1">{f.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFiles(prev => prev.filter((_, i) => i !== index))
+                              }}
+                              className="ml-2 text-red-500 hover:text-red-700 text-xs"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      {files.length > 0 && (
+                        <div className="mt-2 flex space-x-2">
                           <button
                             type="button"
                             onClick={() => {
-                              setFiles(prev => prev.filter((_, i) => i !== index))
+                              if (fileInputRef.current) {
+                                fileInputRef.current.click()
+                              }
                             }}
-                            className="ml-2 text-red-500 hover:text-red-700 text-xs"
+                            disabled={files.length >= MAX_FILES}
+                            className="text-xs text-blue-500 hover:text-blue-700 disabled:text-gray-400 disabled:cursor-not-allowed"
                           >
-                            ✕
+                            + Add More Files
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setFiles([])}
+                            className="text-xs text-red-500 hover:text-red-700"
+                          >
+                            Clear All Files
                           </button>
                         </div>
-                      ))}
+                      )}
                     </div>
-                    {files.length > 0 && (
-                      <div className="mt-2 flex space-x-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (fileInputRef.current) {
-                              fileInputRef.current.click()
-                            }
-                          }}
-                          disabled={files.length >= MAX_FILES}
-                          className="text-xs text-blue-500 hover:text-blue-700 disabled:text-gray-400 disabled:cursor-not-allowed"
-                        >
-                          + Add More Files
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setFiles([])}
-                          className="text-xs text-red-500 hover:text-red-700"
-                        >
-                          Clear All Files
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
 
-              <Button type="submit" disabled={submitting}>
-                {submitting ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Uploading {files.length} file(s)...
-                  </div>
-                ) : (
-                  'Upload Files'
-                )}
-              </Button>
-            </form>
-          </Card>
-
-          {/* <div className="lg:col-span-2">
-            <Card>
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Notes</h2>
-              <p className="text-gray-700 dark:text-gray-300 text-sm">Maximum {MAX_FILES} files per upload. Uploaded files are stored in Appwrite Storage (bucket: VITE_APPWRITE_BUCKET_ID) and linked in your Database (VITE_APPWRITE_DATABASE_ID / VITE_APPWRITE_COLLECTION_ID). Clients will see them in their portal automatically once we fetch and display by client email.</p>
+                <Button type="submit" disabled={submitting}>
+                  {submitting ? (
+                    <div className="flex items-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Uploading {files.length} file(s)...
+                    </div>
+                  ) : (
+                    'Upload Files'
+                  )}
+                </Button>
+              </form>
             </Card>
-          </div> */}
-        </div>
+          </div>
+        )}
 
         {/* Client Form Submissions Section */}
-        <div className="mt-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        {activeTab === 'submissions' && (
+        <div className="mt-0 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Client Form Submissions</h2>
             <div className="flex items-center gap-2">
@@ -522,6 +555,8 @@ const NotaryDashboard: React.FC = () => {
                               <th className="py-3 pr-4 font-medium">Total Amount</th>
                               <th className="py-3 pr-4 font-medium">Status</th>
                               <th className="py-3 pr-4 font-medium">Current Step</th>
+                              <th className="py-3 pr-4 font-medium">Notarization Status</th>
+                              <th className="py-3 pr-4 font-medium">Meeting Status</th>
                               <th className="py-3 pr-4 font-medium">Services</th>
                               <th className="py-3 pr-4 font-medium">Date</th>
                               <th className="py-3 pr-4 font-medium">Actions</th>
@@ -568,6 +603,64 @@ const NotaryDashboard: React.FC = () => {
                             <span className={`px-2 py-1 text-xs rounded-full ${getStepColor(submission.currentStep)}`}>
                               {submission.currentStep?.replace('_', ' ') || 'N/A'}
                             </span>
+                          </td>
+                          {/* Notarization Status (editable) */}
+                          <td className="py-3 pr-4">
+                            <div className="inline-flex items-center space-x-2">
+                              <select
+                                value={normalizeNotarizationStatus(submission.notarizationStatus)}
+                                onChange={async (e) => {
+                                  const value = normalizeNotarizationStatus(e.target.value)
+                                  try {
+                                    await databases.updateDocument(
+                                      ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID!,
+                                      ENVObj.VITE_FORM_SUBMISSIONS_TABLE_ID!,
+                                      submission.$id,
+                                      { notarizationStatus: value }
+                                    )
+                                    // Optimistically update local state
+                                    setFormSubmissions(prev => prev.map(s => s.$id === submission.$id ? { ...s, notarizationStatus: value } : s))
+                                  } catch (err) {
+                                    console.error('Failed to update notarization status', err)
+                                    alert('Failed to update status. Please try again.')
+                                  }
+                                }}
+                                className="text-xs bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded px-2 py-1"
+                              >
+                                <option value="started">▶ Notarization Started</option>
+                                <option value="pending">⏳ Pending</option>
+                                <option value="completed">✅ Notarization Completed</option>
+                              </select>
+                            </div>
+                          </td>
+                          {/* Meeting Status (editable) */}
+                          <td className="py-3 pr-4">
+                            <div className="inline-flex items-center space-x-2">
+                              <select
+                                value={normalizeNotarizationStatus(submission.meetingStatus)}
+                                onChange={async (e) => {
+                                  const value = normalizeNotarizationStatus(e.target.value)
+                                  try {
+                                    await databases.updateDocument(
+                                      ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID!,
+                                      ENVObj.VITE_FORM_SUBMISSIONS_TABLE_ID!,
+                                      submission.$id,
+                                      { meetingStatus: value }
+                                    )
+                                    // Optimistically update local state
+                                    setFormSubmissions(prev => prev.map(s => s.$id === submission.$id ? { ...s, meetingStatus: value } : s))
+                                  } catch (err) {
+                                    console.error('Failed to update meeting status', err)
+                                    alert('Failed to update status. Please try again.')
+                                  }
+                                }}
+                                className="text-xs bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded px-2 py-1"
+                              >
+                                <option value="pending">⏳ Pending</option>
+                                <option value="started">▶ Started</option>
+                                <option value="completed">✅ Completed</option>
+                              </select>
+                            </div>
                           </td>
                           <td className="py-3 pr-4">
                             <div className="space-y-1">
@@ -631,9 +724,11 @@ const NotaryDashboard: React.FC = () => {
             </div>
           )}
         </div>
+        )}
 
-        {/* Request Management Section */}
-        <div className="mt-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        {/* Notarized Uploads Section */}
+        {activeTab === 'uploads' && (
+        <div className="mt-0 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Notarized Uploads</h2>
             <div className="flex items-center gap-2">
@@ -676,7 +771,6 @@ const NotaryDashboard: React.FC = () => {
                               <th className="py-3 pr-4 font-medium">Upload Batch ID</th>
                               <th className="py-3 pr-4 font-medium">Type</th>
                               <th className="py-3 pr-4 font-medium">Status</th>
-                              <th className="py-3 pr-4 font-medium">Notarization Status</th>
                               <th className="py-3 pr-4 font-medium">Files</th>
                               <th className="py-3 pr-4 font-medium">Uploaded By(Notary)</th>
                               <th className="py-3 pr-4 font-medium">Date</th>
@@ -725,35 +819,6 @@ const NotaryDashboard: React.FC = () => {
                             }`}>
                               {status}
                             </span>
-                          </td>
-                          {/* Notarization Status (editable) */}
-                          <td className="py-3 pr-4">
-                            <div className="inline-flex items-center space-x-2">
-                              <select
-                                value={normalizeNotarizationStatus(request.notarizationStatus)}
-                                onChange={async (e) => {
-                                  const value = normalizeNotarizationStatus(e.target.value)
-                                  try {
-                                    await databases.updateDocument(
-                                      ENVObj.VITE_APPWRITE_DATABASE_ID!,
-                                      ENVObj.VITE_APPWRITE_COLLECTION_ID!,
-                                      request.$id,
-                                      { notarizationStatus: value }
-                                    )
-                                    // Optimistically update local state
-                                    setRequests(prev => prev.map(r => r.$id === request.$id ? { ...r, notarizationStatus: value } : r))
-                                  } catch (err) {
-                                    console.error('Failed to update notarization status', err)
-                                    alert('Failed to update status. Please try again.')
-                                  }
-                                }}
-                                className="text-xs bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded px-2 py-1"
-                              >
-                                <option value="started">▶ Notarization Started</option>
-                                <option value="pending">⏳ Pending</option>
-                                <option value="completed">✅ Notarization Completed</option>
-                              </select>
-                            </div>
                           </td>
                           <td className="py-3 pr-4">{files.length} file(s)</td>
                           <td className="py-3 pr-4">{request.uploadedBy || 'N/A'}</td>
@@ -807,6 +872,7 @@ const NotaryDashboard: React.FC = () => {
             </div>
           )}
         </div>
+        )}
       </div>
 
       {/* Details Modal */}

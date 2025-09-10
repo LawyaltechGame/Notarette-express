@@ -26,6 +26,8 @@ export interface FormSubmission {
   currency?: string
   totalAmount?: number
   status: 'draft' | 'in_progress' | 'completed' | 'cancelled'
+  notarizationStatus?: 'started' | 'pending' | 'completed'
+  meetingStatus?: 'started' | 'pending' | 'completed'
   createdAt: string
   updatedAt: string
 }

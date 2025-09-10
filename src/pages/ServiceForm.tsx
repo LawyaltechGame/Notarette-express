@@ -181,7 +181,9 @@ const ServiceForm: React.FC = () => {
         currentStep: 'form_submitted',
         serviceId: service?.id,
         serviceSlug: slug,
-        status: 'in_progress'
+        status: 'in_progress',
+        notarizationStatus: 'pending',
+        meetingStatus: 'pending'
       }
       
       const submission = await formService.createSubmission(submissionData)

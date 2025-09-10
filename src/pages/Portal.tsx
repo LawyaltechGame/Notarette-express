@@ -375,30 +375,9 @@ const Portal: React.FC = () => {
 
   const getPerOrderNotarizationStatus = (submission: FormSubmission): 'started' | 'pending' | 'completed' => {
     try {
-      if (!notaryUploads || notaryUploads.length === 0) return 'pending'
-      const subTime = new Date((submission as any).createdAt || (submission as any).$createdAt).getTime()
-      // Find the first upload on or after submission time; if none, fallback to the latest before
-      let candidate: any | null = null
-      for (const u of notaryUploads) {
-        const t = new Date((u as any).createdAt || (u as any).$createdAt).getTime()
-        if (t >= subTime) { candidate = u; break }
-      }
-      if (!candidate) {
-        // fallback: closest before
-        candidate = notaryUploads.reduce((best: any, u: any) => {
-          const t = new Date(u.createdAt || u.$createdAt).getTime()
-          if (t <= subTime) {
-            if (!best) return u
-            const bt = new Date(best.createdAt || best.$createdAt).getTime()
-            return Math.abs(subTime - t) < Math.abs(subTime - bt) ? u : best
-          }
-          return best
-        }, null as any)
-      }
-      const normalized = candidate && candidate.notarizationStatus
-        ? normalizeNotarizationStatus(candidate.notarizationStatus)
-        : ''
-      return (normalized || 'pending') as 'started' | 'pending' | 'completed'
+      // Use the notarization status directly from the form submission
+      const status = normalizeNotarizationStatus(submission.notarizationStatus)
+      return (status || 'pending') as 'started' | 'pending' | 'completed'
     } catch {
       return 'pending'
     }
@@ -571,6 +550,26 @@ const Portal: React.FC = () => {
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                     Your Orders
                   </h2>
+                  <Button
+                    onClick={fetchClientSubmissions}
+                    disabled={loadingSubmissions}
+                    className="text-sm"
+                    variant="secondary"
+                  >
+                    {loadingSubmissions ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                        <span>Refreshing...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span>Refresh</span>
+                      </div>
+                    )}
+                  </Button>
                 </div>
 
                 <div className="space-y-4">
@@ -635,6 +634,18 @@ const Portal: React.FC = () => {
                                   'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
                                 }`}>
                                   {per}
+                                </span>
+                              ) })()}
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <span className="text-sm text-gray-600 dark:text-gray-400">Meeting:</span>
+                              {(() => { const meeting = normalizeNotarizationStatus(s.meetingStatus); return (
+                                <span className={`text-xs px-2 py-1 rounded-full ${
+                                  meeting === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
+                                  meeting === 'started' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' :
+                                  'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                                }`}>
+                                  {meeting}
                                 </span>
                               ) })()}
                             </div>
