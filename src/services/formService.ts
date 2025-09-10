@@ -20,6 +20,7 @@ export interface FormSubmission {
   selectedAddOns?: string // JSON string containing array of addon IDs
   selectedOptions?: string // JSON string containing array of option keys
   extraCopies?: number
+  courierAddress?: string
   sessionId?: string
   orderId?: string
   totalAmountCents?: number

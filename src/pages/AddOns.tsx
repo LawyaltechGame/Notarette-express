@@ -208,7 +208,7 @@ const AddOns: React.FC = () => {
                       // Update form submission with selected add-ons
                       await updateSubmission({
                         selectedAddOns: JSON.stringify(Array.from(selected)),
-                        extraCertifiedCopies: selected.has('courier') ? extraCopies : 0,
+                        extraCopies: selected.has('courier') ? extraCopies : 0,
                         currentStep: 'checkout'
                       })
                       console.log('Add-ons selection updated in Appwrite')

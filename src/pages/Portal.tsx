@@ -350,6 +350,24 @@ const Portal: React.FC = () => {
     setTotalOrders(total)
   }, [submissions])
 
+  // Derive completed/in-progress counts from per-order notarizationStatus on form submissions
+  React.useEffect(() => {
+    if (!submissions) {
+      setCompletedCount(0)
+      setInProgressCount(0)
+      return
+    }
+    let completed = 0
+    let inProg = 0
+    submissions.forEach(s => {
+      const st = normalizeNotarizationStatus(s.notarizationStatus)
+      if (st === 'completed') completed += 1
+      else if (st === 'started' || st === 'pending') inProg += 1
+    })
+    setCompletedCount(completed)
+    setInProgressCount(inProg)
+  }, [submissions])
+
   React.useEffect(() => {
     const dismissed = localStorage.getItem('portalRetentionNoticeDismissed') === 'true'
     if (!dismissed) {

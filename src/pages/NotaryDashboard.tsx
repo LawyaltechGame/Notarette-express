@@ -716,8 +716,7 @@ const NotaryDashboard: React.FC = () => {
                           <span className="text-xs text-white">Page {submissionsPage}</span>
                           <Button className="text-sm" disabled={end>=submissionsFlat.length} onClick={()=>setSubmissionsPage(p=>p+1)}>Next</Button>
                         </div>
-                      </div>
-                    </>
+                      </div>                    </>
                   )
                 })()
               )}
