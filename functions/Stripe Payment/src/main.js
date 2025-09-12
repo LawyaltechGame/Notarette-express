@@ -298,6 +298,8 @@ export default async ({ req, res, log, error }) => {
       line_items: lineItems,
       success_url: successUrl || `${req.headers['x-forwarded-proto'] || 'https'}://${req.headers.host}/post-checkout?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: failureUrl || `${req.headers['x-forwarded-proto'] || 'https'}://${req.headers.host}/checkout`,
+      // Explicitly list methods (Google Pay appears under 'card')
+      payment_method_types: ['card', 'bancontact', 'eps'],
       // Ensure a unique customer per app user or per checkout when not provided
       customer_email: typeof userEmail === 'string' && userEmail ? userEmail : undefined,
       customer_creation: 'always',
