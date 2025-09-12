@@ -38,13 +38,13 @@ class StripeService {
       const mockPrices: StripePrice[] = [
         {
           priceId: 'price_1NxY0000000000000000000000000001',
-          unitAmount: 3000, // €30.00 in cents
+          unitAmount: 100, // €1.00 in cents
           currency: 'EUR',
           productName: 'Power of Attorney',
         },
         {
           priceId: 'price_placeholder_2',
-          unitAmount: 4000, // €40.00 in cents (real Stripe price)
+          unitAmount: 100, // €1.00 in cents
           currency: 'EUR',
           productName: 'Certified Copy of Document',
         },
@@ -154,12 +154,24 @@ export async function createCheckoutAndRedirect(items: CheckoutItemInput[]) {
     // Get the function ID from environment or use a default
     const functionId = ENVObj.VITE_APPWRITE_FUNCTION_ID || 'payments-with-stripe';
     
+    // Get current account details for email/id mapping
+    let userId: string | null = null;
+    let userEmail: string | null = null;
+    try {
+      const acct = await appwriteAccount.get();
+      userId = acct.$id || null;
+      // prefer verified email if available
+      userEmail = (acct.email || null) as any;
+    } catch (_) {}
+
     // Prepare the request payload
     const payload = {
       successUrl: `${window.location.origin}/post-checkout?session_id={CHECKOUT_SESSION_ID}`,
       failureUrl: `${window.location.origin}/checkout`,
       items: items,
-      idempotencyKey: `fe_${Date.now()}_${Math.random().toString(36).slice(2)}`
+      idempotencyKey: `fe_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+      userId,
+      userEmail
     };
 
     // Call the Appwrite Function
@@ -167,49 +179,56 @@ export async function createCheckoutAndRedirect(items: CheckoutItemInput[]) {
     console.log('Calling Appwrite Function:', functionId);
     console.log('Payload:', payload);
     
-    const response = await functions.createExecution(
+    // First try synchronous execution (fast path)
+    try {
+      const syncResp = await functions.createExecution(
+        functionId,
+        JSON.stringify(payload),
+        false // sync
+      );
+      if (syncResp && typeof syncResp.responseBody === 'string' && syncResp.responseBody.length > 0) {
+        try {
+          const parsed = JSON.parse(syncResp.responseBody);
+          const redirectUrl = parsed.url || parsed.checkoutUrl;
+          if (redirectUrl) {
+            window.location.href = redirectUrl;
+            return;
+          }
+        } catch (_) {
+          // Not JSON; ignore and try async fallback
+        }
+      }
+      // If sync returns but without usable body, fall through to async
+    } catch (e) {
+      // Likely timeout; proceed to async fallback
+    }
+
+    // Fallback: run asynchronously and poll up to ~25s
+    const exec = await functions.createExecution(
       functionId,
       JSON.stringify(payload),
-      false // async
+      true // async
     );
-
-    console.log('Appwrite Function Response:', response);
-    console.log('Response Body:', response.responseBody);
-
-    // Check if response is valid
-    // if (!response.responseBody) {
-    //   // If response body is empty, it might be a successful redirect
-    //   // The function is working (we saw it in the CLI test), so let's redirect to Stripe
-    //   const stripeUrl = 'https://checkout.stripe.com/pay/cs_test_a100d03UAQNBb4DCIIlvxDZIJYBLTHmAF39nIzmgvKtBgYhF9r6By9vzEt#fidkdWxOYHwnPyd1blpxYHZxWjA0VjdTTWFOR2c0VzxWU0xUSm11fDJSSWJNTV9gZFVcd1MzYmBIQW1BUHV2R0t1aH9obWJDREFCQEFNbXRKPXBWZD0xSnA1NVI2bmpHPERSTERmd39fbDR8NTVDdz1gaUhoSicpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl';
-    //   window.location.href = stripeUrl;
-    //   return;
-    // }
-
-    // If the response is "Not Found", the function might not be deployed
-    if (response.responseBody === 'Not Found') {
-      throw new Error(`Function not found or not deployed. Function ID: ${functionId}`);
+    const start = Date.now();
+    let latest = exec;
+    while (Date.now() - start < 25000) {
+      if (latest.status === 'completed') break;
+      if (latest.status === 'failed') {
+        throw new Error(latest.responseBody || 'Payment function failed');
+      }
+      await new Promise(r => setTimeout(r, 1000));
+      latest = await functions.getExecution(functionId, latest.$id as any);
     }
-
-    let result;
-    try {
-      result = JSON.parse(response.responseBody);
-    } catch (parseError) {
-      console.error('Failed to parse response:', response.responseBody);
-      throw new Error(`Invalid response from function: ${response.responseBody}`);
+    if (latest.status !== 'completed') {
+      throw new Error('Payment function did not complete in time. Please try again.');
     }
-    
-    // If the function returns a redirect URL, redirect to it
-    if (result.url) {
-      window.location.href = result.url;
+    let result: any = {};
+    try { result = JSON.parse(latest.responseBody || '{}'); } catch { }
+    const redirectUrl = result && (result.url || result.checkoutUrl);
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
       return;
     }
-    
-    // If it returns a checkout session URL directly
-    if (result.checkoutUrl) {
-      window.location.href = result.checkoutUrl;
-      return;
-    }
-    
     throw new Error('Invalid response from payment function');
   } catch (error) {
     console.error('Error creating checkout session:', error);

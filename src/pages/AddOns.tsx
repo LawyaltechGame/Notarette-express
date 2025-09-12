@@ -5,9 +5,9 @@ import Button from '../components/ui/Button'
 import { useFormSubmission } from '../hooks/useFormSubmission'
 
 const addonsList = [
-  { key: 'courier', title: 'Courier Delivery', subtitle: 'Physical delivery within 3 business days', priceCents: 1500 },
-  { key: 'apostille', title: 'Apostille Service', subtitle: 'International authentication for Hague Convention countries', priceCents: 8900 },
-  { key: 'express', title: 'Express 24h Processing', subtitle: 'Priority processing within 24 hours', priceCents: 2500 },
+  { key: 'courier', title: 'Courier Delivery', subtitle: 'Physical delivery within 3 business days', priceCents: 100 },
+  { key: 'apostille', title: 'Apostille Service', subtitle: 'International authentication for Hague Convention countries', priceCents: 100 },
+  { key: 'express', title: 'Express 24h Processing', subtitle: 'Priority processing within 24 hours', priceCents: 100 },
 ]
 
 const AddOns: React.FC = () => {
@@ -43,7 +43,7 @@ const AddOns: React.FC = () => {
   const fmt = (cents: number) => new Intl.NumberFormat('en-IE', { style: 'currency', currency }).format(cents / 100)
 
   const baseSubtotal = initial?.subtotalCents || 0
-  const EXTRA_COPY_PRICE_CENTS = 1000
+  const EXTRA_COPY_PRICE_CENTS = 100
   const addonsCentsFromToggles = Array.from(selected).reduce((sum, key) => {
     const a = addonsList.find(x => x.key === key)
     return sum + (a?.priceCents || 0)
@@ -51,7 +51,7 @@ const AddOns: React.FC = () => {
   const extraCopiesCents = (selected.has('courier') ? extraCopies : 0) * EXTRA_COPY_PRICE_CENTS
   const addonsCents = addonsCentsFromToggles + extraCopiesCents
   const subtotalCents = baseSubtotal + addonsCents
-  const vatCents = Math.round(subtotalCents * 0.21)
+  const vatCents = 0
   const totalCents = subtotalCents + vatCents
 
   const toggle = (key: string) => {

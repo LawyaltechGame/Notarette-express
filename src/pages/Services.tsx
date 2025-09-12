@@ -68,7 +68,7 @@ const Services: React.FC = () => {
     {
       title: 'Certified Copy',
       slug: 'certified-copy-document',
-      priceLabel: '€29',
+      priceLabel: '€1',
       description: 'Get legally certified copies of your important documents with official notary seal.',
       features: ['Official notary seal', 'Digital & physical copies', 'EU-wide recognition'],
       badge: null,
@@ -76,7 +76,7 @@ const Services: React.FC = () => {
     {
       title: 'Power of Attorney',
       slug: 'power-of-attorney',
-      priceLabel: '€89',
+      priceLabel: '€1',
       description: 'Create and notarize power of attorney documents for legal representation.',
       features: ['Legal drafting included', 'Multiple jurisdiction support', 'Express processing'],
       badge: 'Most Popular',
@@ -84,7 +84,7 @@ const Services: React.FC = () => {
     {
       title: 'Signature Verification',
       slug: 'signature-verification',
-      priceLabel: '€49',
+      priceLabel: '€1',
       description: 'Verify signatures on contracts and legal documents with notarial authentication.',
       features: ['Identity verification', 'Digital signature support', 'Fraud protection'],
       badge: null,
@@ -92,7 +92,7 @@ const Services: React.FC = () => {
     {
       title: 'Apostille Service',
       slug: 'apostille-services',
-      priceLabel: '€119',
+      priceLabel: '€1',
       description: 'International document authentication for use in Hague Convention countries.',
       features: ['Hague Convention compliant', 'Express 24h option', 'Worldwide acceptance'],
       badge: null,

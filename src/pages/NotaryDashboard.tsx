@@ -10,6 +10,7 @@ import { client } from '../lib/appwrite'
 import { parseUploadedFiles, parseSelectedOptions, parseSelectedAddOns } from '../services/formService'
 import { FileService } from '../services/fileService'
 import { stripeService } from '../services/stripeService'
+import emailjs from '@emailjs/browser'
 
 const NotaryDashboard: React.FC = () => {
   const user = useAppSelector(s => s.user.user)
@@ -48,6 +49,51 @@ const NotaryDashboard: React.FC = () => {
       }
     } catch (_) {}
     return '—'
+  }
+
+  const notifyClient = async (request: any) => {
+    const recipient = String(request?.clientEmail || '').trim().toLowerCase()
+    if (!recipient) {
+      alert('No client email found for this upload.')
+      return
+    }
+    const ok = window.confirm(`Send notification to ${recipient}?`)
+    if (!ok) return
+
+    try {
+      const serviceId = ENVObj.VITE_EMAILJS_SERVICE_ID
+      const templateId = ENVObj.VITE_EMAILJS_TEMPLATE_ID
+      const publicKey = ENVObj.VITE_EMAILJS_PUBLIC_KEY
+      if (!serviceId || !templateId || !publicKey) {
+        alert('Email service is not configured.')
+        return
+      }
+
+      const portalUrl = `${ENVObj.VITE_APP_BASE_URL || window.location.origin}/portal`
+
+      await emailjs.send(
+        String(serviceId),
+        String(templateId),
+        {
+          // Provide both keys to match any template mapping
+          email: recipient,
+          client_email: recipient,
+          name: String(request.clientName || request.client_email || recipient.split('@')[0] || 'Client'),
+          portal_url: String(portalUrl),
+          website_url: String(ENVObj.VITE_APP_BASE_URL || window.location.origin),
+          company_name: 'Notarette',
+          support_email: 'businesswithnotarette@gmail.com',
+          // Optional; your template may or may not use it
+          title: String(request.documentTitle || request.uploadBatchId || '')
+        },
+        { publicKey: String(publicKey) }
+      )
+
+      alert('Notification sent.')
+    } catch (err) {
+      console.error('Notify failed', err)
+      alert('Failed to send notification. Please try again.')
+    }
   }
 
   const handleRefund = async (submission: any) => {
@@ -367,7 +413,7 @@ const NotaryDashboard: React.FC = () => {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Notary Dashboard</h1>
-              <p className="text-gray-600 dark:text-gray-400">Upload notarized documents to Appwrite and link them to clients.</p>
+              <p className="text-gray-600 dark:text-gray-400">Upload notarized documents for clients.</p>
             </div>
           </div>
         </div>
@@ -827,25 +873,11 @@ const NotaryDashboard: React.FC = () => {
                           <td className="py-3 pr-4">
                             <div className="flex space-x-2">
                               <button 
-                                onClick={() => {
-                                  // You can implement view details functionality here
-                                  console.log('View details for:', request.$id)
-                                }}
-                                className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-900/50"
+                                onClick={() => notifyClient(request)}
+                                className="px-2 py-1 text-xs rounded bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors"
                               >
-                                View
+                                Notify
                               </button>
-                              {status === 'Pending' && (
-                                <button 
-                                  onClick={() => {
-                                    // You can implement cancel functionality here
-                                    console.log('Cancel request:', request.$id)
-                                  }}
-                                  className="px-2 py-1 text-xs bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 rounded hover:bg-red-200 dark:hover:bg-red-900/50"
-                                >
-                                  Cancel
-                                </button>
-                              )}
                             </div>
                           </td>
                         </tr>

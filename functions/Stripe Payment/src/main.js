@@ -7,56 +7,56 @@ const SERVICES = [
   {
     slug: 'power-of-attorney',
     name: 'Power of Attorney',
-    priceCents: 3500,
+    priceCents: 100,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'certified-copy-document',
     name: 'Certified Copy of Document',
-    priceCents: 2000,
+    priceCents: 100,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/certified-copy-of-document-meeting-test'
   },
   {
     slug: 'certified-copy-passport-id',
     name: 'Certified Copy of Passport/ID',
-    priceCents: 2500,
+    priceCents: 100,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'company-formation-documents',
     name: 'Company Formation Documents',
-    priceCents: 5000,
+    priceCents: 100,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'apostille-services',
     name: 'Apostille Services',
-    priceCents: 8000,
+    priceCents: 100,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'document-translation-notarization',
     name: 'Document Translation & Notarization',
-    priceCents: 6000,
+    priceCents: 100,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'real-estate-document-notarization',
     name: 'Real Estate Document Notarization',
-    priceCents: 4500,
+    priceCents: 100,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'estate-planning-document-notarization',
     name: 'Estate Planning Document Notarization',
-    priceCents: 5500,
+    priceCents: 100,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   }
@@ -73,12 +73,6 @@ export default async ({ req, res, log, error }) => {
   }
 
   const stripe = new Stripe(stripeSecret, { apiVersion: '2024-06-20' });
-
-  const appwriteClient = new Client()
-    .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
-    .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
-    .setKey(req.headers['x-appwrite-key'] ?? '');
-  const databases = new Databases(appwriteClient);
 
   let body = {};
   try {
@@ -202,7 +196,7 @@ export default async ({ req, res, log, error }) => {
 
   // Create checkout session
   try {
-    const { successUrl, failureUrl, items, idempotencyKey: clientIdempotencyKey } = body;
+    const { successUrl, failureUrl, items, idempotencyKey: clientIdempotencyKey, userId, userEmail } = body;
     if (!Array.isArray(items) || items.length === 0) {
       log('No items provided in payload');
       return res.json({ error: 'No items provided' }, 400);
@@ -237,38 +231,38 @@ export default async ({ req, res, log, error }) => {
         price_data: {
           currency: service.currency,
           product_data: { name: service.name },
-          unit_amount: service.priceCents
+          unit_amount: 100
         },
         quantity: 1
       });
-      subtotalCents += service.priceCents;
+      subtotalCents += 100;
     }
     if (selectedServiceTypes.has('signature')) {
       lineItems.push({
         price_data: {
           currency: service.currency,
           product_data: { name: 'Signature Notarization' },
-          unit_amount: 4900
+          unit_amount: 100
         },
         quantity: 1
       });
-      subtotalCents += 4900;
+      subtotalCents += 100;
     }
     if (selectedServiceTypes.has('true-content')) {
       lineItems.push({
         price_data: {
           currency: service.currency,
           product_data: { name: 'True Content Verification' },
-          unit_amount: 3900
+          unit_amount: 100
         },
         quantity: 1
       });
-      subtotalCents += 3900;
+      subtotalCents += 100;
     }
 
     // Extra certified copies: €15.00 per copy
     if (extraCopies > 0) {
-      const amount = 1500 * extraCopies;
+      const amount = 100 * extraCopies;
       lineItems.push({
         price_data: {
           currency: service.currency,
@@ -281,7 +275,7 @@ export default async ({ req, res, log, error }) => {
     }
 
     // Add-ons from AddOns page: courier 1500, apostille 8900, express 2500
-    const addonPriceByKey = { courier: 1500, apostille: 8900, express: 2500 };
+    const addonPriceByKey = { courier: 100, apostille: 100, express: 100 };
     for (const addKey of addOnIds) {
       const amount = addonPriceByKey[addKey] || 0;
       if (amount > 0) {
@@ -297,21 +291,17 @@ export default async ({ req, res, log, error }) => {
       }
     }
 
-    const vatCents = Math.round(subtotalCents * 0.21);
-    lineItems.push({
-      price_data: {
-        currency: service.currency,
-        product_data: { name: 'VAT (21%)' },
-        unit_amount: vatCents
-      },
-      quantity: 1
-    });
+    const vatCents = 0;
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       line_items: lineItems,
       success_url: successUrl || `${req.headers['x-forwarded-proto'] || 'https'}://${req.headers.host}/post-checkout?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: failureUrl || `${req.headers['x-forwarded-proto'] || 'https'}://${req.headers.host}/checkout`,
+      // Ensure a unique customer per app user or per checkout when not provided
+      customer_email: typeof userEmail === 'string' && userEmail ? userEmail : undefined,
+      customer_creation: 'always',
+      client_reference_id: typeof userId === 'string' && userId ? userId : undefined,
       metadata: {
         serviceSlug,
         calLink,

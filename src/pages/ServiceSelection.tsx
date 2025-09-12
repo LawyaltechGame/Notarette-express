@@ -14,9 +14,9 @@ const ServiceSelection: React.FC = () => {
 
   const baseOptions = React.useMemo(() => {
     return [
-      { key: 'base', title:  'Certified Copy', subtitle: 'Official service with notary seal', price: service ? service.priceCents : 2000, currency: service?.currency || 'EUR' },
-      { key: 'signature', title: 'Signature Notarization', subtitle: 'Verify and notarize signatures', price: 4900, currency: service?.currency || 'EUR' },
-      { key: 'true-content', title: 'True Content Verification', subtitle: 'Verify document authenticity', price: 3900, currency: service?.currency || 'EUR' },
+      { key: 'base', title:  'Certified Copy', subtitle: 'Official service with notary seal', price: service ? service.priceCents : 100, currency: service?.currency || 'EUR' },
+      { key: 'signature', title: 'Signature Notarization', subtitle: 'Verify and notarize signatures', price: 100, currency: service?.currency || 'EUR' },
+      { key: 'true-content', title: 'True Content Verification', subtitle: 'Verify document authenticity', price: 100, currency: service?.currency || 'EUR' },
     ]
   }, [service])
 
@@ -39,8 +39,8 @@ const ServiceSelection: React.FC = () => {
   // Pricing summary
   const selectedOptions = baseOptions.filter(o => selectedKeys.has(o.key))
   const subtotalCents = selectedOptions.reduce((sum, o) => sum + o.price, 0)
-  const vatRate = 0.21
-  const vatCents = Math.round(subtotalCents * vatRate)
+  const vatRate = 0
+  const vatCents = 0
   const totalCents = subtotalCents + vatCents
 
   return (

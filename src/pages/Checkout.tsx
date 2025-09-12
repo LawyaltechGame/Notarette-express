@@ -21,8 +21,8 @@ const Checkout: React.FC = () => {
   const fmt = (cents: number) => new Intl.NumberFormat('en-IE', { style: 'currency', currency }).format((cents || 0) / 100)
 
   const subtotal = payload?.subtotalCents || 0
-  const vat = payload?.vatCents ?? Math.round(subtotal * 0.21)
-  const total = payload?.totalCents ?? subtotal + vat
+  const vat = payload?.vatCents ?? 0
+  const total = payload?.totalCents ?? subtotal
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
@@ -74,10 +74,12 @@ const Checkout: React.FC = () => {
                   <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
                   <span className="text-gray-900 dark:text-white">{fmt(subtotal)}</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">VAT (21%)</span>
-                  <span className="text-gray-900 dark:text-white">{fmt(vat)}</span>
-                </div>
+                {false && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">VAT (21%)</span>
+                    <span className="text-gray-900 dark:text-white">{fmt(vat)}</span>
+                  </div>
+                )}
               </div>
 
               <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
