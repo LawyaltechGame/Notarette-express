@@ -738,13 +738,13 @@ const NotaryDashboard: React.FC = () => {
                               >
                                 View Details
                               </button>
-                              <button
+                              {/* <button
                                 onClick={() => handleRefund(submission)}
                                 disabled={!submission.sessionId && !submission.orderId}
                                 className="px-3 py-1 text-xs rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50"
                               >
                                 Refund
-                              </button>
+                              </button> */}
                             </div>
                           </td>
                         </tr>

@@ -196,7 +196,7 @@ export default async ({ req, res, log, error }) => {
 
   // Create checkout session
   try {
-    const { successUrl, failureUrl, items, idempotencyKey: clientIdempotencyKey, userId, userEmail } = body;
+    const { successUrl: clientSuccessUrl, failureUrl, items, idempotencyKey: clientIdempotencyKey, userId, userEmail } = body;
     if (!Array.isArray(items) || items.length === 0) {
       log('No items provided in payload');
       return res.json({ error: 'No items provided' }, 400);
@@ -291,32 +291,32 @@ export default async ({ req, res, log, error }) => {
       }
     }
 
-    const vatCents = 0;
+const vatCents = 0;
 
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      line_items: lineItems,
-      success_url: successUrl || `${req.headers['x-forwarded-proto'] || 'https'}://${req.headers.host}/post-checkout?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: failureUrl || `${req.headers['x-forwarded-proto'] || 'https'}://${req.headers.host}/checkout`,
-      // Explicitly list methods (Google Pay appears under 'card')
-      payment_method_types: ['card', 'bancontact', 'eps'],
-      // Ensure a unique customer per app user or per checkout when not provided
-      customer_email: typeof userEmail === 'string' && userEmail ? String(userEmail) : undefined,
-      customer_creation: 'always',
-      client_reference_id: typeof userId === 'string' && userId ? String(userId) : undefined,
-      metadata: {
-        serviceSlug,
-        calLink,
-        subtotalCents: String(subtotalCents),
-        vatCents: String(vatCents),
-        totalCents: String(subtotalCents + vatCents),
-        optionKeys: optionKeys.join(','),
-        extraCopies: String(extraCopies)
-      }
-    }, { idempotencyKey });
+const successUrl = process.env.STRIPE_SUCCESS_URL || clientSuccessUrl || 'https://notarette-express.vercel.app/post-checkout?session_id={CHECKOUT_SESSION_ID}';
+const cancelUrl = process.env.STRIPE_CANCEL_URL || 'https://notarette-express.vercel.app/cancel';
 
-    log(`Created Stripe session: ${session.id}, url: ${session.url}`);
-    return res.json({ url: session.url });
+const session = await stripe.checkout.sessions.create({
+  mode: 'payment',
+  line_items: lineItems,
+  success_url: successUrl,
+  cancel_url: cancelUrl,
+  payment_method_types: ['card', 'bancontact', 'eps'],
+  customer_email: typeof userEmail === 'string' && userEmail ? String(userEmail) : undefined,
+  customer_creation: 'always',
+  client_reference_id: typeof userId === 'string' && userId ? String(userId) : undefined,
+  metadata: {
+    serviceSlug,
+    calLink,
+    subtotalCents: String(subtotalCents),
+    vatCents: String(vatCents),
+    totalCents: String(subtotalCents + vatCents),
+    optionKeys: optionKeys.join(','),
+    extraCopies: String(extraCopies)
+  }
+}, { idempotencyKey });
+log(`Created Stripe session: ${session.id}, url: ${session.url}`);
+return res.json({ url: session.url });
   } catch (e) {
     error(`Checkout create error: ${e?.message || e}`);
     return res.json({ error: 'Failed to create checkout session' }, 500);
