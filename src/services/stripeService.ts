@@ -164,6 +164,22 @@ export async function createCheckoutAndRedirect(items: CheckoutItemInput[]) {
       userEmail = (acct.email || null) as any;
     } catch (_) {}
 
+    // Fallback: read from local storage user (our app's auth)
+    if (!userEmail && typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('LOCAL_USER');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          // tolerate shapes like { user: { email } } or { email }
+          userEmail = parsed?.user?.email || parsed?.email || null;
+          userId = userId || parsed?.user?.id || parsed?.id || null;
+        }
+      } catch {}
+    }
+
+    // Finalize the email to prefill: allow override via env (for debugging), else current userEmail
+    const prefillEmail = (ENVObj as any).VITE_STRIPE_PREFILL_EMAIL || userEmail || null;
+
     // Prepare the request payload
     const payload = {
       successUrl: `${window.location.origin}/post-checkout?session_id={CHECKOUT_SESSION_ID}`,
@@ -171,7 +187,7 @@ export async function createCheckoutAndRedirect(items: CheckoutItemInput[]) {
       items: items,
       idempotencyKey: `fe_${Date.now()}_${Math.random().toString(36).slice(2)}`,
       userId,
-      userEmail
+      userEmail: prefillEmail
     };
 
     // Call the Appwrite Function

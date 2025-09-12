@@ -139,7 +139,7 @@ export default async ({ req, res, log, error }) => {
       const paid = session.payment_status === 'paid';
       const amount = session.amount_total ?? null;
       const currency = session.currency ?? 'eur';
-      const customerEmail = session.customer_details?.email ?? null;
+      const customerEmail = session.customer_details?.email ?? (session.customer_email || null);
       const serviceSlug = session.metadata?.serviceSlug ?? null;
       const calLink = session.metadata?.calLink ?? null;
 
@@ -301,9 +301,9 @@ export default async ({ req, res, log, error }) => {
       // Explicitly list methods (Google Pay appears under 'card')
       payment_method_types: ['card', 'bancontact', 'eps'],
       // Ensure a unique customer per app user or per checkout when not provided
-      customer_email: typeof userEmail === 'string' && userEmail ? userEmail : undefined,
+      customer_email: typeof userEmail === 'string' && userEmail ? String(userEmail) : undefined,
       customer_creation: 'always',
-      client_reference_id: typeof userId === 'string' && userId ? userId : undefined,
+      client_reference_id: typeof userId === 'string' && userId ? String(userId) : undefined,
       metadata: {
         serviceSlug,
         calLink,
