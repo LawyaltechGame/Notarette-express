@@ -116,6 +116,12 @@ function App() {
                     <Portal />
                   </ProtectedRoute>
                 } />
+                {/* Backward-compatible alias used by some email templates */}
+                <Route path="/services/portal" element={
+                  <ProtectedRoute clientOnly>
+                    <Portal />
+                  </ProtectedRoute>
+                } />
 
                 {/* Notary-only dashboard */}
                 <Route path="/notary" element={

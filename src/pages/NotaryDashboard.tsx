@@ -4,7 +4,7 @@ import { ID, Query, Permission, Role } from 'appwrite'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import { useAppSelector } from '../hooks/useAppSelector'
-import { ENVObj } from '../lib/constant'
+import { ENVObj, APP_BASE_URL, getPortalUrl } from '../lib/constant'
 import { Functions } from 'appwrite'
 import { client } from '../lib/appwrite'
 import { parseUploadedFiles, parseSelectedOptions, parseSelectedAddOns } from '../services/formService'
@@ -69,7 +69,7 @@ const NotaryDashboard: React.FC = () => {
         return
       }
 
-      const portalUrl = `${ENVObj.VITE_APP_BASE_URL || window.location.origin}/portal`
+      const portalUrl = getPortalUrl()
 
       await emailjs.send(
         String(serviceId),
@@ -79,8 +79,10 @@ const NotaryDashboard: React.FC = () => {
           email: recipient,
           client_email: recipient,
           name: String(request.clientName || request.client_email || recipient.split('@')[0] || 'Client'),
+          // Full portal URL for button/link
           portal_url: String(portalUrl),
-          website_url: String(ENVObj.VITE_APP_BASE_URL || window.location.origin),
+          // Base URL only
+          website_url: String(APP_BASE_URL),
           company_name: 'Notarette',
           support_email: 'businesswithnotarette@gmail.com',
           // Optional; your template may or may not use it

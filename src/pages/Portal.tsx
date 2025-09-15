@@ -705,7 +705,7 @@ const Portal: React.FC = () => {
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
                           <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{dateKey}</h4>
-                          <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">Latest</span>
+                          <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">Latst</span>
                         </div>
                         {uploaded.map((u, index) => (
                           <div key={`client-upload-${index}`} className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">

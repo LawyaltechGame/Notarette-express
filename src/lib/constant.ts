@@ -18,3 +18,22 @@ export const ENVObj = {
   VITE_APP_BASE_URL: import.meta.env.VITE_APP_BASE_URL,
   VITE_STRIPE_PREFILL_EMAIL: import.meta.env.VITE_STRIPE_PREFILL_EMAIL,
 }
+
+// Centralized app base URL resolver for absolute links in emails/notifications
+export const APP_BASE_URL: string = (() => {
+  const envBase = import.meta.env.VITE_APP_BASE_URL
+  if (envBase && typeof envBase === 'string') {
+    return String(envBase).replace(/\/+$/, '')
+  }
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname
+    const isLocal = hostname === 'localhost' || hostname === '127.0.0.1'
+    return isLocal
+      ? 'http://localhost:5173'
+      : 'https://notarette-express.vercel.app'
+  }
+  // SSR/unknown environment fallback to production URL
+  return 'https://notarette-express.vercel.app'
+})()
+
+export const getPortalUrl = (): string => `${APP_BASE_URL}/portal`
