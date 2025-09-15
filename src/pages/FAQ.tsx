@@ -145,136 +145,148 @@ const FAQ: React.FC = () => {
   const isExpanded = (question: string) => expandedItems.has(question)
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <div className="w-20 h-20 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-            <HelpCircle className="w-10 h-10 text-teal-600" />
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Frequently Asked Questions
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Find answers to common questions about our notarization services, process, and support.
-          </p>
-        </motion.div>
+    <div className="relative min-h-screen">
+      {/* Background mesh & accents for modern look */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 dark:from-slate-900 dark:via-slate-800/50 dark:to-indigo-950/30">
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage:
+              "url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%236366f1\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M30 30c0-16.569 13.431-30 30-30v30H30zm30 30c-16.569 0-30-13.431-30-30h30v30z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')",
+            backgroundRepeat: 'repeat',
+          }}
+        />
+      </div>
+      <div className="pointer-events-none absolute top-24 left-12 w-32 h-32 bg-gradient-to-br from-blue-400/10 to-purple-500/10 rounded-full blur-xl" />
+      <div className="pointer-events-none absolute top-40 right-24 w-40 h-40 bg-gradient-to-br from-indigo-400/10 to-blue-500/10 rounded-full blur-xl" />
+      <div className="pointer-events-none absolute bottom-24 left-1/4 w-28 h-28 bg-gradient-to-br from-teal-400/10 to-cyan-500/10 rounded-full blur-xl" />
 
-        {/* Category Filter */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-8"
-        >
-          <div className="flex flex-wrap justify-center gap-3">
-            {categories.map((category) => {
-              const Icon = category.icon
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${
-                    selectedCategory === category.id
-                      ? 'bg-teal-600 text-white border-teal-600'
-                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span className="text-sm font-medium">{category.name}</span>
-                </button>
-              )
-            })}
-          </div>
-        </motion.div>
-
-        {/* FAQ Items */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="space-y-4"
-        >
-          {filteredFAQs.map((faq, index) => (
-            <motion.div
-              key={faq.question}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + index * 0.05 }}
-            >
-              <Card>
-                <button
-                  onClick={() => toggleItem(faq.question)}
-                  className="w-full text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg"
-                >
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white pr-4">
-                      {faq.question}
-                    </h3>
-                    {isExpanded(faq.question) ? (
-                      <ChevronUp className="w-5 h-5 text-teal-600 flex-shrink-0" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-teal-600 flex-shrink-0" />
-                    )}
-                  </div>
-                  
-                  {isExpanded(faq.question) && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
-                    >
-                      <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                        {faq.answer}
-                      </p>
-                    </motion.div>
-                  )}
-                </button>
-              </Card>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Contact Support */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mt-16"
-        >
-          <Card className="text-center py-12">
-            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Mail className="w-8 h-8 text-blue-600" />
+      <div className="relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+          {/* Hero */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
+          >
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200 dark:border-blue-800 mb-6">
+              <span className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse" />
+              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Helpful knowledge base</span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-              Still Have Questions?
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
-              Can't find the answer you're looking for? Our customer support team is here to help. 
-              We're available 24/7 to assist you with any questions or concerns.
+            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 dark:from-white dark:via-blue-100 dark:to-indigo-100 bg-clip-text text-transparent mb-4 leading-tight">
+              Frequently Asked Questions
+            </h1>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Everything you need to know about our services, process, security, and support.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="primary" size="lg">
-                <Mail className="w-5 h-5 mr-2" />
-                Contact Support
-              </Button>
-              <Button variant="secondary" size="lg">
-                <Phone className="w-5 h-5 mr-2" />
-                Call Us
-              </Button>
+          </motion.div>
+
+          {/* Category Filter */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mb-10"
+          >
+            <div className="flex flex-wrap justify-center gap-3">
+              {categories.map((category) => {
+                const Icon = category.icon
+                const active = selectedCategory === category.id
+                return (
+                  <button
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category.id)}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-full border transition-colors ${
+                      active
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                        : 'bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="text-sm font-medium">{category.name}</span>
+                  </button>
+                )
+              })}
             </div>
-            <div className="mt-6 text-sm text-gray-500 dark:text-gray-400">
-              <p>Email: support@notarette.com</p>
-              <p>Live Chat: Available 24/7</p>
-              <p>Phone: +1 (555) 123-4567</p>
+          </motion.div>
+
+          {/* FAQ Items inside glass container */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-gray-700/50 shadow-2xl shadow-blue-500/5 p-4 md:p-8"
+          >
+            <div className="space-y-4">
+              {filteredFAQs.map((faq, index) => (
+                <motion.div
+                  key={faq.question}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + index * 0.03 }}
+                >
+                  <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
+                    <button
+                      onClick={() => toggleItem(faq.question)}
+                      className="w-full text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg p-4"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white pr-4">
+                          {faq.question}
+                        </h3>
+                        {isExpanded(faq.question) ? (
+                          <ChevronUp className="w-5 h-5 text-blue-600 flex-shrink-0 mt-1" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5 text-blue-600 flex-shrink-0 mt-1" />
+                        )}
+                      </div>
+
+                      {isExpanded(faq.question) && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
+                        >
+                          <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                            {faq.answer}
+                          </p>
+                        </motion.div>
+                      )}
+                    </button>
+                  </Card>
+                </motion.div>
+              ))}
             </div>
-          </Card>
-        </motion.div>
+          </motion.div>
+
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-center mt-16"
+          >
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-600 p-10 md:p-14">
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">Need more help?</h2>
+              <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
+                Our support team is available 24/7. Reach out and we’ll guide you through every step.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button variant="secondary" size="lg" className="bg-white text-blue-700 hover:bg-gray-100">
+                  <Mail className="w-5 h-5 mr-2" />
+                  Contact Support
+                </Button>
+                <Button variant="ghost" size="lg" className="text-white border-white hover:bg-white hover:text-blue-700">
+                  <Phone className="w-5 h-5 mr-2" />
+                  Call Us
+                </Button>
+              </div>
+              <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10" />
+              <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-white/10" />
+            </div>
+          </motion.div>
+        </div>
       </div>
     </div>
   )
