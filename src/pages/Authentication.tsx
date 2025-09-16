@@ -8,6 +8,7 @@ import { loginSuccess } from '../store/slices/userSlice';
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import { Mail, Lock, Eye, EyeOff, User, ArrowRight } from 'lucide-react'
+import { LOGO_URL } from '../lib/constant'
 
 const Authentication = () => {
   const [loggedInUser, setLoggedInUser] = useState<Models.User<Models.Preferences> | null>(null);
@@ -96,10 +97,14 @@ const Authentication = () => {
           className="text-center mb-8"
         >
           <Link to="/services" className="flex items-center justify-center space-x-2 mb-6">
-            <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">NE</span>
-            </div>
-            <span className="font-bold text-2xl text-gray-900 dark:text-white">
+            <img
+              src={LOGO_URL}
+              alt="Notarette Express"
+              className="h-10 w-auto"
+              loading="eager"
+              decoding="async"
+            />
+            <span className="brand-font font-semibold text-2xl text-gray-900 dark:text-white">
               Notarette Express
             </span>
           </Link>

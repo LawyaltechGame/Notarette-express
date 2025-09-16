@@ -38,3 +38,12 @@ export const APP_BASE_URL: string = (() => {
 })()
 
 export const getPortalUrl = (): string => `${APP_BASE_URL}/portal`
+
+// Public logo URL configurable via env, with sane default to /logo.png in public/
+export const LOGO_URL: string = (() => {
+  const envLogo = import.meta.env.VITE_LOGO_URL
+  if (envLogo && typeof envLogo === 'string') {
+    return String(envLogo)
+  }
+  return 'https://api.deepai.org/job-view-file/21b345b1-af40-4e64-80c2-9dccba2e7f9e/outputs/output.jpg'
+})()

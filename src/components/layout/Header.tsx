@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Menu, X, Moon, Sun, LogOut } from 'lucide-react'
+import { Menu, X, LogOut } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppSelector } from '../../hooks/useAppSelector'
 import { useAppDispatch } from '../../hooks/useAppDispatch'
-import { toggleTheme } from '../../store/slices/uiSlice'
 import { appwriteAccount } from '../../lib/appwrite'
 import { logout } from '../../store/slices/userSlice'
-import { ENVObj } from '../../lib/constant'
+import { ENVObj, LOGO_URL } from '../../lib/constant'
 import { Teams } from 'appwrite'
 import { client } from '../../lib/appwrite'
 
@@ -15,7 +14,6 @@ const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const theme = useAppSelector(state => state.ui.theme)
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated)
   const user = useAppSelector(state => state.user.user)
   const [showNotaryLink, setShowNotaryLink] = useState(false)
@@ -93,10 +91,14 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/services" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xs">NE</span>
-            </div>
-            <span className="font-bold text-xl text-gray-900 dark:text-white">
+            <img
+              src={LOGO_URL}
+              alt="Notarette Express"
+              className="h-12 rounded-full w-auto"
+              loading="eager"
+              decoding="async"
+            />
+            <span className="brand-font font-semibold text-xl text-gray-900 dark:text-white">
               Notarette Express
             </span>
           </Link>
