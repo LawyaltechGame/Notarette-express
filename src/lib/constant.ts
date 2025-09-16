@@ -30,10 +30,11 @@ export const APP_BASE_URL: string = (() => {
     const isLocal = hostname === 'localhost' || hostname === '127.0.0.1'
     return isLocal
       ? 'http://localhost:5173'
-      : 'https://notarette-express.vercel.app'
+      : 'https://notarette-express.notarette.com'
+      
   }
   // SSR/unknown environment fallback to production URL
-  return 'https://notarette-express.vercel.app'
+  return 'https://notarette-express.notarette.com'
 })()
 
 export const getPortalUrl = (): string => `${APP_BASE_URL}/portal`
