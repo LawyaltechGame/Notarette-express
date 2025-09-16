@@ -142,7 +142,7 @@ export type CheckoutItemInput = {
 }
 
 // Connect to Appwrite Function for Stripe Checkout
-export async function createCheckoutAndRedirect(items: CheckoutItemInput[]) {
+export async function createCheckoutAndRedirect(items: CheckoutItemInput[], overrideEmail?: string) {
   try {
     // Get the current user session
     const session = await appwriteAccount.getSession('current');
@@ -156,12 +156,15 @@ export async function createCheckoutAndRedirect(items: CheckoutItemInput[]) {
     
     // Get current account details for email/id mapping
     let userId: string | null = null;
-    let userEmail: string | null = null;
+    let userEmail: string | null = overrideEmail || null;
     try {
+      // Only fetch account email if not manually provided by client
       const acct = await appwriteAccount.get();
       userId = acct.$id || null;
-      // prefer verified email if available
-      userEmail = (acct.email || null) as any;
+      if (!userEmail) {
+        // prefer verified email if available
+        userEmail = (acct.email || null) as any;
+      }
     } catch (_) {}
 
     // Fallback: read from local storage user (our app's auth)
@@ -177,8 +180,9 @@ export async function createCheckoutAndRedirect(items: CheckoutItemInput[]) {
       } catch {}
     }
 
-    // Finalize the email to prefill: allow override via env (for debugging), else current userEmail
-    const prefillEmail = (ENVObj as any).VITE_STRIPE_PREFILL_EMAIL || userEmail || null;
+    // Finalize the email to prefill: strictly use the signed-in user's email
+    // Remove any environment-based override to avoid leaking a wrong/stale test email
+    const prefillEmail = userEmail || null;
 
     // Prepare the request payload
     const payload = {

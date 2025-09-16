@@ -91,13 +91,13 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/services" className="flex items-center space-x-2">
-            <img
+            {/* <img
               src={LOGO_URL}
               alt="Notarette Express"
               className="h-12 rounded-full w-auto"
               loading="eager"
               decoding="async"
-            />
+            /> */}
             <span className="brand-font font-semibold text-xl text-gray-900 dark:text-white">
               Notarette Express
             </span>

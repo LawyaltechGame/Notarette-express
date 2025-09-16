@@ -9,6 +9,7 @@ const Checkout: React.FC = () => {
   const [payload, setPayload] = useState<any>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { updateSubmission } = useFormSubmission()
+  const [email, setEmail] = useState('')
 
   useEffect(() => {
     try {
@@ -100,6 +101,17 @@ const Checkout: React.FC = () => {
               <div>3. Complete payment securely on Stripe</div>
               <div>4. You will receive confirmation and next steps by email</div>
             </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email for receipt and updates</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="mt-1 text-xs text-gray-500">We'll use this email on Stripe Checkout.</p>
+            </div>
             <Button
               variant="danger"
               className="w-full py-3"
@@ -111,6 +123,10 @@ const Checkout: React.FC = () => {
                     return
                   }
                   if (isSubmitting) return
+                  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    alert('Please enter a valid email to continue.')
+                    return
+                  }
                   setIsSubmitting(true)
 
                   // Update form submission to mark as checkout initiated
@@ -138,7 +154,7 @@ const Checkout: React.FC = () => {
                     : []
                   const extraCopies = payload?.extraCopies || 0
                   const items = [{ serviceId, quantity: 1, addOnIds, optionKeys, extraCopies }]
-                  createCheckoutAndRedirect(items).catch(() => {}).finally(() => setIsSubmitting(false))
+                  createCheckoutAndRedirect(items, email).catch(() => {}).finally(() => setIsSubmitting(false))
                 } catch (e) {
                   console.error(e)
                   alert('Failed to start Stripe Checkout. Please try again.')

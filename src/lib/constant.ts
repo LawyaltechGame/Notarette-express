@@ -45,5 +45,5 @@ export const LOGO_URL: string = (() => {
   if (envLogo && typeof envLogo === 'string') {
     return String(envLogo)
   }
-  return 'https://api.deepai.org/job-view-file/21b345b1-af40-4e64-80c2-9dccba2e7f9e/outputs/output.jpg'
+  return 'https://api.deepai.org/job-view-file/60a26a2a-2ccc-4ecb-958e-5bbb609d89f2/outputs/output.jpg'
 })()

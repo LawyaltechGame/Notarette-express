@@ -296,13 +296,29 @@ const vatCents = 0;
 const successUrl = process.env.STRIPE_SUCCESS_URL || clientSuccessUrl || 'https://notarette-express.vercel.app/post-checkout?session_id={CHECKOUT_SESSION_ID}';
 const cancelUrl = process.env.STRIPE_CANCEL_URL || 'https://notarette-express.vercel.app/cancel';
 
+// If we have an email from the signed-in user, create a Customer so Checkout uses it
+let customerId = undefined;
+try {
+  if (typeof userEmail === 'string' && userEmail) {
+    const createdCustomer = await stripe.customers.create(
+      { email: String(userEmail) },
+      { idempotencyKey: `cust_${String(userEmail).toLowerCase()}_${new Date().toISOString().slice(0, 10)}` }
+    );
+    customerId = createdCustomer?.id;
+    log(`Using Stripe customer ${customerId} for email ${userEmail}`);
+  }
+} catch (custErr) {
+  error(`Customer create failed (continuing without): ${custErr?.message || custErr}`);
+}
+
 const session = await stripe.checkout.sessions.create({
   mode: 'payment',
   line_items: lineItems,
   success_url: successUrl,
   cancel_url: cancelUrl,
   payment_method_types: ['card', 'bancontact', 'eps'],
-  customer_email: typeof userEmail === 'string' && userEmail ? String(userEmail) : undefined,
+  // Prefer binding to a specific customer to ensure the correct email is shown
+  customer: customerId,
   customer_creation: 'always',
   client_reference_id: typeof userId === 'string' && userId ? String(userId) : undefined,
   metadata: {
