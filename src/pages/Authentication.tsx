@@ -8,7 +8,8 @@ import { loginSuccess } from '../store/slices/userSlice';
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import { Mail, Lock, Eye, EyeOff, User, ArrowRight } from 'lucide-react'
-import { LOGO_URL } from '../lib/constant'
+import { APP_BASE_URL } from '../lib/constant'
+import { addToast } from '../store/slices/uiSlice'
 
 const Authentication = () => {
   const [loggedInUser, setLoggedInUser] = useState<Models.User<Models.Preferences> | null>(null);
@@ -19,6 +20,8 @@ const Authentication = () => {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [mode, setMode] = useState<'signup' | 'signin'>('signup')
 
   useEffect(() => {
@@ -28,6 +31,9 @@ const Authentication = () => {
 
   async function login(email: string, password: string) {
     console.log('[Login] Submitted credentials:', { email, password });
+    if (isSubmitting) return
+    setErrorMsg(null)
+    setIsSubmitting(true)
 
     // If a session is already active, reuse it
     try {
@@ -68,9 +74,20 @@ const Authentication = () => {
           },
         }));
         navigate('/services', { replace: true });
+        setIsSubmitting(false); 
         return;
       }
-      throw err;
+      // Graceful 429 handling and generic error mapping
+      const code = Number(err?.code || err?.response?.status || 0)
+      if (code === 429 || message.includes('rate limit')) {
+        setErrorMsg('Too many login attempts. Please wait a moment and try again.')
+      } else if (message.includes('invalid credentials')) {
+        setErrorMsg('Invalid email or password. Please try again.')
+      } else {
+        setErrorMsg('Unable to sign in right now. Please try again later.')
+      }
+      setIsSubmitting(false)
+      return;
     }
 
     const profile = await appwriteAccount.get();
@@ -86,6 +103,7 @@ const Authentication = () => {
       },
     }));
     navigate('/services', { replace: true });
+    setIsSubmitting(false)
   }
 
   return (
@@ -97,13 +115,13 @@ const Authentication = () => {
           className="text-center mb-8"
         >
           <Link to="/services" className="flex items-center justify-center space-x-2 mb-6">
-            <img
+            {/* <img
               src={LOGO_URL}
               alt="Notarette Express"
               className="h-10 w-auto"
               loading="eager"
               decoding="async"
-            />
+            /> */}
             <span className="brand-font font-semibold text-2xl text-gray-900 dark:text-white">
               Notarette Express
             </span>
@@ -184,22 +202,78 @@ const Authentication = () => {
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
+                {mode === 'signin' && (
+                  <div className="mt-2 text-right">
+                    <button
+                      type="button"
+                      className="text-xs text-teal-600 hover:text-teal-700"
+                      onClick={async () => {
+                        if (!email) { setErrorMsg('Please enter your email first.'); return }
+                        try {
+                          setIsSubmitting(true)
+                          setErrorMsg(null)
+                          const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                          const redirect = isLocal
+                            ? `${window.location.origin}/reset-password`
+                            : `${APP_BASE_URL}/reset-password`
+                          await appwriteAccount.createRecovery(email, redirect)
+                          dispatch(addToast({
+                            type: 'success',
+                            title: 'Reset email sent',
+                            message: 'Check your inbox and spam folder. If not found, check Promotions/Updates.'
+                          }))
+                        } catch (e: any) {
+                          const code = Number(e?.code || e?.response?.status)
+                          const msg = String(e?.message || '').toLowerCase()
+                          if (code === 429 || msg.includes('rate limit')) {
+                            setErrorMsg('Too many attempts. Please wait a moment and try again.')
+                          } else {
+                            setErrorMsg('Unable to send reset email right now. Please try again later.')
+                          }
+                        } finally {
+                          setIsSubmitting(false)
+                        }
+                      }}
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-3">
+                {errorMsg && (
+                  <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded px-3 py-2">
+                    {errorMsg}
+                  </div>
+                )}
                 {mode === 'signup' ? (
                   <Button
                     type="button"
                     variant="primary"
                     size="lg"
                     className="w-full"
+                    disabled={isSubmitting}
                     onClick={async () => {
                       console.log('[Register] Submitted credentials:', { name, email, password });
-                      await appwriteAccount.create(ID.unique(), email, password, name);
-                      login(email, password);
+                      if (isSubmitting) return
+                      setErrorMsg(null)
+                      setIsSubmitting(true)
+                      try {
+                        await appwriteAccount.create(ID.unique(), email, password, name);
+                        await login(email, password);
+                      } catch (e: any) {
+                        const message = String(e?.message || '').toLowerCase()
+                        if (Number(e?.code || e?.response?.status) === 429 || message.includes('rate limit')) {
+                          setErrorMsg('Too many attempts. Please wait a moment and try again.')
+                        } else {
+                          setErrorMsg('Unable to create account right now. Please try again later.')
+                        }
+                        setIsSubmitting(false)
+                      }
                     }}
                   >
-                    Create Account
+                    {isSubmitting ? 'Please wait…' : 'Create Account'}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 ) : (
@@ -208,9 +282,10 @@ const Authentication = () => {
                     variant="primary"
                     size="lg"
                     className="w-full"
+                    disabled={isSubmitting}
                     onClick={() => login(email, password)}
                   >
-                    Sign In
+                    {isSubmitting ? 'Signing in…' : 'Sign In'}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 )}

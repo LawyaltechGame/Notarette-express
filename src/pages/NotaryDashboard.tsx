@@ -7,7 +7,7 @@ import { useAppSelector } from '../hooks/useAppSelector'
 import { ENVObj, APP_BASE_URL, getPortalUrl } from '../lib/constant'
 import { Functions } from 'appwrite'
 import { client } from '../lib/appwrite'
-import { parseUploadedFiles, parseSelectedOptions, parseSelectedAddOns } from '../services/formService'
+import { parseUploadedFiles, parseSelectedOptions, parseSelectedAddOns, formService } from '../services/formService'
 import { FileService } from '../services/fileService'
 import { stripeService } from '../services/stripeService'
 import emailjs from '@emailjs/browser'
@@ -251,6 +251,23 @@ const NotaryDashboard: React.FC = () => {
     fetchFormSubmissions()
   }, [])
 
+  // Realtime: auto-refresh Client Form table when submissions change
+  React.useEffect(() => {
+    try {
+      const dbId = ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID
+      const tableId = ENVObj.VITE_FORM_SUBMISSIONS_TABLE_ID
+      if (!dbId || !tableId) return
+      const channel = `databases.${dbId}.collections.${tableId}.documents`
+      const unsubscribe = (client as any).subscribe(channel, () => {
+        // Light-weight refresh on any create/update/delete
+        fetchFormSubmissions()
+      })
+      return () => {
+        try { unsubscribe && unsubscribe() } catch {}
+      }
+    } catch {}
+  }, [])
+
   // no-op effect removed (no upload type toggle anymore)
 
   const onFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -386,6 +403,24 @@ const NotaryDashboard: React.FC = () => {
         console.log('Grant access function called successfully')
       } else {
         console.log('No grant function ID - skipping access grant')
+      }
+
+      // 5) Update latest form submission status for this client to notarization completed
+      try {
+        console.log('Attempting to mark notarizationStatus=completed for latest submission of', normalizedEmail)
+        // Fetch latest submission by clientEmail
+        const submissions = await formService.getSubmissionsByEmail(normalizedEmail)
+        if (Array.isArray(submissions) && submissions.length > 0) {
+          const latest = submissions[0]
+          if (latest?.$id) {
+            await formService.updateSubmission(latest.$id, { notarizationStatus: 'completed' })
+            console.log('Updated submission', latest.$id, 'notarizationStatus=completed')
+          }
+        } else {
+          console.log('No form submissions found for client to update status')
+        }
+      } catch (statusErr) {
+        console.warn('Failed to auto-update notarization status:', statusErr)
       }
       
       console.log('Upload process completed successfully!')

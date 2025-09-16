@@ -26,6 +26,7 @@ import ServiceSelection from './pages/ServiceSelection'
 import PostCheckout from './routes/PostCheckout'
 import AddOns from './pages/AddOns'
 import DownloadPage from './pages/DownloadPage'
+import ResetPassword from './pages/ResetPassword'
 import './index.css'
 
 // Note: About, Contact, and How It Works pages are hidden from navigation
@@ -57,6 +58,11 @@ function App() {
                 <Route path="/register" element={
                   <ProtectedRoute requireAuth={false}>
                     <Authentication />
+                  </ProtectedRoute>
+                } />
+                <Route path="/reset-password" element={
+                  <ProtectedRoute requireAuth={false} redirectIfAuthenticated={false}>
+                    <ResetPassword />
                   </ProtectedRoute>
                 } />
                 
