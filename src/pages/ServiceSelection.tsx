@@ -11,6 +11,37 @@ const ServiceSelection: React.FC = () => {
   const [] = useSearchParams()
   const service = slug ? getServiceBySlug(slug) : undefined
   const { updateSubmission } = useFormSubmission()
+  const navigateToStep = (step: string) => {
+    const base = slug || ''
+    if (step === 'form_submitted') navigate(`/services/${base}/document-type`, { replace: true })
+    else if (step === 'service_selected') navigate(`/services/${base}/service-selection`, { replace: true })
+    else if (step === 'addons_selected') navigate(`/services/${base}/add-ons`, { replace: true })
+    else if (step === 'checkout') navigate(`/checkout`, { replace: true })
+    else if (step === 'completed') navigate(`/thank-you`, { replace: true })
+  }
+  
+  // Guard: require prior step (DocumentType)
+  React.useEffect(() => {
+    try {
+      const hasSubmissionId = !!sessionStorage.getItem('current_submission_id')
+      const hasDocType = !!(sessionStorage.getItem('notary_manual_form') || '').length || !!(sessionStorage.getItem('notary_wizard_selection') || '').length
+      if (!hasSubmissionId || !hasDocType) {
+        navigate('/services', { replace: true })
+      }
+    } catch {
+      navigate('/services', { replace: true })
+    }
+  }, [navigate])
+
+  // If user has progressed further, send them to current step instead of allowing jump back/forward
+  React.useEffect(() => {
+    (async () => {
+      try {
+        // infer current step from selection or submission cache if available in future
+        // for now, rely on form submission hook persistence if present
+      } catch {}
+    })()
+  }, [])
 
   const baseOptions = React.useMemo(() => {
     return [
@@ -66,7 +97,7 @@ const ServiceSelection: React.FC = () => {
           <div className="lg:col-span-2">
             <Card>
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white text-center mb-2">
-                Choose your notarial service
+                Choose your Service Type
               </h1>
               <p className="text-center text-gray-600 dark:text-gray-400 mb-8">
                 Select one or more types of notarization you need

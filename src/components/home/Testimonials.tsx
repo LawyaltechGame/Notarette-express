@@ -60,7 +60,7 @@ const Testimonials: React.FC = () => {
               <Card hover className="h-full">
                 <div className="flex flex-col h-full">
                   {/* Quote Icon */}
-                  <Quote className="w-8 h-8 text-teal-600 mb-4" />
+                  <Quote className="w-8 h-8 text-primary-600 mb-4" />
 
                   {/* Content */}
                   <blockquote className="flex-1 text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
@@ -106,19 +106,19 @@ const Testimonials: React.FC = () => {
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
-              <div className="text-2xl font-bold text-teal-600 mb-1">4.9/5</div>
+              <div className="text-2xl font-bold text-primary-600 mb-1">4.9/5</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Average Rating</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-teal-600 mb-1">50K+</div>
+              <div className="text-2xl font-bold text-primary-600 mb-1">50K+</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Happy Customers</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-teal-600 mb-1">24/7</div>
+              <div className="text-2xl font-bold text-primary-600 mb-1">24/7</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Support Available</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-teal-600 mb-1">99.9%</div>
+              <div className="text-2xl font-bold text-primary-600 mb-1">99.9%</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Uptime</div>
             </div>
           </div>

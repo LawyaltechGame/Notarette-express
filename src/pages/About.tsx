@@ -59,7 +59,7 @@ const About: React.FC = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-teal-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 py-20">
+      <section className="relative bg-gradient-to-br from-primary-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -90,7 +90,7 @@ const About: React.FC = () => {
                 transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
-                <stat.icon className="w-12 h-12 text-teal-600 mx-auto mb-4" />
+                <stat.icon className="w-12 h-12 text-primary-600 mx-auto mb-4" />
                 <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                   {stat.value}
                 </div>
@@ -173,7 +173,7 @@ const About: React.FC = () => {
                 transition={{ delay: index * 0.2 }}
               >
                 <Card hover className="text-center h-full">
-                  <value.icon className="w-12 h-12 text-teal-600 mx-auto mb-6" />
+                  <value.icon className="w-12 h-12 text-primary-600 mx-auto mb-6" />
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
                     {value.title}
                   </h3>
@@ -223,7 +223,7 @@ const About: React.FC = () => {
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                     {member.name}
                   </h3>
-                  <p className="text-teal-600 font-medium mb-4">
+                  <p className="text-primary-600 font-medium mb-4">
                     {member.role}
                   </p>
                   <p className="text-gray-600 dark:text-gray-300 text-sm">
@@ -237,7 +237,7 @@ const About: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-teal-600 to-blue-600">
+      <section className="py-20 bg-gradient-to-r from-primary-700 to-primary-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -247,11 +247,11 @@ const About: React.FC = () => {
             <h2 className="text-3xl font-bold text-white mb-4">
               Ready to Experience the Future of Notarization?
             </h2>
-            <p className="text-xl text-teal-100 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
               Join thousands of satisfied customers who trust Notarette Express for their document notarization needs.
             </p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center">
-              <Button variant="secondary" size="lg" className="bg-white text-teal-600 hover:bg-gray-50">
+              <Button variant="secondary" size="lg" className="bg-white text-primary-600 hover:bg-gray-50">
                 Get Started Now
               </Button>
               <Button variant="ghost" size="lg" className="text-white border-white hover:bg-white/10">

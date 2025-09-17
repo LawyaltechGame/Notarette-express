@@ -105,7 +105,7 @@ const Contact: React.FC = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-teal-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 py-20">
+      <section className="bg-gradient-to-br from-primary-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -135,11 +135,11 @@ const Contact: React.FC = () => {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card hover className="text-center h-full">
-                  <info.icon className="w-12 h-12 text-teal-600 mx-auto mb-4" />
+                  <info.icon className="w-12 h-12 text-primary-600 mx-auto mb-4" />
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
                     {info.title}
                   </h3>
-                  <p className="text-lg font-medium text-teal-600 mb-2">
+                  <p className="text-lg font-medium text-primary-600 mb-2">
                     {info.details}
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -174,7 +174,7 @@ const Contact: React.FC = () => {
                     </label>
                     <input
                       {...register('name')}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="Your full name"
                     />
                     {errors.name && (
@@ -189,7 +189,7 @@ const Contact: React.FC = () => {
                     <input
                       type="email"
                       {...register('email')}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="your.email@example.com"
                     />
                     {errors.email && (
@@ -203,7 +203,7 @@ const Contact: React.FC = () => {
                     </label>
                     <input
                       {...register('subject')}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="What can we help you with?"
                     />
                     {errors.subject && (
@@ -218,7 +218,7 @@ const Contact: React.FC = () => {
                     <textarea
                       {...register('message')}
                       rows={5}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
                       placeholder="Please provide as much detail as possible..."
                     />
                     {errors.message && (
@@ -281,7 +281,7 @@ const Contact: React.FC = () => {
               >
                 <Card>
                   <div className="text-center">
-                    <MessageCircle className="w-12 h-12 text-teal-600 mx-auto mb-4" />
+                    <MessageCircle className="w-12 h-12 text-primary-600 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                       Need Immediate Help?
                     </h3>
@@ -325,7 +325,7 @@ const Contact: React.FC = () => {
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
                     Emergency Support
                   </h3>
-                  <p className="text-teal-600 font-medium mb-1">24/7 Available</p>
+                  <p className="text-primary-600 font-medium mb-1">24/7 Available</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     For urgent notarization needs and technical issues
                   </p>
@@ -335,7 +335,7 @@ const Contact: React.FC = () => {
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
                     General Inquiries
                   </h3>
-                  <p className="text-teal-600 font-medium mb-1">Mon-Sun, 6AM-10PM EST</p>
+                  <p className="text-primary-600 font-medium mb-1">Mon-Sun, 6AM-10PM EST</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     Questions about services and account support
                   </p>
@@ -345,7 +345,7 @@ const Contact: React.FC = () => {
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
                     Sales Team
                   </h3>
-                  <p className="text-teal-600 font-medium mb-1">Mon-Fri, 9AM-6PM EST</p>
+                  <p className="text-primary-600 font-medium mb-1">Mon-Fri, 9AM-6PM EST</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     Business solutions and custom packages
                   </p>

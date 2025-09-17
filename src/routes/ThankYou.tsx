@@ -90,7 +90,7 @@ const ThankYou: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-teal-600 animate-spin mx-auto mb-4" />
+          <Loader2 className="w-12 h-12 text-primary-600 animate-spin mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
             Loading Your Order Details
           </h2>
@@ -162,7 +162,7 @@ const ThankYou: React.FC = () => {
                       <h3 className="font-semibold text-gray-900 dark:text-white">
                         {item.name}
                       </h3>
-                      <span className="font-bold text-teal-600">
+                      <span className="font-bold text-primary-600">
                         Qty: {item.qty}
                       </span>
                     </div>
@@ -173,7 +173,7 @@ const ThankYou: React.FC = () => {
               <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                 <div className="flex justify-between items-center text-xl font-bold text-gray-900 dark:text-white">
                   <span>Total</span>
-                  <span className="text-teal-600">{formatCurrency(orderData.amount, orderData.currency)}</span>
+                  <span className="text-primary-600">{formatCurrency(orderData.amount, orderData.currency)}</span>
                 </div>
               </div>
             </Card>
@@ -223,7 +223,7 @@ const ThankYou: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="text-center mb-12"
         >
-          <Card className="bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-900/20 dark:to-blue-900/20">
+          <Card className="bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-900/10">
             <div className="p-8">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                 Next Step: Book Your Appointment

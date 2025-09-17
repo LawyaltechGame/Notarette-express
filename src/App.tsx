@@ -19,6 +19,7 @@ import TestimonialsPage from './pages/Testimonials'
 import FAQ from './pages/FAQ'
 import Authentication from './pages/Authentication'
 import PaymentSuccess from './pages/PaymentSuccess'
+import PaymentCancelled from './pages/PaymentCancelled'
 import NotFound from './pages/NotFound'
 import ServiceForm from './pages/ServiceForm'
 import DocumentType from './pages/DocumentType'
@@ -110,6 +111,11 @@ function App() {
                 <Route path="/payment-success" element={
                   <ProtectedRoute>
                     <PaymentSuccess />
+                  </ProtectedRoute>
+                } />
+                <Route path="/payment-cancelled" element={
+                  <ProtectedRoute requireAuth={false} redirectIfAuthenticated={false}>
+                    <PaymentCancelled />
                   </ProtectedRoute>
                 } />
                 <Route path="/thank-you" element={

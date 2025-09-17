@@ -108,7 +108,7 @@ const Header: React.FC = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className="text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 px-3 py-2 text-sm font-medium transition-colors"
+                className="text-gray-700 hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors"
               >
                 {item.name}
               </Link>
@@ -118,7 +118,7 @@ const Header: React.FC = () => {
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm">
+                <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm">
                   {user?.firstName?.charAt(0)?.toUpperCase() || 'U'}
                 </div>
                 <span className="text-gray-600 dark:text-gray-300 text-sm font-medium">
@@ -127,7 +127,7 @@ const Header: React.FC = () => {
               </div>
               <button
                 onClick={handleLogout}
-                className="p-2 text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition-colors"
+                className="p-2 text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 transition-colors"
                 aria-label="Logout"
               >
                 <LogOut size={20} />
@@ -136,14 +136,14 @@ const Header: React.FC = () => {
 
             <Link
               to="/services"
-              className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors"
+              className="hidden md:inline-flex items-center px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
             >
               Get Notarized
             </Link>
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400"
+              className="md:hidden p-2 text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400"
               aria-label="Toggle menu"
             >
               {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -166,7 +166,7 @@ const Header: React.FC = () => {
                   key={item.name}
                   to={item.href}
                   onClick={() => setIsOpen(false)}
-                  className="block px-3 py-2 text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 text-sm font-medium transition-colors"
+                  className="block px-3 py-2 text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 text-sm font-medium transition-colors"
                 >
                   {item.name}
                 </Link>
@@ -174,7 +174,7 @@ const Header: React.FC = () => {
               <Link
                 to="/services"
                 onClick={() => setIsOpen(false)}
-                className="block w-full text-center mt-4 px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors"
+                className="block w-full text-center mt-4 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
               >
                 Get Notarized
               </Link>

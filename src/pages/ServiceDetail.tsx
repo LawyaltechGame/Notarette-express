@@ -43,9 +43,9 @@ const ServiceDetail: React.FC = () => {
         >
           <nav className="text-sm">
             <ol className="flex space-x-2">
-              <li><Link to="/" className="text-teal-600 hover:text-teal-700">Home</Link></li>
+              <li><Link to="/" className="text-primary-600 hover:text-primary-700">Home</Link></li>
               <li className="text-gray-400">/</li>
-              <li><Link to="/services" className="text-teal-600 hover:text-teal-700">Services</Link></li>
+              <li><Link to="/services" className="text-primary-600 hover:text-primary-700">Services</Link></li>
               <li className="text-gray-400">/</li>
               <li className="text-gray-600 dark:text-gray-400">{service.name}</li>
             </ol>
@@ -72,7 +72,7 @@ const ServiceDetail: React.FC = () => {
                     </p>
                   </div>
                   <div className="text-right">
-                    <div className="text-3xl font-bold text-teal-600">
+                    <div className="text-3xl font-bold text-primary-600">
                       {formatPrice(getDisplayPrice() * 100, getDisplayCurrency())}
                     </div>
                     <div className="text-sm text-gray-500">

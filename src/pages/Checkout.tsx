@@ -15,8 +15,26 @@ const Checkout: React.FC = () => {
     try {
       const raw = sessionStorage.getItem("notary_checkout_payload");
       if (raw) setPayload(JSON.parse(raw));
+      const savedEmail = sessionStorage.getItem('notary_checkout_email')
+      if (savedEmail) setEmail(savedEmail)
     } catch {}
   }, []);
+
+  // Guard: require AddOns step payload
+  useEffect(() => {
+    try {
+      const hasSubmissionId = !!sessionStorage.getItem('current_submission_id')
+      const hasPayload = !!sessionStorage.getItem('notary_checkout_payload')
+      if (!hasSubmissionId || !hasPayload) {
+        window.location.replace('/services')
+      }
+    } catch {
+      window.location.replace('/services')
+    }
+  }, [])
+
+  // If user’s currentStep indicates earlier/later, route them accordingly
+  // Minimal check by reading a cached indicator (optional future enhancement could read from DB)
 
   const currency = payload?.currency || "EUR";
   const fmt = (cents: number) =>
@@ -160,6 +178,7 @@ const Checkout: React.FC = () => {
                     return;
                   }
                   setIsSubmitting(true);
+                  try { sessionStorage.setItem('notary_checkout_email', email) } catch {}
 
                   // Update form submission to mark as checkout initiated
                   try {

@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {trustBadges.map((badge, index) => (
               <div key={index} className="flex items-center justify-center space-x-3">
-                <badge.icon className="h-6 w-6 text-teal-600" />
+                <badge.icon className="h-6 w-6 text-primary-600" />
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   {badge.text}
                 </span>
@@ -62,7 +62,7 @@ const Footer: React.FC = () => {
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <Link to="/services" className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xs">NE</span>
               </div>
               <span className="font-bold text-xl text-gray-900 dark:text-white">
@@ -99,7 +99,7 @@ const Footer: React.FC = () => {
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    className="text-sm text-gray-600 hover:text-teal-600 dark:text-gray-400 dark:hover:text-teal-400 transition-colors"
+                    className="text-sm text-gray-700 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -116,7 +116,7 @@ const Footer: React.FC = () => {
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    className="text-sm text-gray-600 hover:text-teal-600 dark:text-gray-400 dark:hover:text-teal-400 transition-colors"
+                    className="text-sm text-gray-700 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -133,7 +133,7 @@ const Footer: React.FC = () => {
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    className="text-sm text-gray-600 hover:text-teal-600 dark:text-gray-400 dark:hover:text-teal-400 transition-colors"
+                    className="text-sm text-gray-700 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors"
                   >
                     {link.name}
                   </Link>

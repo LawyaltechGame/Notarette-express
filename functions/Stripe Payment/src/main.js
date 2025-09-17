@@ -294,7 +294,7 @@ export default async ({ req, res, log, error }) => {
 const vatCents = 0;
 
 const successUrl = process.env.STRIPE_SUCCESS_URL || clientSuccessUrl || 'https://notarette-express.vercel.app/post-checkout?session_id={CHECKOUT_SESSION_ID}';
-const cancelUrl = process.env.STRIPE_CANCEL_URL || 'https://notarette-express.vercel.app/cancel';
+const cancelUrl = process.env.STRIPE_CANCEL_URL || failureUrl || 'https://notarette-express.vercel.app/payment-cancelled';
 
 // If we have an email from the signed-in user, create a Customer so Checkout uses it
 let customerId = undefined;

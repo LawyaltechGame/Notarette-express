@@ -60,7 +60,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-teal-600 animate-spin mx-auto mb-4" />
+          <Loader2 className="w-12 h-12 text-primary-600 animate-spin mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
             Loading...
           </h2>
@@ -92,7 +92,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
           <div className="text-center">
-            <Loader2 className="w-12 h-12 text-teal-600 animate-spin mx-auto mb-4" />
+            <Loader2 className="w-12 h-12 text-primary-600 animate-spin mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Checking access…</h2>
           </div>
         </div>
@@ -112,7 +112,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
           <div className="text-center">
-            <Loader2 className="w-12 h-12 text-teal-600 animate-spin mx-auto mb-4" />
+            <Loader2 className="w-12 h-12 text-primary-600 animate-spin mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Checking access…</h2>
           </div>
         </div>

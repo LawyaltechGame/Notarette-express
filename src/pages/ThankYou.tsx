@@ -30,6 +30,12 @@ const ThankYou: React.FC = () => {
 
   useEffect(() => {
     const sessionId = searchParams.get('session_id');
+    // Guard: only allow after successful payment (we expect lastOrder or session_id)
+    const hasOrder = !!sessionStorage.getItem('lastOrder')
+    if (!sessionId && !hasOrder) {
+      navigate('/services', { replace: true })
+      return
+    }
     
     if (!sessionId) {
       setIsLoading(false);

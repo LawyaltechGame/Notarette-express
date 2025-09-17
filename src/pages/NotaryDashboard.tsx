@@ -462,7 +462,7 @@ const NotaryDashboard: React.FC = () => {
               onClick={() => setActiveTab('upload')}
               className={`px-1 pb-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'upload'
-                  ? 'border-blue-600 text-blue-600'
+                  ? 'border-primary-600 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
               }`}
             >
@@ -472,7 +472,7 @@ const NotaryDashboard: React.FC = () => {
               onClick={() => setActiveTab('submissions')}
               className={`px-1 pb-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'submissions'
-                  ? 'border-blue-600 text-blue-600'
+                  ? 'border-primary-600 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
               }`}
             >
@@ -482,7 +482,7 @@ const NotaryDashboard: React.FC = () => {
               onClick={() => setActiveTab('uploads')}
               className={`px-1 pb-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'uploads'
-                  ? 'border-blue-600 text-blue-600'
+                  ? 'border-primary-600 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
               }`}
             >
@@ -518,7 +518,7 @@ const NotaryDashboard: React.FC = () => {
                     type="file" 
                     multiple
                     disabled={files.length >= MAX_FILES}
-                    className="block w-full text-sm text-gray-900 dark:text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-300 disabled:opacity-50 disabled:cursor-not-allowed" 
+                    className="block w-full text-sm text-gray-900 dark:text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-300 disabled:opacity-50 disabled:cursor-not-allowed" 
                   />
                   {fileError && (
                     <p className="text-xs text-red-600 dark:text-red-400 mt-1">{fileError}</p>
@@ -559,7 +559,7 @@ const NotaryDashboard: React.FC = () => {
                               }
                             }}
                             disabled={files.length >= MAX_FILES}
-                            className="text-xs text-blue-500 hover:text-blue-700 disabled:text-gray-400 disabled:cursor-not-allowed"
+                            className="text-xs text-primary-600 hover:text-primary-700 disabled:text-gray-400 disabled:cursor-not-allowed"
                           >
                             + Add More Files
                           </button>
@@ -614,7 +614,7 @@ const NotaryDashboard: React.FC = () => {
           
           {loadingSubmissions ? (
             <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
               <p className="text-gray-500 dark:text-gray-400 mt-2">Loading submissions...</p>
             </div>
           ) : (
@@ -662,7 +662,7 @@ const NotaryDashboard: React.FC = () => {
                       const getStepColor = (step: string) => {
                         switch (step) {
                           case 'completed': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                          case 'checkout': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                          case 'checkout': return 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300'
                           case 'addons_selected': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
                           case 'service_selected': return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
                           case 'form_submitted': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
@@ -771,7 +771,7 @@ const NotaryDashboard: React.FC = () => {
                             <div className="flex space-x-2">
                               <button 
                                 onClick={() => viewSubmissionDetails(submission)}
-                                className="px-3 py-1 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
+                                className="px-3 py-1 text-xs bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 rounded hover:bg-primary-200 dark:hover:bg-primary-900/50 transition-colors"
                               >
                                 View Details
                               </button>
@@ -831,7 +831,7 @@ const NotaryDashboard: React.FC = () => {
           
           {loadingRequests ? (
             <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
               <p className="text-gray-500 dark:text-gray-400 mt-2">Loading requests...</p>
             </div>
           ) : (
@@ -883,7 +883,7 @@ const NotaryDashboard: React.FC = () => {
                           <td className="py-3 pr-4">{request.uploadBatchId || 'N/A'}</td>
                           <td className="py-3 pr-4">
                             {files.length <= 1 ? (
-                              <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                              <span className="px-2 py-1 text-xs rounded-full bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300">
                                 Single File
                               </span>
                             ) : (
@@ -1018,7 +1018,7 @@ const NotaryDashboard: React.FC = () => {
                       <div className="mt-1">
                         <span className={`px-3 py-1 text-sm rounded-full ${
                           selectedSubmission.currentStep === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
-                          selectedSubmission.currentStep === 'checkout' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' :
+                          selectedSubmission.currentStep === 'checkout' ? 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300' :
                           selectedSubmission.currentStep === 'addons_selected' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300' :
                           selectedSubmission.currentStep === 'service_selected' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300' :
                           selectedSubmission.currentStep === 'form_submitted' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
@@ -1034,7 +1034,7 @@ const NotaryDashboard: React.FC = () => {
                         {parseSelectedOptions(selectedSubmission.selectedOptions || '[]').length > 0 ? (
                           <div className="flex flex-wrap gap-2">
                             {parseSelectedOptions(selectedSubmission.selectedOptions || '[]').map((option, index) => (
-                              <span key={index} className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-sm rounded">
+                              <span key={index} className="px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 text-sm rounded">
                                 {option}
                               </span>
                             ))}
@@ -1119,8 +1119,8 @@ const NotaryDashboard: React.FC = () => {
                     <div className="p-4">
                       <div className="flex items-center space-x-3 mb-4">
                         <div className="flex-shrink-0">
-                          <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                            <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
+                            <svg className="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                           </div>
@@ -1144,7 +1144,7 @@ const NotaryDashboard: React.FC = () => {
                                   <button
                                     key={index}
                                     onClick={() => downloadIndividualFile(file.fileId, file.name)}
-                                    className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors flex items-center justify-between"
+                                    className="w-full px-4 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md transition-colors flex items-center justify-between"
                                   >
                                     <div className="flex items-center space-x-3 flex-1 min-w-0">
                                       <svg className="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1152,7 +1152,7 @@ const NotaryDashboard: React.FC = () => {
                                       </svg>
                                       <span className="truncate text-sm font-medium">{file.name}</span>
                                     </div>
-                                    <span className="text-xs text-blue-100 ml-2">
+                                    <span className="text-xs text-primary-100 ml-2">
                                       {file.size ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : ''}
                                     </span>
                                   </button>

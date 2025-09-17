@@ -17,7 +17,7 @@ const HowItWorks: React.FC = () => {
       icon: ShieldCheck,
       title: 'Complete identity verification',
       description: 'Quick and secure identity verification using bank-grade technology. Takes just a few minutes.',
-      color: 'bg-teal-500',
+      color: 'bg-primary-500',
     },
     {
       icon: FileText,
@@ -54,7 +54,7 @@ const HowItWorks: React.FC = () => {
 
         <div className="relative">
           {/* Connection Lines */}
-          <div className="hidden lg:block absolute top-24 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-200 via-teal-200  to-green-200 dark:from-blue-800 dark:via-teal-800  dark:to-green-800" />
+          <div className="hidden lg:block absolute top-24 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-200 via-primary-200 to-green-200 dark:from-blue-800 dark:via-primary-800 dark:to-green-800" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {steps.map((step, index) => (
@@ -102,7 +102,7 @@ const HowItWorks: React.FC = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center px-8 py-4 bg-teal-600 text-white text-lg font-semibold rounded-lg hover:bg-teal-700 transition-colors shadow-lg"
+            className="inline-flex items-center px-8 py-4 bg-primary-600 text-white text-lg font-semibold rounded-lg hover:bg-primary-700 transition-colors shadow-lg"
           >
             Start Notarization Process
           </motion.button>

@@ -292,7 +292,7 @@ const Portal: React.FC = () => {
       case 'completed':
         return <CheckCircle className="w-5 h-5 text-green-600" />
       case 'processing':
-        return <Clock className="w-5 h-5 text-blue-600" />
+        return <Clock className="w-5 h-5 text-primary-600" />
       case 'paid':
         return <CreditCard className="w-5 h-5 text-amber-600" />
       case 'pending':
@@ -381,10 +381,10 @@ const Portal: React.FC = () => {
   }
 
   const getServiceIcon = (serviceName: string) => {
-    if (serviceName.includes('Power of Attorney')) return <Shield className="w-5 h-5 text-blue-600" />
+    if (serviceName.includes('Power of Attorney')) return <Shield className="w-5 h-5 text-primary-600" />
     if (serviceName.includes('Certified Copy')) return <FileText className="w-5 h-5 text-green-600" />
     if (serviceName.includes('Passport') || serviceName.includes('ID')) return <UserCheck className="w-5 h-5 text-purple-600" />
-    if (serviceName.includes('Online Content')) return <Globe className="w-5 h-5 text-teal-600" />
+    if (serviceName.includes('Online Content')) return <Globe className="w-5 h-5 text-primary-600" />
     if (serviceName.includes('Signature')) return <FileText className="w-5 h-5 text-orange-600" />
     if (serviceName.includes('Apostille')) return <Globe className="w-5 h-5 text-indigo-600" />
     if (serviceName.includes('Contract')) return <Building className="w-5 h-5 text-red-600" />
@@ -522,7 +522,7 @@ const Portal: React.FC = () => {
             >
               <Card>
                 <div className="flex items-center space-x-3">
-                  <FileText className="w-8 h-8 text-teal-600" />
+                  <FileText className="w-8 h-8 text-primary-600" />
                   <div>
                     <div className="text-2xl font-bold text-gray-900 dark:text-white">
                       {totalOrders}
@@ -546,7 +546,7 @@ const Portal: React.FC = () => {
               
               <Card>
                 <div className="flex items-center space-x-3">
-                  <Clock className="w-8 h-8 text-blue-600" />
+                  <Clock className="w-8 h-8 text-primary-600" />
                   <div>
                     <div className="text-2xl font-bold text-gray-900 dark:text-white">
                       {inProgressCount}
@@ -630,7 +630,7 @@ const Portal: React.FC = () => {
                           {(options.length > 0 || addons.length > 0) && (
                             <div className="mb-4 flex flex-wrap gap-2">
                               {options.map((op: string, i: number) => (
-                                <span key={`opt-${i}`} className="text-xs px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">{op}</span>
+                                <span key={`opt-${i}`} className="text-xs px-2 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-200">{op}</span>
                               ))}
                               {addons.map((ad: string, i: number) => (
                                 <span key={`ad-${i}`} className="text-xs px-2 py-1 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200">{ad}</span>
@@ -648,7 +648,7 @@ const Portal: React.FC = () => {
                               {(() => { const per = getPerOrderNotarizationStatus(s); return (
                                 <span className={`text-xs px-2 py-1 rounded-full ${
                                   per === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
-                                  per === 'started' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' :
+                                  per === 'started' ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300' :
                                   'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
                                 }`}>
                                   {per}
@@ -660,7 +660,7 @@ const Portal: React.FC = () => {
                               {(() => { const meeting = normalizeNotarizationStatus(s.meetingStatus); return (
                                 <span className={`text-xs px-2 py-1 rounded-full ${
                                   meeting === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
-                                  meeting === 'started' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' :
+                                  meeting === 'started' ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300' :
                                   'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
                                 }`}>
                                   {meeting}
@@ -710,7 +710,7 @@ const Portal: React.FC = () => {
                         {uploaded.map((u, index) => (
                           <div key={`client-upload-${index}`} className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
                             <div className="flex items-center space-x-3">
-                              <Upload className="w-5 h-5 text-blue-600" />
+                              <Upload className="w-5 h-5 text-primary-600" />
                               <div>
                                 <p className="font-medium text-gray-900 dark:text-white">Uploaded Document</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">From service form</p>
@@ -719,7 +719,7 @@ const Portal: React.FC = () => {
                             {u?.fileId ? (
                               <Button
                                 onClick={() => FileService.downloadFile(u.fileId, u.name || 'document.pdf')}
-                                className="bg-blue-600 hover:bg-blue-700 text-white"
+                                className="bg-primary-600 hover:bg-primary-700 text-white"
                               >
                                 <Download className="w-4 h-4 mr-2" />
                                 Download
@@ -795,7 +795,7 @@ const Portal: React.FC = () => {
                         {groups[dateKey].map((file, index) => (
                           <div key={`${dateKey}-${index}`} className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
                             <div className="flex items-center space-x-3">
-                              <FileText className="w-5 h-5 text-blue-600" />
+                              <FileText className="w-5 h-5 text-primary-600" />
                               <div>
                                 <p className="font-medium text-gray-900 dark:text-white">Notarized Document</p>
                                 {file.uploadedAt && (
@@ -806,7 +806,7 @@ const Portal: React.FC = () => {
                             <div className="flex items-center gap-2">
                               <Button
                                 onClick={() => downloadNotarizedFile(file)}
-                                className="bg-blue-600 hover:bg-blue-700 text-white"
+                                className="bg-primary-600 hover:bg-primary-700 text-white"
                               >
                                 <Download className="w-4 h-4 mr-2" />
                                 {`Download File ${index + 1}`}

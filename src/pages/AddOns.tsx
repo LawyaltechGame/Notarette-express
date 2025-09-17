@@ -14,6 +14,28 @@ const AddOns: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   const { updateSubmission } = useFormSubmission()
+  
+  const navigateToStep = (step: string) => {
+    const base = slug || ''
+    if (step === 'form_submitted') navigate(`/services/${base}/document-type`, { replace: true })
+    else if (step === 'service_selected') navigate(`/services/${base}/service-selection`, { replace: true })
+    else if (step === 'addons_selected') navigate(`/services/${base}/add-ons`, { replace: true })
+    else if (step === 'checkout') navigate(`/checkout`, { replace: true })
+    else if (step === 'completed') navigate(`/thank-you`, { replace: true })
+  }
+
+  // Guard: require ServiceSelection payload
+  React.useEffect(() => {
+    try {
+      const hasSubmissionId = !!sessionStorage.getItem('current_submission_id')
+      const selection = sessionStorage.getItem('notary_wizard_selection')
+      if (!hasSubmissionId || !selection) {
+        navigate('/services', { replace: true })
+      }
+    } catch {
+      navigate('/services', { replace: true })
+    }
+  }, [navigate])
 
   const initial = React.useMemo(() => {
     try {

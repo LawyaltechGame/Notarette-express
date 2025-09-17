@@ -12,7 +12,7 @@ const Home: React.FC = () => {
         </p>
         <a 
           href="/services" 
-          className="inline-flex items-center px-6 py-3 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 transition-colors"
+          className="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors"
         >
           Go to Services
         </a>

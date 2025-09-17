@@ -55,7 +55,7 @@ const TestimonialsPage: React.FC = () => {
   return (
     <div className="relative min-h-screen">
       {/* Background inspired by Services page */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 dark:from-slate-900 dark:via-slate-800/50 dark:to-indigo-950/30">
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-primary-50/20 to-white dark:from-slate-900 dark:via-slate-800/50 dark:to-gray-900/30">
         <div
           className="absolute inset-0 opacity-40"
           style={{
@@ -67,20 +67,20 @@ const TestimonialsPage: React.FC = () => {
       </div>
 
       {/* Floating accents */}
-      <div className="pointer-events-none absolute top-24 left-12 w-32 h-32 bg-gradient-to-br from-blue-400/10 to-purple-500/10 rounded-full blur-xl" />
-      <div className="pointer-events-none absolute top-40 right-24 w-40 h-40 bg-gradient-to-br from-indigo-400/10 to-blue-500/10 rounded-full blur-xl" />
-      <div className="pointer-events-none absolute bottom-24 left-1/4 w-28 h-28 bg-gradient-to-br from-teal-400/10 to-cyan-500/10 rounded-full blur-xl" />
+      <div className="pointer-events-none absolute top-24 left-12 w-32 h-32 bg-gradient-to-br from-primary-400/10 to-primary-200/10 rounded-full blur-xl" />
+      <div className="pointer-events-none absolute top-40 right-24 w-40 h-40 bg-gradient-to-br from-primary-500/10 to-primary-300/10 rounded-full blur-xl" />
+      <div className="pointer-events-none absolute bottom-24 left-1/4 w-28 h-28 bg-gradient-to-br from-primary-400/10 to-primary-200/10 rounded-full blur-xl" />
 
       <div className="relative z-10">
         {/* Hero */}
         <section className="pt-20 pb-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200 dark:border-blue-800 mb-6">
-                <span className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse" />
-                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Real Stories. Real Results.</span>
+              <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-900/20 border border-primary-200 dark:border-primary-800 mb-6">
+                <span className="w-2 h-2 bg-primary-600 rounded-full mr-2 animate-pulse" />
+                <span className="text-sm font-medium text-primary-700 dark:text-primary-300">Real Stories. Real Results.</span>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 dark:from-white dark:via-blue-100 dark:to-indigo-100 bg-clip-text text-transparent leading-tight mb-4">
+              <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-primary-900 to-primary-700 dark:from-white dark:via-primary-100 dark:to-primary-200 bg-clip-text text-transparent leading-tight mb-4">
                 What Clients Say About Us
               </h1>
               <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
@@ -120,11 +120,11 @@ const TestimonialsPage: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">Customer Testimonials</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 mx-auto rounded-full" />
+              <div className="w-24 h-1 bg-gradient-to-r from-primary-700 to-primary-500 mx-auto rounded-full" />
             </div>
 
             {/* Marquee container */}
-            <div className="relative overflow-hidden bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-gray-700/50 shadow-2xl shadow-blue-500/5 p-2 md:p-4">
+            <div className="relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl border border-primary-100 dark:border-primary-900/20 shadow-2xl shadow-primary-500/10 p-3 md:p-5">
               {/* Gradient edges */}
               <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white/80 dark:from-gray-800/80 to-transparent z-10 rounded-l-3xl" />
               <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white/80 dark:from-gray-800/80 to-transparent z-10 rounded-r-3xl" />
@@ -138,7 +138,7 @@ const TestimonialsPage: React.FC = () => {
                 {[...testimonials, ...testimonials].map((t, idx) => (
                   <div
                     key={idx}
-                    className="group shrink-0 w-80 sm:w-96 snap-start relative overflow-hidden rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+                    className="group shrink-0 w-80 sm:w-96 snap-start relative overflow-hidden rounded-2xl bg-white dark:bg-gray-900 border border-primary-100 dark:border-primary-900/20 p-6 shadow-sm"
                   >
                     <div className="flex items-center gap-4 mb-4">
                       <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
@@ -156,7 +156,7 @@ const TestimonialsPage: React.FC = () => {
                         <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">{t.rating}.0</span>
                       </div>
                     )}
-                    <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-tr from-blue-500/5 to-indigo-500/5" />
+                    <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-tr from-primary-500/10 to-primary-400/10" />
                   </div>
                 ))}
               </motion.div>
@@ -172,24 +172,24 @@ const TestimonialsPage: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-600 p-10 md:p-14"
+              className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary-700 to-primary-500 p-10 md:p-14"
             >
               <h3 className="text-3xl lg:text-4xl font-bold text-white mb-4">Join our happy customers</h3>
-              <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
+              <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
                 Start your notarization in minutes and experience dedicated support at every step.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/services">
-                  <Button variant="secondary" size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
+                  <Button variant="secondary" size="lg" className="bg-white text-primary-600 hover:bg-gray-100">
                     Get Started
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
-                <Link to="/how-it-works">
-                  <Button variant="ghost" size="lg" className="text-white border-white hover:bg-white hover:text-blue-700">
+                {/* <Link to="/how-it-works">
+                  <Button variant="ghost" size="lg" className="text-white border-white hover:bg-white hover:text-primary-700">
                     How It Works
                   </Button>
-                </Link>
+                </Link> */}
               </div>
               <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10" />
               <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-white/10" />

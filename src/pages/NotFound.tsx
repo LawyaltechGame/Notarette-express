@@ -16,8 +16,8 @@ const NotFound: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <div className="w-24 h-24 bg-teal-100 dark:bg-teal-900 rounded-full flex items-center justify-center mx-auto mb-6">
-            <FileQuestion className="w-12 h-12 text-teal-600" />
+          <div className="w-24 h-24 bg-primary-100 dark:bg-primary-900/40 rounded-full flex items-center justify-center mx-auto mb-6">
+            <FileQuestion className="w-12 h-12 text-primary-600" />
           </div>
           
           <h1 className="text-6xl font-bold text-gray-900 dark:text-white mb-4">
@@ -79,19 +79,19 @@ const NotFound: React.FC = () => {
           <div className="grid grid-cols-2 gap-3 text-sm">
             <Link 
               to="/services" 
-              className="text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 transition-colors"
+              className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
             >
               Our Services
             </Link>
             <Link 
               to="/pricing" 
-              className="text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 transition-colors"
+              className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
             >
               Pricing
             </Link>
             <Link 
               to="/about" 
-              className="text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 transition-colors"
+              className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
             >
               About Us
             </Link>

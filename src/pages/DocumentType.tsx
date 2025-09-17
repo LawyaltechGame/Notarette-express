@@ -36,6 +36,46 @@ const DocumentType: React.FC = () => {
   const navigate = useNavigate()
   const [selected, setSelected] = React.useState<string | null>(null)
   const { submission, updateSubmission } = useFormSubmission()
+  const resolvedSlug = slug || submission?.serviceSlug || ((): string | undefined => {
+    try {
+      const legacy = sessionStorage.getItem('notary_manual_form')
+      if (legacy) return JSON.parse(legacy)?.serviceSlug
+      const sel = sessionStorage.getItem('notary_wizard_selection')
+      if (sel) return JSON.parse(sel)?.serviceSlug
+    } catch {}
+    return undefined
+  })()
+  
+  // Guard: prevent direct access without starting from Services → ServiceForm
+  React.useEffect(() => {
+    try {
+      const hasSubmissionId = !!sessionStorage.getItem('current_submission_id')
+      const hasLegacy = !!sessionStorage.getItem('notary_manual_form')
+      if (!hasSubmissionId && !hasLegacy) {
+        navigate('/services', { replace: true })
+      }
+    } catch {
+      navigate('/services', { replace: true })
+    }
+  }, [navigate])
+
+  // Enforce step: if a later step is already recorded, send user to that current step
+  React.useEffect(() => {
+    const step = submission?.currentStep
+    if (!step) return
+    const base = resolvedSlug || ''
+    const targetByStep: Record<string, string> = {
+      'form_submitted': `/services/${base}/document-type`,
+      'service_selected': `/services/${base}/service-selection`,
+      'addons_selected': `/services/${base}/add-ons`,
+      'checkout': `/checkout`,
+      'completed': `/thank-you`
+    }
+    const target = targetByStep[step]
+    if (target && window.location.pathname !== target) {
+      navigate(target, { replace: true })
+    }
+  }, [submission?.currentStep, resolvedSlug, navigate])
   
   React.useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior })

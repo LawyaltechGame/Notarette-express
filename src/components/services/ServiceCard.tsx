@@ -66,7 +66,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
     <Card hover className="h-full flex flex-col service-card group">
       <div className="flex flex-col h-full">
         {/* Service Icon/Image Placeholder */}
-        <div className="flex items-center justify-center mb-4 p-6 bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-900/20 dark:to-blue-900/20 rounded-lg">
+        <div className="flex items-center justify-center mb-4 p-6 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-900/10 rounded-lg">
           {service.imageUrl ? (
             // If actual image is provided, use it
             <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -81,13 +81,13 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
                   target.nextElementSibling?.classList.remove('hidden')
                 }}
               />
-              <div className="w-20 h-20 bg-gradient-to-br from-teal-500 to-blue-600 rounded-full items-center justify-center text-white hidden">
+              <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-blue-600 rounded-full items-center justify-center text-white hidden">
                 {React.createElement(getServiceIcon(service.name), { size: 36 })}
               </div>
             </div>
           ) : (
             // Use icon placeholder
-            <div className="w-20 h-20 bg-gradient-to-br from-teal-500 to-blue-600 rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+          <div className="w-20 h-20 bg-primary-600 rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
               {React.createElement(getServiceIcon(service.name), { size: 36 })}
             </div>
           )}
@@ -96,12 +96,12 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
         {/* Header with Price */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1 pr-4">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-teal-600 transition-colors leading-tight">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors leading-tight">
               {service.name}
             </h3>
           </div>
           <div className="text-right flex-shrink-0 ml-2">
-            <div className="text-xl font-bold text-teal-600">
+            <div className="text-xl font-bold text-primary-600">
               {formatPrice(getDisplayPrice() * 100, getDisplayCurrency())}
             </div>
             <div className="text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full whitespace-nowrap">
@@ -149,7 +149,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
             <Button 
               variant="ghost" 
               size="sm" 
-              className="w-full text-xs group-hover:text-teal-600 group-hover:bg-teal-50 dark:group-hover:bg-teal-900/20 transition-colors"
+              className="w-full text-xs group-hover:text-primary-600 group-hover:bg-primary-50 dark:group-hover:bg-primary-900/20 transition-colors"
             >
               View Details
               <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />

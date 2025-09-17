@@ -158,7 +158,7 @@ const Authentication = () => {
                       type="text"
                       value={name}
                       onChange={e => setName(e.target.value)}
-                      className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="John Doe"
                     />
                   </div>
@@ -175,7 +175,7 @@ const Authentication = () => {
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="your.email@example.com"
                   />
                 </div>
@@ -191,7 +191,7 @@ const Authentication = () => {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    className="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="Enter your password"
                   />
                   <button
@@ -206,7 +206,7 @@ const Authentication = () => {
                   <div className="mt-2 text-right">
                     <button
                       type="button"
-                      className="text-xs text-teal-600 hover:text-teal-700"
+                      className="text-xs text-primary-600 hover:text-primary-700"
                       onClick={async () => {
                         if (!email) { setErrorMsg('Please enter your email first.'); return }
                         try {
@@ -297,7 +297,7 @@ const Authentication = () => {
                       <button
                         type="button"
                         onClick={() => setMode('signin')}
-                        className="text-teal-600 hover:text-teal-700 font-medium"
+                        className="text-primary-600 hover:text-primary-700 font-medium"
                       >
                         Sign in here
                       </button>
@@ -308,7 +308,7 @@ const Authentication = () => {
                       <button
                         type="button"
                         onClick={() => setMode('signup')}
-                        className="text-teal-600 hover:text-teal-700 font-medium"
+                        className="text-primary-600 hover:text-primary-700 font-medium"
                       >
                         Create an account
                       </button>
