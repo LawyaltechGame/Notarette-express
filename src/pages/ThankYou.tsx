@@ -115,8 +115,8 @@ const ThankYou: React.FC = () => {
   }, []);
 
   const handleBookAppointment = () => {
-    const url = (orderData as any)?.calLink || 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test';
-    window.open(url, '_blank');
+    const url = 'https://cal.com/marcus-whereby-xu25ac/meeting-appointment-with-notary-for-notarization'
+    window.open(url, '_blank')
   };
 
   const handleContinueServices = () => {
