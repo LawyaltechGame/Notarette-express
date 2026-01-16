@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import  { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion'
 import type { Models } from 'appwrite';
 import { appwriteAccount , ID} from '../lib/appwrite';
@@ -23,14 +23,26 @@ const Authentication = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [mode, setMode] = useState<'signup' | 'signin'>('signup')
+  const [rateLimitWaitTime, setRateLimitWaitTime] = useState<number | null>(null)
+  const rateLimitIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     if (location.pathname === '/login') setMode('signin')
     if (location.pathname === '/register') setMode('signup')
   }, [location.pathname])
 
+  // Cleanup rate limit timer on unmount
+  useEffect(() => {
+    return () => {
+      if (rateLimitIntervalRef.current) {
+        clearInterval(rateLimitIntervalRef.current)
+        rateLimitIntervalRef.current = null
+      }
+      setRateLimitWaitTime(null)
+    }
+  }, [])
+
   async function login(email: string, password: string) {
-    console.log('[Login] Submitted credentials:', { email, password });
     if (isSubmitting) return
     setErrorMsg(null)
     setIsSubmitting(true)
@@ -51,40 +63,103 @@ const Authentication = () => {
           },
         }));
         navigate('/services', { replace: true });
+        setIsSubmitting(false);
         return;
       }
-    } catch {}
+    } catch (e: any) {
+      // Expected error when no session exists - this is normal, continue to create session
+    }
 
     // No active session: create one
     try {
       await appwriteAccount.createEmailPasswordSession(email, password);
     } catch (err: any) {
+      console.error('[Login] Session creation failed:', err);
       const message = String(err?.message || '').toLowerCase();
+      const code = Number(err?.code || err?.response?.status || 0);
+      
+      // Handle specific error cases
       if (message.includes('session is active')) {
-        const profile = await appwriteAccount.get();
-        setLoggedInUser(profile);
-        const [firstName = '', lastName = ''] = (profile.name ?? '').split(' ');
-        dispatch(loginSuccess({
-          user: {
-            uid: profile.$id,
-            email: profile.email ?? null,
-            firstName,
-            lastName,
-            phone: '',
-          },
-        }));
-        navigate('/services', { replace: true });
-        setIsSubmitting(false); 
-        return;
+        try {
+          const profile = await appwriteAccount.get();
+          setLoggedInUser(profile);
+          const [firstName = '', lastName = ''] = (profile.name ?? '').split(' ');
+          dispatch(loginSuccess({
+            user: {
+              uid: profile.$id,
+              email: profile.email ?? null,
+              firstName,
+              lastName,
+              phone: '',
+            },
+          }));
+          navigate('/services', { replace: true });
+          setIsSubmitting(false); 
+          return;
+        } catch (e) {
+          console.error('[Login] Error getting profile after session active:', e);
+        }
       }
-      // Graceful 429 handling and generic error mapping
-      const code = Number(err?.code || err?.response?.status || 0)
+      
+      // Rate limiting
       if (code === 429 || message.includes('rate limit')) {
-        setErrorMsg('Too many login attempts. Please wait a moment and try again.')
-      } else if (message.includes('invalid credentials')) {
-        setErrorMsg('Invalid email or password. Please try again.')
-      } else {
-        setErrorMsg('Unable to sign in right now. Please try again later.')
+        // Clear any existing interval
+        if (rateLimitIntervalRef.current) {
+          clearInterval(rateLimitIntervalRef.current)
+        }
+        
+        // Set wait time to 5 minutes (300 seconds) - Appwrite typically resets after 1-5 minutes
+        const waitSeconds = 300
+        setRateLimitWaitTime(waitSeconds)
+        setErrorMsg(`Too many login attempts. Please wait ${Math.ceil(waitSeconds / 60)} minutes before trying again.`)
+        
+        // Countdown timer
+        rateLimitIntervalRef.current = setInterval(() => {
+          setRateLimitWaitTime(prev => {
+            if (prev === null || prev <= 1) {
+              if (rateLimitIntervalRef.current) {
+                clearInterval(rateLimitIntervalRef.current)
+                rateLimitIntervalRef.current = null
+              }
+              setErrorMsg(null)
+              return null
+            }
+            const minutes = Math.ceil((prev - 1) / 60)
+            setErrorMsg(`Too many login attempts. Please wait ${minutes} minute${minutes !== 1 ? 's' : ''} before trying again.`)
+            return prev - 1
+          })
+        }, 1000)
+        
+        // Cleanup interval after 5 minutes
+        setTimeout(() => {
+          if (rateLimitIntervalRef.current) {
+            clearInterval(rateLimitIntervalRef.current)
+            rateLimitIntervalRef.current = null
+          }
+          setRateLimitWaitTime(null)
+          setErrorMsg(null)
+        }, waitSeconds * 1000)
+      } 
+      // Invalid credentials
+      else if (code === 401 || message.includes('invalid credentials') || (message.includes('invalid') && message.includes('password'))) {
+        setErrorMsg('Invalid email or password. Please check your credentials and try again.')
+      }
+      // Unverified account
+      else if (message.includes('unverified') || message.includes('email not verified') || message.includes('verification') || message.includes('verify')) {
+        setErrorMsg('Your account email is not verified. Please verify your email address in Appwrite Console or contact support.')
+      }
+      // Bad request - could be unverified or other issues
+      else if (code === 400) {
+        if (message.includes('verification') || message.includes('unverified') || message.includes('email')) {
+          setErrorMsg('Your account needs to be verified. Please verify your email or contact an administrator.')
+        } else {
+          setErrorMsg('Invalid request. Please check your credentials and try again.')
+        }
+      }
+      // Generic error
+      else {
+        console.error('[Login] Unexpected error:', { code, message, error: err });
+        setErrorMsg(`Unable to sign in: ${message || 'Please try again later.'}`)
       }
       setIsSubmitting(false)
       return;
@@ -255,7 +330,6 @@ const Authentication = () => {
                     className="w-full"
                     disabled={isSubmitting}
                     onClick={async () => {
-                      console.log('[Register] Submitted credentials:', { name, email, password });
                       if (isSubmitting) return
                       setErrorMsg(null)
                       setIsSubmitting(true)
@@ -263,11 +337,26 @@ const Authentication = () => {
                         await appwriteAccount.create(ID.unique(), email, password, name);
                         await login(email, password);
                       } catch (e: any) {
+                        console.error('[Register] Account creation failed:', e);
                         const message = String(e?.message || '').toLowerCase()
-                        if (Number(e?.code || e?.response?.status) === 429 || message.includes('rate limit')) {
+                        const code = Number(e?.code || e?.response?.status || 0)
+                        
+                        // Check if account already exists
+                        if (code === 409 || code === 400 || 
+                            message.includes('already exists') || 
+                            message.includes('duplicate') || 
+                            message.includes('user already') ||
+                            message.includes('email already')) {
+                          setErrorMsg('An account with this email already exists. Please sign in instead.')
+                          // Auto-switch to login mode after a short delay
+                          setTimeout(() => {
+                            setMode('signin')
+                            setErrorMsg(null)
+                          }, 3000)
+                        } else if (code === 429 || message.includes('rate limit')) {
                           setErrorMsg('Too many attempts. Please wait a moment and try again.')
                         } else {
-                          setErrorMsg('Unable to create account right now. Please try again later.')
+                          setErrorMsg(`Unable to create account: ${message || 'Please try again later.'}`)
                         }
                         setIsSubmitting(false)
                       }

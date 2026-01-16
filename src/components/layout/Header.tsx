@@ -30,16 +30,43 @@ const Header: React.FC = () => {
     let cancelled = false
     const checkTeam = async () => {
       try {
-        if (!isAuthenticated || !ENVObj.VITE_NOTARY_TEAM_ID) return
+        if (!isAuthenticated || !ENVObj.VITE_NOTARY_TEAM_ID) {
+          if (!cancelled) setShowNotaryLink(false)
+          return
+        }
+        
+        // Get current user account to get user ID
+        const account = await appwriteAccount.get()
+        const userId = account.$id
+        
+        // Use Teams API to list memberships of the notary team and check if user is a member
         const teams = new Teams(client)
         const memberships = await teams.listMemberships(ENVObj.VITE_NOTARY_TEAM_ID)
-        const email = (user?.email || '').toLowerCase()
-        const inTeam = memberships.memberships?.some(m => (m.userEmail || m.userName || '').toLowerCase() === email)
-        if (!cancelled && inTeam) {
-          setShowNotaryLink(true)
-          try { localStorage.setItem('IS_NOTARY', '1') } catch {}
+        const inTeam = memberships.memberships?.some((m: any) => m.userId === userId)
+        
+        if (!cancelled) {
+          if (inTeam) {
+            setShowNotaryLink(true)
+            try { localStorage.setItem('IS_NOTARY', '1') } catch {}
+          } else {
+            setShowNotaryLink(false)
+            try { localStorage.removeItem('IS_NOTARY') } catch {}
+          }
         }
-      } catch {}
+      } catch (e) {
+        console.error('[Header] Error checking team membership:', e)
+        // Fallback to email list if API fails
+        const emailList = String(ENVObj.VITE_NOTARY_EMAILS || '')
+          .toLowerCase().split(',').map(s => s.trim()).filter(Boolean)
+        const email = (user?.email || '').toLowerCase()
+        if (!cancelled) {
+          const inEmailList = email && emailList.includes(email)
+          setShowNotaryLink(inEmailList)
+          if (inEmailList) {
+            try { localStorage.setItem('IS_NOTARY', '1') } catch {}
+          }
+        }
+      }
     }
     checkTeam()
     return () => { cancelled = true }

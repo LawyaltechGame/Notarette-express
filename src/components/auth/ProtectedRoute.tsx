@@ -5,6 +5,8 @@ import { useAuth } from '../../contexts/AuthContext'
 import { Loader2 } from 'lucide-react'
 import { ENVObj } from '../../lib/constant'
 import { appwriteAccount } from '../../lib/appwrite'
+import { Teams } from 'appwrite'
+import { client } from '../../lib/appwrite'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -40,10 +42,18 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         return
       }
       try {
-        const memberships = await appwriteAccount.listMemberships()
-        const inTeam = memberships.memberships?.some(m => m.teamId === ENVObj.VITE_NOTARY_TEAM_ID)
+        // Get current user account to get user ID
+        const account = await appwriteAccount.get()
+        const userId = account.$id
+        
+        // Use Teams API to list memberships of the notary team and check if user is a member
+        const teams = new Teams(client)
+        const memberships = await teams.listMemberships(ENVObj.VITE_NOTARY_TEAM_ID)
+        const inTeam = memberships.memberships?.some((m: any) => m.userId === userId)
+        
         if (!cancelled) setIsNotary(!!inTeam)
       } catch (e) {
+        console.error('[ProtectedRoute] Error checking team membership:', e)
         // Fallback to allowlist if no Appwrite session or API denied
         const emailList = String(ENVObj.VITE_NOTARY_EMAILS || '')
           .toLowerCase().split(',').map(s => s.trim()).filter(Boolean)
