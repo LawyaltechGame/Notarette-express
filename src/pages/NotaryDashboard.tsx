@@ -444,16 +444,34 @@ const NotaryDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-10">
-      <div className="max-w-[90vw] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Notary Dashboard</h1>
-              <p className="text-gray-600 dark:text-gray-400">Upload notarized documents for clients.</p>
+    <div className="relative min-h-screen">
+      {/* Modern gradient background with mesh pattern */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-primary-50 to-primary-100 dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900/30">
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage:
+              "url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%236366f1\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M30 30c0-16.569 13.431-30 30-30v30H30zm30 30c-16.569 0-30-13.431-30-30h30v30z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')",
+            backgroundRepeat: 'repeat',
+          }}
+        />
+      </div>
+
+      {/* Floating geometric elements */}
+      <div className="pointer-events-none absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-primary-400/10 to-primary-200/10 rounded-full blur-xl" />
+      <div className="pointer-events-none absolute top-40 right-20 w-40 h-40 bg-gradient-to-br from-primary-500/10 to-primary-300/10 rounded-full blur-xl" />
+      <div className="pointer-events-none absolute bottom-20 left-1/4 w-28 h-28 bg-gradient-to-br from-primary-400/10 to-primary-200/10 rounded-full blur-xl" />
+
+      <div className="relative z-10">
+        <div className="max-w-[90vw] mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="mb-8">
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Notary Dashboard</h1>
+                <p className="text-gray-600 dark:text-gray-400">Upload notarized documents for clients.</p>
+              </div>
             </div>
           </div>
-        </div>
 
         {/* Tabs */}
         <div className="mb-6 border-b border-gray-200 dark:border-gray-700">
@@ -1216,6 +1234,7 @@ const NotaryDashboard: React.FC = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }
