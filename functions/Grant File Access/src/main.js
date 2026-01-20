@@ -32,10 +32,11 @@ export default async ({ req, res, log, error }) => {
     const results = [];
     for (const f of files) {
       const permissions = [
-        `read:user:${userId}`,
-        `write:team:${notaryTeamId}`,
-        `update:team:${notaryTeamId}`,
-        `delete:team:${notaryTeamId}`,
+        `read:user:${userId}`, // Client can read
+        `read:team:${notaryTeamId}`, // Notaries can read/download
+        `write:team:${notaryTeamId}`, // Notaries can write
+        `update:team:${notaryTeamId}`, // Notaries can update
+        `delete:team:${notaryTeamId}`, // Notaries can delete
       ];
       const updated = await storage.updateFile(bucketId, f.fileId, undefined, permissions);
       results.push({ fileId: f.fileId, ok: !!updated.$id });

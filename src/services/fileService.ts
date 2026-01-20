@@ -76,6 +76,7 @@ export class FileService {
 
   /**
    * Download a file by file ID using Appwrite SDK for proper authentication
+   * Works in production and incognito mode by using authenticated download URL
    * @param fileId - The file ID to download
    * @param fileName - The desired file name for download
    * @returns Promise that resolves when download starts
@@ -88,58 +89,109 @@ export class FileService {
     try {
       console.log(`Downloading file: ${fileName} (${fileId})`)
       
-      // First, try to get file info to verify it exists and check permissions
+      // First, verify file exists and get file info
+      let fileInfo: any
       try {
-        const fileInfo = await storage.getFile(this.bucketId, fileId)
+        fileInfo = await storage.getFile(this.bucketId, fileId)
         console.log('File info retrieved:', fileInfo)
+        // Use actual filename from fileInfo if available
+        if (fileInfo.name && !fileName) {
+          fileName = fileInfo.name
+        }
       } catch (getFileError: any) {
         console.error('Error getting file info:', getFileError)
-        // If file doesn't exist or no permission, try granting access first
         if (getFileError?.code === 404 || getFileError?.message?.includes('not found')) {
-          throw new Error(`File not found or you don't have permission to access it. File ID: ${fileId}`)
+          throw new Error(`File not found: "${fileName}". The file may have been deleted or moved. File ID: ${fileId}`)
         }
-        // For other errors, continue to try download
+        if (getFileError?.code === 401 || getFileError?.code === 403) {
+          throw new Error(`Permission denied: You don't have access to download this file. Please ensure you are logged in.`)
+        }
+        throw new Error(`Cannot access file: ${getFileError?.message || 'Unknown error'}`)
       }
       
-      // Use Appwrite SDK's getFileDownload method which handles authentication
+      // Use Appwrite SDK's getFileDownload which returns authenticated URL
+      // This URL should include session token for production/incognito compatibility
       const downloadUrl = storage.getFileDownload(this.bucketId, fileId)
-      console.log('Using Appwrite download URL:', downloadUrl.toString())
+      console.log('Using Appwrite authenticated download URL')
       
-      // Fetch the file with proper authentication headers
-      const response = await fetch(downloadUrl.toString(), {
-        method: 'GET',
-        credentials: 'include', // Include cookies for authentication
-      })
-      
-      if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error(`File not found: ${fileName}. The file may have been deleted or you don't have permission to access it.`)
-        }
-        if (response.status === 401 || response.status === 403) {
-          throw new Error(`Permission denied: You don't have access to download this file. Please contact support.`)
-        }
-        throw new Error(`Failed to download file: HTTP ${response.status}`)
+      // Method 1: Try direct link download first (works when session is available)
+      // This is the most reliable method for production/incognito
+      try {
+        const link = document.createElement('a')
+        link.href = downloadUrl.toString()
+        link.download = fileName || fileInfo.name || 'download'
+        link.target = '_blank'
+        link.rel = 'noopener noreferrer'
+        link.style.display = 'none'
+        
+        document.body.appendChild(link)
+        link.click()
+        
+        // Wait briefly to see if download starts
+        await new Promise(resolve => setTimeout(resolve, 300))
+        
+        document.body.removeChild(link)
+        
+        console.log(`Download initiated via direct link: ${fileName}`)
+        return
+      } catch (linkError) {
+        console.warn('Direct link download failed, trying fetch method:', linkError)
       }
       
-      // Get the file as a blob
-      const blob = await response.blob()
-      
-      // Create a download link
-      const url = window.URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = fileName
-      link.style.display = 'none'
-      
-      // Add to DOM, click, and remove
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      
-      // Clean up the object URL
-      setTimeout(() => window.URL.revokeObjectURL(url), 100)
-      
-      console.log(`Successfully downloaded file: ${fileName}`)
+      // Method 2: Fallback - Fetch with credentials for incognito/production
+      // This ensures cookies/session are included even in incognito mode
+      try {
+        const response = await fetch(downloadUrl.toString(), {
+          method: 'GET',
+          credentials: 'include', // Critical for incognito/production
+          mode: 'cors',
+          cache: 'no-cache',
+          headers: {
+            'Accept': '*/*',
+          }
+        })
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error(`File not found: "${fileName}". The file may have been deleted.`)
+          }
+          if (response.status === 401 || response.status === 403) {
+            throw new Error(`Permission denied: You don't have access to download this file. Please ensure you are logged in as a notary.`)
+          }
+          const errorText = await response.text().catch(() => '')
+          throw new Error(`Failed to download file: HTTP ${response.status}. ${errorText}`)
+        }
+        
+        // Get the file as a blob
+        const blob = await response.blob()
+        
+        // Create a download link from blob
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = fileName || fileInfo.name || 'download'
+        link.style.display = 'none'
+        
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        
+        // Clean up the object URL after a delay
+        setTimeout(() => window.URL.revokeObjectURL(url), 1000)
+        
+        console.log(`Successfully downloaded file via fetch: ${fileName}`)
+      } catch (fetchError: any) {
+        console.error('Fetch download failed:', fetchError)
+        
+        // Method 3: Last resort - Open in new window
+        // User will need to be authenticated in that window
+        if (fetchError?.message?.includes('CORS') || fetchError?.message?.includes('Failed to fetch') || fetchError?.code === 'ERR_NETWORK') {
+          console.log('Opening file in new window as fallback')
+          window.open(downloadUrl.toString(), '_blank', 'noopener,noreferrer')
+          throw new Error(`Please ensure you are logged in. Opening file in new window...`)
+        }
+        throw fetchError
+      }
     } catch (error) {
       console.error('Error downloading file:', error)
       throw error

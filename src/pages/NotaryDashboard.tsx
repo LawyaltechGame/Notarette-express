@@ -233,14 +233,27 @@ const NotaryDashboard: React.FC = () => {
     try {
       console.log(`Downloading individual file: ${fileName} (${fileId})`)
       
+      // Get client email from selected submission for granting access
+      const clientEmail = selectedSubmission?.email || selectedSubmission?.clientEmail
+      
       // First, try to grant file access if needed (for notaries)
       const grantFnId = ENVObj.VITE_GRANT_FILE_ACCESS_FUNCTION_ID || ENVObj.VITE_GRANT_FUNCTION_ID
-      if (grantFnId) {
+      if (grantFnId && clientEmail) {
         try {
           console.log('Attempting to grant file access via function:', grantFnId)
           const functions = new Functions(client)
-          await functions.createExecution(grantFnId, JSON.stringify({ fileId }), false)
+          // Grant function expects: { clientEmail: string, files: [{ fileId: string, name: string }] }
+          await functions.createExecution(
+            grantFnId, 
+            JSON.stringify({ 
+              clientEmail: clientEmail,
+              files: [{ fileId, name: fileName }]
+            }), 
+            false
+          )
           console.log('File access granted successfully')
+          // Wait a moment for permissions to propagate
+          await new Promise(resolve => setTimeout(resolve, 500))
         } catch (grantError) {
           console.warn('Could not grant file access (may already have access):', grantError)
           // Continue anyway - file might already be accessible
@@ -248,19 +261,23 @@ const NotaryDashboard: React.FC = () => {
       }
       
       // Try to verify file exists first
+      let fileInfo: any
       try {
-        const fileInfo = await storage.getFile(ENVObj.VITE_APPWRITE_BUCKET_ID!, fileId)
+        fileInfo = await storage.getFile(ENVObj.VITE_APPWRITE_BUCKET_ID!, fileId)
         console.log('File verified:', fileInfo)
       } catch (verifyError: any) {
         if (verifyError?.code === 404 || verifyError?.message?.includes('not found')) {
           throw new Error(`File not found: "${fileName}". The file may have been deleted or moved. File ID: ${fileId}`)
+        }
+        if (verifyError?.code === 401 || verifyError?.code === 403) {
+          throw new Error(`Permission denied: You don't have access to download this file. Please ensure you are logged in as a notary.`)
         }
         console.warn('File verification warning:', verifyError)
         // Continue to try download anyway
       }
       
       // Use FileService to download the file (uses authenticated download)
-      await FileService.downloadFile(fileId, fileName)
+      await FileService.downloadFile(fileId, fileName || fileInfo?.name)
       
       console.log(`Successfully downloaded individual file: ${fileName}`)
     } catch (err) {
