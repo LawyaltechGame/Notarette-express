@@ -16,10 +16,10 @@ const HowItWorksPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
               How It Works
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Get your documents notarized in four simple steps. 
               Our streamlined process makes remote notarization fast, secure, and convenient.
             </p>
@@ -31,7 +31,7 @@ const HowItWorksPage: React.FC = () => {
       <HowItWorks />
 
       {/* Additional Information */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -39,7 +39,7 @@ const HowItWorksPage: React.FC = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
                 Why Choose Remote Notarization?
               </h2>
               <div className="space-y-4">
@@ -48,10 +48,10 @@ const HowItWorksPage: React.FC = () => {
                     <span className="text-white text-sm font-bold">1</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                    <h3 className="font-semibold text-gray-900 mb-1">
                       Convenience
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-300">
+                    <p className="text-gray-600">
                       No need to travel to a notary office. Get notarized from anywhere with an internet connection.
                     </p>
                   </div>
@@ -61,10 +61,10 @@ const HowItWorksPage: React.FC = () => {
                     <span className="text-white text-sm font-bold">2</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                    <h3 className="font-semibold text-gray-900 mb-1">
                       Speed
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-300">
+                    <p className="text-gray-600">
                       Complete the entire process in minutes, not hours. Same-day processing available.
                     </p>
                   </div>
@@ -74,10 +74,10 @@ const HowItWorksPage: React.FC = () => {
                     <span className="text-white text-sm font-bold">3</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                    <h3 className="font-semibold text-gray-900 mb-1">
                       Security
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-300">
+                    <p className="text-gray-600">
                       Bank-grade encryption and identity verification ensure your documents are secure.
                     </p>
                   </div>
@@ -87,10 +87,10 @@ const HowItWorksPage: React.FC = () => {
                     <span className="text-white text-sm font-bold">4</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                    <h3 className="font-semibold text-gray-900 mb-1">
                       Legality
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-300">
+                    <p className="text-gray-600">
                       Fully compliant with state and federal regulations. Legally binding in all 50 states.
                     </p>
                   </div>
@@ -102,12 +102,12 @@ const HowItWorksPage: React.FC = () => {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-xl"
+              className="bg-white rounded-2xl p-8 shadow-xl"
             >
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">
                 Ready to Get Started?
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-6">
+              <p className="text-gray-600 mb-6">
                 Choose from our range of notarization services and get started in minutes.
               </p>
               <div className="space-y-4">
@@ -129,7 +129,7 @@ const HowItWorksPage: React.FC = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-white dark:bg-gray-900">
+      <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -137,10 +137,10 @@ const HowItWorksPage: React.FC = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Frequently Asked Questions
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-xl text-gray-600">
               Common questions about our remote notarization process
             </p>
           </motion.div>
@@ -174,12 +174,12 @@ const HowItWorksPage: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6"
+                className="bg-gray-50 rounded-lg p-6"
               >
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                <h3 className="font-semibold text-gray-900 mb-2">
                   {faq.question}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300">
+                <p className="text-gray-600">
                   {faq.answer}
                 </p>
               </motion.div>

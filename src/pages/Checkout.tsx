@@ -51,25 +51,25 @@ const Checkout: React.FC = () => {
     <PageBackground>
       <div className="py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">
           Checkout
         </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Order Summary */}
           <Card>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Order Summary
             </h2>
             <div className="space-y-3">
               <div>
-                <div className="font-semibold text-gray-900 dark:text-white">
+                <div className="font-semibold text-gray-900">
                   {payload?.serviceTitle || "Selected Service"}
-                  <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">
+                  <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
                     Base Service
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-gray-600">
                   Professional notarization of your documents with legal
                   drafting support.
                 </p>
@@ -77,10 +77,10 @@ const Checkout: React.FC = () => {
 
               {payload?.selectedOptions?.length > 0 && (
                 <div className="mt-4">
-                  <div className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+                  <div className="text-sm font-medium text-gray-900 mb-2">
                     Selected Types
                   </div>
-                  <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc list-inside">
+                  <ul className="text-sm text-gray-700 list-disc list-inside">
                     {payload.selectedOptions.map((o: any) => (
                       <li key={o.key}>{o.title}</li>
                     ))}
@@ -93,10 +93,10 @@ const Checkout: React.FC = () => {
 
               {payload?.addons?.length > 0 && (
                 <div className="mt-2">
-                  <div className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+                  <div className="text-sm font-medium text-gray-900 mb-2">
                     Selected Add-ons
                   </div>
-                  <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc list-inside">
+                  <ul className="text-sm text-gray-700 list-disc list-inside">
                     {payload.addons.map((a: any) => (
                       <li key={a.key}>{a.title}</li>
                     ))}
@@ -104,30 +104,30 @@ const Checkout: React.FC = () => {
                 </div>
               )}
 
-              <div className="pt-3 border-t border-gray-200 dark:border-gray-700 text-sm">
+              <div className="pt-3 border-t border-gray-200 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">
+                  <span className="text-gray-600">
                     Subtotal
                   </span>
-                  <span className="text-gray-900 dark:text-white">
+                  <span className="text-gray-900">
                     {fmt(subtotal)}
                   </span>
                 </div>
                 {false && (
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">
+                    <span className="text-gray-600">
                       VAT (21%)
                     </span>
-                    <span className="text-gray-900 dark:text-white">
+                    <span className="text-gray-900">
                       {fmt(vat)}
                     </span>
                   </div>
                 )}
               </div>
 
-              <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+              <div className="pt-3 border-t border-gray-200">
                 <div className="flex items-center justify-between font-semibold">
-                  <span className="text-gray-900 dark:text-white">Total</span>
+                  <span className="text-gray-900">Total</span>
                   <span className="text-blue-600">{fmt(total)}</span>
                 </div>
               </div>
@@ -136,12 +136,12 @@ const Checkout: React.FC = () => {
 
           {/* Pay with Stripe */}
           <Card>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Pay with Stripe
             </h2>
-            <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2 mb-6">
+            <div className="text-sm text-gray-700 space-y-2 mb-6">
               <div>1. Review your order summary</div>
-              <div>2. Click Pay Securely to open Stripe Checkout</div>
+              <div>2. Click Pay Here to open Stripe Checkout</div>
               <div>
                 3. Complete payment securely with card or digital wallet
               </div>
@@ -150,7 +150,7 @@ const Checkout: React.FC = () => {
               </div>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email for receipt and updates
               </label>
               <input
@@ -158,7 +158,7 @@ const Checkout: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <p className="mt-1 text-xs text-gray-500">
                 We'll use this email on Stripe Checkout.
@@ -225,11 +225,11 @@ const Checkout: React.FC = () => {
                 }
               }}
             >
-              {isSubmitting ? "Opening Stripe…" : "Pay Now and Securely"}
+              {isSubmitting ? "Opening Stripe…" : "Pay Here"}
             </Button>
 
             <ul className="text-xs text-gray-500 mt-4 list-disc list-inside">
-              <h1 className="mb-2 font-medium">🔴 Pay Now and Securely Security & Trust</h1>
+              <h1 className="mb-2 font-medium">🔴 Pay Here Security & Trust</h1>
               <li className="ml-5">🔒 SSL Secured</li>
               <li className="ml-5">✅ PCI DSS Compliant</li>
               <li className="ml-5">⚡ Instant Confirmation</li>
@@ -237,14 +237,14 @@ const Checkout: React.FC = () => {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-          <div className="p-4 border rounded-lg dark:border-gray-700">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 text-center text-sm text-gray-600">
+          <div className="p-4 border rounded-lg">
             <Shield className="w-5 h-5 mx-auto mb-2" /> SSL Secured
           </div>
-          <div className="p-4 border rounded-lg dark:border-gray-700">
+          <div className="p-4 border rounded-lg">
             <CheckCircle className="w-5 h-5 mx-auto mb-2" /> PCI DSS Compliant
           </div>
-          <div className="p-4 border rounded-lg dark:border-gray-700">
+          <div className="p-4 border rounded-lg">
             <Calendar className="w-5 h-5 mx-auto mb-2" /> Instant Confirmation
           </div>
         </div>

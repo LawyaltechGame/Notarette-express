@@ -446,7 +446,7 @@ const NotaryDashboard: React.FC = () => {
   return (
     <div className="relative min-h-screen">
       {/* Modern gradient background with mesh pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-primary-50 to-primary-100 dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900/30">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-primary-50 to-primary-100">
         <div
           className="absolute inset-0 opacity-40"
           style={{
@@ -467,21 +467,21 @@ const NotaryDashboard: React.FC = () => {
           <div className="mb-8">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Notary Dashboard</h1>
-                <p className="text-gray-600 dark:text-gray-400">Upload notarized documents for clients.</p>
+                <h1 className="text-3xl font-bold text-gray-900">Notary Dashboard</h1>
+                <p className="text-gray-600">Upload notarized documents for clients.</p>
               </div>
             </div>
           </div>
 
         {/* Tabs */}
-        <div className="mb-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="mb-6 border-b border-gray-200">
           <nav className="flex -mb-px space-x-6" aria-label="Tabs">
             <button
               onClick={() => setActiveTab('upload')}
               className={`px-1 pb-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'upload'
                   ? 'border-primary-600 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
               Upload Notarization
@@ -491,7 +491,7 @@ const NotaryDashboard: React.FC = () => {
               className={`px-1 pb-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'submissions'
                   ? 'border-primary-600 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
               Client Form Submissions
@@ -501,7 +501,7 @@ const NotaryDashboard: React.FC = () => {
               className={`px-1 pb-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'uploads'
                   ? 'border-primary-600 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
               Notarized Uploads
@@ -512,10 +512,10 @@ const NotaryDashboard: React.FC = () => {
         {activeTab === 'upload' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <Card>
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Upload Notarized Documents</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Upload Notarized Documents</h2>
               <form className="space-y-4" onSubmit={onSubmit}>
                 <div className="grid grid-cols-1 gap-4">
-                  <input value={clientEmail} onChange={e=>setClientEmail(e.target.value)} type="email" placeholder="Client Email" className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white" />
+                  <input value={clientEmail} onChange={e=>setClientEmail(e.target.value)} type="email" placeholder="Client Email" className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900" />
                 </div>
                 
                 {/* Multiple files are always allowed; no upload type toggle */}
@@ -524,7 +524,7 @@ const NotaryDashboard: React.FC = () => {
 
                 {/* File Input */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="text-sm font-medium text-gray-700">
                     Select Files 
                     <span className="text-xs text-gray-500 ml-1">
                       (multiple files allowed, max {MAX_FILES} files, up to 50 MB each) · {files.length}/{MAX_FILES} selected
@@ -536,24 +536,24 @@ const NotaryDashboard: React.FC = () => {
                     type="file" 
                     multiple
                     disabled={files.length >= MAX_FILES}
-                    className="block w-full text-sm text-gray-900 dark:text-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-300 disabled:opacity-50 disabled:cursor-not-allowed" 
+                    className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 disabled:opacity-50 disabled:cursor-not-allowed" 
                   />
                   {fileError && (
-                    <p className="text-xs text-red-600 dark:text-red-400 mt-1">{fileError}</p>
+                    <p className="text-xs text-red-600 mt-1">{fileError}</p>
                   )}
                   {files.length >= MAX_FILES && (
-                    <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                    <p className="text-xs text-orange-600 mt-1">
                       Maximum {MAX_FILES} files reached. Remove some files to add more.
                     </p>
                   )}
                   {files.length > 0 && (
                     <div className="mt-2">
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-gray-600">
                         Selected {files.length} file(s)
                       </p>
-                      <div className="max-h-32 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded p-2 text-xs mt-2">
+                      <div className="max-h-32 overflow-y-auto bg-gray-50 rounded p-2 text-xs mt-2">
                         {files.map((f, index) => (
-                          <div key={index} className="flex items-center justify-between text-gray-700 dark:text-gray-300 py-1">
+                          <div key={index} className="flex items-center justify-between text-gray-700 py-1">
                             <span className="truncate flex-1">{f.name}</span>
                             <button
                               type="button"
@@ -611,14 +611,14 @@ const NotaryDashboard: React.FC = () => {
 
         {/* Client Form Submissions Section */}
         {activeTab === 'submissions' && (
-        <div className="mt-0 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <div className="mt-0 bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Client Form Submissions</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Client Form Submissions</h2>
             <div className="flex items-center gap-2">
               <select
                 value={submissionsPageSize}
                 onChange={(e)=>{ setSubmissionsPageSize(Number(e.target.value)); setSubmissionsPage(1) }}
-                className="text-xs bg-white dark:bg-gray-100 border border-gray-300 dark:border-gray-700 rounded px-2 py-1"
+                className="text-xs bg-white border border-gray-300 rounded px-2 py-1"
               >
                 <option value={10}>10 / page</option>
                 <option value={25}>25 / page</option>
@@ -633,12 +633,12 @@ const NotaryDashboard: React.FC = () => {
           {loadingSubmissions ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
-              <p className="text-gray-500 dark:text-gray-400 mt-2">Loading submissions...</p>
+              <p className="text-gray-500 mt-2">Loading submissions...</p>
             </div>
           ) : (
             <div className="space-y-6">
               {submissionsFlat.length === 0 ? (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-400">No form submissions found (last 7 days)</div>
+                <div className="text-center py-8 text-gray-500">No form submissions found (last 7 days)</div>
               ) : (
                 (() => {
                   const start = (submissionsPage - 1) * submissionsPageSize
@@ -649,7 +649,7 @@ const NotaryDashboard: React.FC = () => {
                       <div className="overflow-x-auto">
                         <table className="min-w-full text-sm">
                           <thead>
-                            <tr className="text-left text-gray-500 dark:text-gray-400">
+                            <tr className="text-left text-gray-500">
                               <th className="py-3 pr-4 font-medium">Client Name</th>
                               <th className="py-3 pr-4 font-medium">Email</th>
                               <th className="py-3 pr-4 font-medium">Document Type</th>
@@ -663,34 +663,34 @@ const NotaryDashboard: React.FC = () => {
                               <th className="py-3 pr-4 font-medium">Actions</th>
                             </tr>
                           </thead>
-                          <tbody className="text-gray-800 dark:text-gray-200">
+                          <tbody className="text-gray-800">
                             {pageItems.map((submission:any) => {
                       const selectedOptions = parseSelectedOptions(submission.selectedOptions || '[]')
                       const selectedAddOns = parseSelectedAddOns(submission.selectedAddOns || '[]')
                       
                       const getStatusColor = (status: string) => {
                         switch (status) {
-                          case 'completed': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                          case 'in_progress': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
-                          case 'cancelled': return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-                          default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
+                          case 'completed': return 'bg-green-100 text-green-800'
+                          case 'in_progress': return 'bg-yellow-100 text-yellow-800'
+                          case 'cancelled': return 'bg-red-100 text-red-800'
+                          default: return 'bg-gray-100 text-gray-800'
                         }
                       }
 
                       const getStepColor = (step: string) => {
                         switch (step) {
-                          case 'completed': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                          case 'checkout': return 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300'
-                          case 'addons_selected': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
-                          case 'service_selected': return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
-                          case 'form_submitted': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
-                          default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
+                          case 'completed': return 'bg-green-100 text-green-800'
+                          case 'checkout': return 'bg-primary-100 text-primary-800'
+                          case 'addons_selected': return 'bg-purple-100 text-purple-800'
+                          case 'service_selected': return 'bg-orange-100 text-orange-800'
+                          case 'form_submitted': return 'bg-yellow-100 text-yellow-800'
+                          default: return 'bg-gray-100 text-gray-800'
                         }
                       }
                       
                       
                       return (
-                        <tr key={submission.$id} className="border-t border-gray-200 dark:border-gray-700">
+                        <tr key={submission.$id} className="border-t border-gray-200">
                           <td className="py-3 pr-4 font-medium">{submission.fullName || 'N/A'}</td>
                           <td className="py-3 pr-4">{submission.email || 'N/A'}</td>
                           <td className="py-3 pr-4 capitalize">{submission.documentType || 'N/A'}</td>
@@ -726,7 +726,7 @@ const NotaryDashboard: React.FC = () => {
                                     alert('Failed to update status. Please try again.')
                                   }
                                 }}
-                                className="text-xs bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded px-2 py-1"
+                                className="text-xs bg-white border border-gray-300 rounded px-2 py-1"
                               >
                                 <option value="started">▶ Notarization Started</option>
                                 <option value="pending">⏳ Pending</option>
@@ -755,7 +755,7 @@ const NotaryDashboard: React.FC = () => {
                                     alert('Failed to update status. Please try again.')
                                   }
                                 }}
-                                className="text-xs bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded px-2 py-1"
+                                className="text-xs bg-white border border-gray-300 rounded px-2 py-1"
                               >
                                 <option value="pending">⏳ Pending</option>
                                 <option value="started">▶ Started</option>
@@ -789,14 +789,14 @@ const NotaryDashboard: React.FC = () => {
                             <div className="flex space-x-2">
                               <button 
                                 onClick={() => viewSubmissionDetails(submission)}
-                                className="px-3 py-1 text-xs bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 rounded hover:bg-primary-200 dark:hover:bg-primary-900/50 transition-colors"
+                                className="px-3 py-1 text-xs bg-primary-100 text-primary-800 rounded hover:bg-primary-200 transition-colors"
                               >
                                 View Details
                               </button>
                               {/* <button
                                 onClick={() => handleRefund(submission)}
                                 disabled={!submission.sessionId && !submission.orderId}
-                                className="px-3 py-1 text-xs rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50"
+                                className="px-3 py-1 text-xs rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-red-100 text-red-800 hover:bg-red-200"
                               >
                                 Refund
                               </button> */}
@@ -809,7 +809,7 @@ const NotaryDashboard: React.FC = () => {
                         </table>
                       </div>
                       <div className="flex items-center justify-between mt-4">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-gray-500">
                           Showing {start + 1}-{Math.min(end, submissionsFlat.length)} of {submissionsFlat.length}
                         </span>
                         <div className="flex items-center gap-2">
@@ -828,14 +828,14 @@ const NotaryDashboard: React.FC = () => {
 
         {/* Notarized Uploads Section */}
         {activeTab === 'uploads' && (
-        <div className="mt-0 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <div className="mt-0 bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Notarized Uploads</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Notarized Uploads</h2>
             <div className="flex items-center gap-2">
               <select
                 value={requestsPageSize}
                 onChange={(e)=>{ setRequestsPageSize(Number(e.target.value)); setRequestsPage(1) }}
-                className="text-xs bg-white dark:bg-gray-100 border border-gray-300 dark:border-gray-700 rounded px-2 py-1"
+                className="text-xs bg-white border border-gray-300 rounded px-2 py-1"
               >
                 <option value={10}>10 / page</option>
                 <option value={25}>25 / page</option>
@@ -850,12 +850,12 @@ const NotaryDashboard: React.FC = () => {
           {loadingRequests ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
-              <p className="text-gray-500 dark:text-gray-400 mt-2">Loading requests...</p>
+              <p className="text-gray-500 mt-2">Loading requests...</p>
             </div>
           ) : (
             <div className="space-y-6">
               {requestsFlat.length === 0 ? (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-400">No uploads found (last 7 days)</div>
+                <div className="text-center py-8 text-gray-500">No uploads found (last 7 days)</div>
               ) : (
                 (() => {
                   const start = (requestsPage - 1) * requestsPageSize
@@ -866,7 +866,7 @@ const NotaryDashboard: React.FC = () => {
                       <div className="overflow-x-auto">
                         <table className="min-w-full text-sm">
                           <thead>
-                            <tr className="text-left text-gray-500 dark:text-gray-400">
+                            <tr className="text-left text-gray-500">
                               <th className="py-3 pr-4 font-medium">Client Email</th>
                               <th className="py-3 pr-4 font-medium">Upload Batch ID</th>
                               <th className="py-3 pr-4 font-medium">Type</th>
@@ -877,7 +877,7 @@ const NotaryDashboard: React.FC = () => {
                               <th className="py-3 pr-4 font-medium">Actions</th>
                             </tr>
                           </thead>
-                          <tbody className="text-gray-800 dark:text-gray-200">
+                          <tbody className="text-gray-800">
                             {pageItems.map((request:any) => {
                       const files = (() => {
                         try {
@@ -896,16 +896,16 @@ const NotaryDashboard: React.FC = () => {
                       const status = getStatus(request)
                       
                       return (
-                        <tr key={request.$id} className="border-t border-gray-200 dark:border-gray-700">
+                        <tr key={request.$id} className="border-t border-gray-200">
                           <td className="py-3 pr-4">{request.clientEmail || 'N/A'}</td>
                           <td className="py-3 pr-4">{request.uploadBatchId || 'N/A'}</td>
                           <td className="py-3 pr-4">
                             {files.length <= 1 ? (
-                              <span className="px-2 py-1 text-xs rounded-full bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300">
+                              <span className="px-2 py-1 text-xs rounded-full bg-primary-100 text-primary-800">
                                 Single File
                               </span>
                             ) : (
-                              <span className="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                              <span className="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800">
                                 Multiple Files
                               </span>
                             )}
@@ -913,9 +913,9 @@ const NotaryDashboard: React.FC = () => {
                           
                           <td className="py-3 pr-4">
                             <span className={`px-2 py-1 text-xs rounded-full ${
-                              status === 'Pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
-                              status === 'Current' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
-                              'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                              status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                              status === 'Current' ? 'bg-green-100 text-green-800' :
+                              'bg-red-100 text-red-800'
                             }`}>
                               {status}
                             </span>
@@ -929,7 +929,7 @@ const NotaryDashboard: React.FC = () => {
                             <div className="flex space-x-2">
                               <button 
                                 onClick={() => notifyClient(request)}
-                                className="px-2 py-1 text-xs rounded bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors"
+                                className="px-2 py-1 text-xs rounded bg-green-100 text-green-800 hover:bg-green-200 transition-colors"
                               >
                                 Notify
                               </button>
@@ -942,7 +942,7 @@ const NotaryDashboard: React.FC = () => {
                         </table>
                       </div>
                       <div className="flex items-center justify-between mt-4">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-gray-500">
                           Showing {start + 1}-{Math.min(end, requestsFlat.length)} of {requestsFlat.length}
                         </span>
                         <div className="flex items-center gap-2">
@@ -964,15 +964,15 @@ const NotaryDashboard: React.FC = () => {
       {/* Details Modal */}
       {showDetailsModal && selectedSubmission && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h3 className="text-2xl font-bold text-gray-900">
                   Client Details - {selectedSubmission.fullName}
                 </h3>
                 <button
                   onClick={closeDetailsModal}
-                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl"
+                  className="text-gray-500 hover:text-gray-700 text-2xl"
                 >
                   ×
                 </button>
@@ -981,129 +981,129 @@ const NotaryDashboard: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Personal Information */}
                 <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">
+                  <h4 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
                     Personal Information
                   </h4>
                   <div className="space-y-3">
                     <div>
-                      <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Full Name</label>
-                      <p className="text-gray-900 dark:text-white">{selectedSubmission.fullName || 'N/A'}</p>
+                      <label className="text-sm font-medium text-gray-600">Full Name</label>
+                      <p className="text-gray-900">{selectedSubmission.fullName || 'N/A'}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Email</label>
-                      <p className="text-gray-900 dark:text-white">{selectedSubmission.email || 'N/A'}</p>
+                      <label className="text-sm font-medium text-gray-600">Email</label>
+                      <p className="text-gray-900">{selectedSubmission.email || 'N/A'}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Document Title</label>
-                      <p className="text-gray-900 dark:text-white">{selectedSubmission.documentTitle || 'N/A'}</p>
+                      <label className="text-sm font-medium text-gray-600">Document Title</label>
+                      <p className="text-gray-900">{selectedSubmission.documentTitle || 'N/A'}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Document Type</label>
-                      <p className="text-gray-900 dark:text-white capitalize">{selectedSubmission.documentType || 'N/A'}</p>
+                      <label className="text-sm font-medium text-gray-600">Document Type</label>
+                      <p className="text-gray-900 capitalize">{selectedSubmission.documentType || 'N/A'}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Description</label>
-                      <p className="text-gray-900 dark:text-white">{selectedSubmission.documentDescription || 'N/A'}</p>
+                      <label className="text-sm font-medium text-gray-600">Description</label>
+                      <p className="text-gray-900">{selectedSubmission.documentDescription || 'N/A'}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Additional Notes</label>
-                      <p className="text-gray-900 dark:text-white">{selectedSubmission.additionalNotes || 'N/A'}</p>
+                      <label className="text-sm font-medium text-gray-600">Additional Notes</label>
+                      <p className="text-gray-900">{selectedSubmission.additionalNotes || 'N/A'}</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Service Information */}
                 <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">
+                  <h4 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
                     Service Information
                   </h4>
                   <div className="space-y-3">
                     <div>
-                      <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Status</label>
+                      <label className="text-sm font-medium text-gray-600">Status</label>
                       <div className="mt-1">
                         <span className={`px-3 py-1 text-sm rounded-full ${
-                          selectedSubmission.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
-                          selectedSubmission.status === 'in_progress' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
-                          selectedSubmission.status === 'cancelled' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' :
-                          'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
+                          selectedSubmission.status === 'completed' ? 'bg-green-100 text-green-800' :
+                          selectedSubmission.status === 'in_progress' ? 'bg-yellow-100 text-yellow-800' :
+                          selectedSubmission.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                          'bg-gray-100 text-gray-800'
                         }`}>
                           {selectedSubmission.status || 'N/A'}
                         </span>
                       </div>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Current Step</label>
+                      <label className="text-sm font-medium text-gray-600">Current Step</label>
                       <div className="mt-1">
                         <span className={`px-3 py-1 text-sm rounded-full ${
-                          selectedSubmission.currentStep === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
-                          selectedSubmission.currentStep === 'checkout' ? 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300' :
-                          selectedSubmission.currentStep === 'addons_selected' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300' :
-                          selectedSubmission.currentStep === 'service_selected' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300' :
-                          selectedSubmission.currentStep === 'form_submitted' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
-                          'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
+                          selectedSubmission.currentStep === 'completed' ? 'bg-green-100 text-green-800' :
+                          selectedSubmission.currentStep === 'checkout' ? 'bg-primary-100 text-primary-800' :
+                          selectedSubmission.currentStep === 'addons_selected' ? 'bg-purple-100 text-purple-800' :
+                          selectedSubmission.currentStep === 'service_selected' ? 'bg-orange-100 text-orange-800' :
+                          selectedSubmission.currentStep === 'form_submitted' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-gray-100 text-gray-800'
                         }`}>
                           {selectedSubmission.currentStep?.replace('_', ' ') || 'N/A'}
                         </span>
                       </div>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Selected Services</label>
+                      <label className="text-sm font-medium text-gray-600">Selected Services</label>
                       <div className="mt-1">
                         {parseSelectedOptions(selectedSubmission.selectedOptions || '[]').length > 0 ? (
                           <div className="flex flex-wrap gap-2">
                             {parseSelectedOptions(selectedSubmission.selectedOptions || '[]').map((option, index) => (
-                              <span key={index} className="px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 text-sm rounded">
+                              <span key={index} className="px-2 py-1 bg-primary-100 text-primary-800 text-sm rounded">
                                 {option}
                               </span>
                             ))}
                           </div>
                         ) : (
-                          <p className="text-gray-500 dark:text-gray-400">No services selected</p>
+                          <p className="text-gray-500">No services selected</p>
                         )}
                       </div>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Selected Add-ons</label>
+                      <label className="text-sm font-medium text-gray-600">Selected Add-ons</label>
                       <div className="mt-1">
                         {parseSelectedAddOns(selectedSubmission.selectedAddOns || '[]').length > 0 ? (
                           <div className="flex flex-wrap gap-2">
                             {parseSelectedAddOns(selectedSubmission.selectedAddOns || '[]').map((addon, index) => (
-                              <span key={index} className="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-sm rounded">
+                              <span key={index} className="px-2 py-1 bg-purple-100 text-purple-800 text-sm rounded">
                                 {addon}
                               </span>
                             ))}
                           </div>
                         ) : (
-                          <p className="text-gray-500 dark:text-gray-400">No add-ons selected</p>
+                          <p className="text-gray-500">No add-ons selected</p>
                         )}
                       </div>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Extra Copies</label>
-                      <p className="text-gray-900 dark:text-white">{selectedSubmission.extraCopies || 0}</p>
+                      <label className="text-sm font-medium text-gray-600">Extra Copies</label>
+                      <p className="text-gray-900">{selectedSubmission.extraCopies || 0}</p>
                     </div>
                     {selectedSubmission.sessionId && (
                       <div>
-                        <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Session ID</label>
-                        <p className="text-gray-900 dark:text-white font-mono text-sm">{selectedSubmission.sessionId}</p>
+                        <label className="text-sm font-medium text-gray-600">Session ID</label>
+                        <p className="text-gray-900 font-mono text-sm">{selectedSubmission.sessionId}</p>
                       </div>
                     )}
                     {selectedSubmission.orderId && (
                       <div>
-                        <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Order ID</label>
-                        <p className="text-gray-900 dark:text-white font-mono text-sm">{selectedSubmission.orderId}</p>
+                        <label className="text-sm font-medium text-gray-600">Order ID</label>
+                        <p className="text-gray-900 font-mono text-sm">{selectedSubmission.orderId}</p>
                       </div>
                     )}
                   </div>
                   {/* Courier Address (if provided) */}
                   {selectedSubmission.courierAddress && (
                     <div>
-                      <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Courier Address</label>
-                      <div className="mt-2 text-sm text-gray-900 dark:text-white space-y-1">
+                      <label className="text-sm font-medium text-gray-600">Courier Address</label>
+                      <div className="mt-2 text-sm text-gray-900 space-y-1">
                         {(() => {
                           let addr: any = null
                           try { addr = typeof selectedSubmission.courierAddress === 'string' ? JSON.parse(selectedSubmission.courierAddress) : selectedSubmission.courierAddress } catch {}
-                          if (!addr) return <p className="text-gray-500 dark:text-gray-400">N/A</p>
+                          if (!addr) return <p className="text-gray-500">N/A</p>
                           return (
                             <div>
                               {addr.name && <p className="font-medium">{addr.name}</p>}
@@ -1124,27 +1124,27 @@ const NotaryDashboard: React.FC = () => {
 
               {/* Uploaded Files */}
               <div className="mt-6">
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 mb-4">
+                <h4 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2 mb-4">
                   Uploaded Files
                 </h4>
                 {parseUploadedFiles(selectedSubmission.uploadedFiles || '[]').length > 0 ? (
-                  <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-                    <div className="bg-gray-50 dark:bg-gray-700 px-4 py-3 border-b border-gray-200 dark:border-gray-600">
-                      <h5 className="text-sm font-medium text-gray-900 dark:text-white">
+                  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+                      <h5 className="text-sm font-medium text-gray-900">
                         {parseUploadedFiles(selectedSubmission.uploadedFiles || '[]').length} File{parseUploadedFiles(selectedSubmission.uploadedFiles || '[]').length !== 1 ? 's' : ''} Available
                       </h5>
                     </div>
                     <div className="p-4">
                       <div className="flex items-center space-x-3 mb-4">
                         <div className="flex-shrink-0">
-                          <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
-                            <svg className="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                            <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                           </div>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
+                          <p className="text-sm text-gray-600">
                             {parseUploadedFiles(selectedSubmission.uploadedFiles || '[]').length === 1 
                               ? 'Ready to download'
                               : 'Multiple files ready for download'
@@ -1180,12 +1180,12 @@ const NotaryDashboard: React.FC = () => {
                           } else {
                             return (
                               <div className="text-center py-6">
-                                <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
                                   <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                   </svg>
                                 </div>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">No files available</p>
+                                <p className="text-sm text-gray-500">No files available</p>
                               </div>
                             )
                           }
@@ -1194,30 +1194,30 @@ const NotaryDashboard: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-8 text-center">
-                    <div className="w-16 h-16 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="bg-gray-50 rounded-xl p-8 text-center">
+                    <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                       <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                     </div>
-                    <p className="text-lg font-medium text-gray-500 dark:text-gray-400">No files uploaded</p>
-                    <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">This client hasn't uploaded any documents yet</p>
+                    <p className="text-lg font-medium text-gray-500">No files uploaded</p>
+                    <p className="text-sm text-gray-400 mt-1">This client hasn't uploaded any documents yet</p>
                   </div>
                 )}
               </div>
 
               {/* Timestamps */}
-              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div className="mt-6 pt-6 border-t border-gray-200">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
-                    <label className="font-medium text-gray-600 dark:text-gray-400">Created</label>
-                    <p className="text-gray-900 dark:text-white">
+                    <label className="font-medium text-gray-600">Created</label>
+                    <p className="text-gray-900">
                       {selectedSubmission.createdAt ? new Date(selectedSubmission.createdAt).toLocaleString() : 'N/A'}
                     </p>
                   </div>
                   <div>
-                    <label className="font-medium text-gray-600 dark:text-gray-400">Last Updated</label>
-                    <p className="text-gray-900 dark:text-white">
+                    <label className="font-medium text-gray-600">Last Updated</label>
+                    <p className="text-gray-900">
                       {selectedSubmission.updatedAt ? new Date(selectedSubmission.updatedAt).toLocaleString() : 'N/A'}
                     </p>
                   </div>

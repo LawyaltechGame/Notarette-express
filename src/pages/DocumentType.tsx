@@ -93,7 +93,7 @@ const DocumentType: React.FC = () => {
     <PageBackground>
       <div className="py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-center space-x-12 mb-8 text-gray-500 dark:text-gray-400">
+        <div className="flex items-center justify-center space-x-12 mb-8 text-gray-500">
           <div className="text-center">
             <div className="w-8 h-8 rounded-full border-2 border-blue-600 text-blue-600 flex items-center justify-center mx-auto mb-1">1</div>
             <div className="text-xs">Document Type</div>
@@ -109,10 +109,10 @@ const DocumentType: React.FC = () => {
         </div>
 
         <Card>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white text-center mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-2">
             What type of document do you need notarized?
           </h1>
-          <p className="text-center text-gray-600 dark:text-gray-400 mb-8">
+          <p className="text-center text-gray-600 mb-8">
             Select the category that best describes your document
           </p>
 
@@ -123,8 +123,8 @@ const DocumentType: React.FC = () => {
                 onClick={() => setSelected(opt.key)}
                 className={`text-left p-5 rounded-xl border transition-all ${
                   selected === opt.key
-                    ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-gray-200 bg-white'
                 }`}
               >
                 <div className="flex items-start space-x-3">
@@ -132,8 +132,8 @@ const DocumentType: React.FC = () => {
                     {opt.icon}
                   </div>
                   <div>
-                    <div className="font-semibold text-gray-900 dark:text-white">{opt.title}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">{opt.subtitle}</div>
+                    <div className="font-semibold text-gray-900">{opt.title}</div>
+                    <div className="text-sm text-gray-600">{opt.subtitle}</div>
                   </div>
                 </div>
               </button>

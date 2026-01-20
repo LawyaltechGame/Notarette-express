@@ -92,10 +92,10 @@ const PaymentSuccess: React.FC = () => {
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
             Processing Your Payment
           </h2>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             Please wait while we confirm your payment and book your appointment...
           </p>
           </div>
@@ -111,13 +111,13 @@ const PaymentSuccess: React.FC = () => {
           <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card>
             <div className="text-center py-12">
-              <div className="mx-auto w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mb-4">
-                <CheckCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
+              <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <CheckCircle className="w-8 h-8 text-red-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Payment Processing Error
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-gray-600 mb-6">
                 {error}
               </p>
               <div className="space-y-3">

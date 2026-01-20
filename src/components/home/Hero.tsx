@@ -8,7 +8,7 @@ const Hero: React.FC = () => {
   // Features array removed - no longer displaying features grid below hero
   
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <section className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-blue-50">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       
@@ -26,7 +26,7 @@ const Hero: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center px-4 py-2 rounded-full bg-primary-50 text-primary-800 dark:bg-primary-900/40 dark:text-primary-200 text-sm font-medium"
+              className="inline-flex items-center px-4 py-2 rounded-full bg-primary-50 text-primary-800 text-sm font-medium"
             >
                              <Shield className="w-4 h-4 mr-2" />
                Powered by Notarette
@@ -37,7 +37,7 @@ const Hero: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight"
+              className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight"
             >
                              Notarette Express -{' '}
                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400">
@@ -51,7 +51,7 @@ const Hero: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed"
+              className="text-xl text-gray-600 leading-relaxed"
             >
                              The digital extension of Notarette - your trusted notarization partner. 
                Get documents notarized online in minutes with our licensed notaries. 
@@ -85,14 +85,14 @@ const Hero: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.6 }}
               className="pt-8"
             >
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              <p className="text-sm text-gray-500 mb-4">
                 Trusted by leading companies:
               </p>
               <div className="flex items-center space-x-6 opacity-60">
-                <div className="h-8 w-20 bg-gray-300 dark:bg-gray-600 rounded"></div>
-                <div className="h-8 w-16 bg-gray-300 dark:bg-gray-600 rounded"></div>
-                <div className="h-8 w-24 bg-gray-300 dark:bg-gray-600 rounded"></div>
-                <div className="h-8 w-18 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                <div className="h-8 w-20 bg-gray-300 rounded"></div>
+                <div className="h-8 w-16 bg-gray-300 rounded"></div>
+                <div className="h-8 w-24 bg-gray-300 rounded"></div>
+                <div className="h-8 w-18 bg-gray-300 rounded"></div>
               </div>
             </motion.div>
           </motion.div>
@@ -105,7 +105,7 @@ const Hero: React.FC = () => {
             className="relative"
           >
             {/* Main Visual */}
-            <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700">
+            <div className="relative bg-white rounded-2xl shadow-2xl p-8 border border-gray-200">
               {/* Document Mockup */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -118,19 +118,19 @@ const Hero: React.FC = () => {
                 </div>
                 
                 <div className="space-y-3">
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-5/6"></div>
                 </div>
 
                 {/* Signature Area */}
-                <div className="border-2 border-dashed border-primary-300 dark:border-primary-600 rounded-lg p-4 mt-6">
+                <div className="border-2 border-dashed border-primary-300 rounded-lg p-4 mt-6">
                   <div className="flex items-center justify-between">
-                                         <div className="text-sm text-gray-600 dark:text-gray-400">
-                       Notarette Digital Sign
-                     </div>
-                    <div className="w-8 h-8 bg-primary-100 dark:bg-primary-900/40 rounded-full flex items-center justify-center">
-                      <CheckCircle className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                                         <div className="text-sm text-gray-600">
+                      Notarette Digital Sign
+                    </div>
+                    <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                      <CheckCircle className="w-5 h-5 text-primary-600" />
                     </div>
                   </div>
                 </div>
@@ -148,15 +148,15 @@ const Hero: React.FC = () => {
             <motion.div
               animate={{ y: [-10, 10, -10] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-4 -right-4 w-16 h-16 bg-primary-100 dark:bg-primary-900/40 rounded-full flex items-center justify-center"
+              className="absolute -top-4 -right-4 w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center"
               >
-              <Shield className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+              <Shield className="w-8 h-8 text-primary-600" />
             </motion.div>
 
             <motion.div
               animate={{ y: [10, -10, 10] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-4 -left-4 w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center"
+              className="absolute -bottom-4 -left-4 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
             >
               <div className="w-6 h-6 bg-blue-600 rounded-full"></div>
             </motion.div>
@@ -178,13 +178,13 @@ const Hero: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.9 + index * 0.1 }}
               className="text-center group"
             >
-              <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900/40 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-primary-200 dark:group-hover:bg-primary-800 transition-colors">
-                <feature.icon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+              <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-primary-200 transition-colors">
+                <feature.icon className="w-6 h-6 text-primary-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+              <h3 className="font-semibold text-gray-900 mb-1">
                 {feature.text}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600">
                 {feature.description}
               </p>
             </motion.div>
@@ -194,7 +194,7 @@ const Hero: React.FC = () => {
 
                                                                                                                {/* Bottom Divider */}
           <div className="absolute bottom-0 left-0 right-0">
-            <div className="h-16 bg-gradient-to-t from-white dark:from-gray-900 to-transparent"></div>
+            <div className="h-16 bg-gradient-to-t from-white to-transparent"></div>
           </div>
     </section>
   )

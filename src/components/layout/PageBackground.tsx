@@ -9,7 +9,7 @@ const PageBackground: React.FC<PageBackgroundProps> = ({ children, className = '
   return (
     <div className={`relative min-h-screen ${className}`}>
       {/* Modern gradient background with mesh pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-primary-50 to-primary-100 dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900/30">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-primary-50 to-primary-100">
         <div
           className="absolute inset-0 opacity-40"
           style={{

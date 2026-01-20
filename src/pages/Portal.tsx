@@ -410,20 +410,20 @@ const Portal: React.FC = () => {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/50" onClick={dismissRetentionNotice} />
             <div className="relative z-10 w-full max-w-lg">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-                <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex items-center gap-3">
+              <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+                <div className="px-6 py-5 border-b border-gray-200 flex items-center gap-3">
                   <AlertCircle className="w-5 h-5 text-amber-600" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Important: 7-Day File Retention</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Important: 7-Day File Retention</h3>
                 </div>
                 <div className="px-6 py-5 space-y-3">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                  <p className="text-sm text-gray-700">
                     For security and compliance, your uploaded and notarized documents are stored on our servers for <span className="font-semibold">7 days</span> after they are available.
                   </p>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                  <p className="text-sm text-gray-700">
                     Please download your completed documents as soon as they appear in your portal. After 7 days, files are automatically removed and cannot be recovered.
                   </p>
                 </div>
-                <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-end gap-3">
+                <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-end gap-3">
                   <Button variant="secondary" onClick={dismissRetentionNotice}>Got it</Button>
                 </div>
               </div>
@@ -436,10 +436,10 @@ const Portal: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome to Your Client Portal
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             {hasOrders 
               ? 'Manage your notarization orders, track progress, and download completed documents.'
               : 'Get started with your first notarization service. We\'re here to help with all your document needs.'
@@ -450,7 +450,7 @@ const Portal: React.FC = () => {
         {/* Persistent retention reminder (hidden only while modal is open) */}
         {!showRetentionNotice && (
           <div className="mb-6">
-            <div className="flex items-start gap-3 p-4 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-200">
+            <div className="flex items-start gap-3 p-4 rounded-lg border border-amber-200 bg-amber-50 text-amber-800">
               <AlertCircle className="w-5 h-5 mt-0.5" />
               <p className="text-sm">
                 For security and compliance, client uploaded and their notarized documents are stored for <span className="font-semibold">7 days</span>. Please download your completed documents promptly.
@@ -472,20 +472,20 @@ const Portal: React.FC = () => {
             >
               <Card>
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Transactions</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">Transactions</h2>
                   {orders.length > 0 && (
                     <Badge variant="info">{orders.length} total</Badge>
                   )}
                 </div>
                 {loadingSubmissions ? (
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Loading transactions...</div>
+                  <div className="text-sm text-gray-600">Loading transactions...</div>
                 ) : submissions.length === 0 ? (
-                  <div className="text-sm text-gray-600 dark:text-gray-400">No transactions yet.</div>
+                  <div className="text-sm text-gray-600">No transactions yet.</div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="min-w-full text-sm">
                       <thead>
-                        <tr className="text-left text-gray-600 dark:text-gray-400">
+                        <tr className="text-left text-gray-600">
                           <th className="py-2 pr-4">Submission</th>
                           <th className="py-2 pr-4">Service</th>
                           <th className="py-2 pr-4">Amount</th>
@@ -493,9 +493,9 @@ const Portal: React.FC = () => {
                           <th className="py-2 pr-4">Date</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                      <tbody className="divide-y divide-gray-200">
                         {submissions.map(s => (
-                          <tr key={s.$id} className="text-gray-900 dark:text-gray-100">
+                          <tr key={s.$id} className="text-gray-900">
                             <td className="py-2 pr-4 whitespace-nowrap">{s.$id?.slice(0, 8)}</td>
                             <td className="py-2 pr-4">{s.serviceSlug || '-'}</td>
                             <td className="py-2 pr-4">
@@ -526,10 +526,10 @@ const Portal: React.FC = () => {
                 <div className="flex items-center space-x-3">
                   <FileText className="w-8 h-8 text-primary-600" />
                   <div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <div className="text-2xl font-bold text-gray-900">
                       {totalOrders}
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Total Orders</div>
+                    <div className="text-sm text-gray-600">Total Orders</div>
                   </div>
                 </div>
               </Card>
@@ -538,10 +538,10 @@ const Portal: React.FC = () => {
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="w-8 h-8 text-green-600" />
                   <div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <div className="text-2xl font-bold text-gray-900">
                       {completedCount}
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Completed</div>
+                    <div className="text-sm text-gray-600">Completed</div>
                   </div>
                 </div>
               </Card>
@@ -550,10 +550,10 @@ const Portal: React.FC = () => {
                 <div className="flex items-center space-x-3">
                   <Clock className="w-8 h-8 text-primary-600" />
                   <div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <div className="text-2xl font-bold text-gray-900">
                       {inProgressCount}
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">In Progress</div>
+                    <div className="text-sm text-gray-600">In Progress</div>
                   </div>
                 </div>
               </Card>
@@ -567,7 +567,7 @@ const Portal: React.FC = () => {
             >
               <Card>
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  <h2 className="text-xl font-semibold text-gray-900">
                     Your Orders
                   </h2>
                   <Button
@@ -594,7 +594,7 @@ const Portal: React.FC = () => {
 
                 <div className="space-y-4">
                   {submissions.length === 0 ? (
-                    <div className="text-sm text-gray-600 dark:text-gray-400">No orders yet.</div>
+                    <div className="text-sm text-gray-600">No orders yet.</div>
                   ) : (
                     submissions.slice(0, 10).map((s, index) => {
                       const options = s.selectedOptions ? ((): string[] => { try { return JSON.parse(s.selectedOptions) } catch { return [] } })() : []
@@ -610,60 +610,60 @@ const Portal: React.FC = () => {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.3 + index * 0.1 }}
-                          className="border border-gray-200 dark:border-gray-700 rounded-lg p-6"
+                          className="border border-gray-200 rounded-lg p-6"
                         >
                           <div className="flex items-start justify-between mb-4">
                             <div className="flex items-center space-x-3">
                               {getStatusIcon(s.status === 'completed' ? 'completed' : 'processing')}
                               <div>
-                                <h3 className="font-semibold text-gray-900 dark:text-white">{s.$id}</h3>
+                                <h3 className="font-semibold text-gray-900">{s.$id}</h3>
                                 <div className="flex items-center space-x-2">
                                   {getServiceIcon(s.serviceSlug || '')}
-                                  <p className="text-sm text-gray-600 dark:text-gray-400">{s.serviceSlug || '-'}</p>
+                                  <p className="text-sm text-gray-600">{s.serviceSlug || '-'}</p>
                                 </div>
                               </div>
                             </div>
                             <div className="text-right">
-                              <div className="font-semibold text-gray-900 dark:text-white">{amount}</div>
-                              <div className="text-sm text-gray-600 dark:text-gray-400">{formatDate(s.createdAt || (s as any).$createdAt)}</div>
+                              <div className="font-semibold text-gray-900">{amount}</div>
+                              <div className="text-sm text-gray-600">{formatDate(s.createdAt || (s as any).$createdAt)}</div>
                             </div>
                           </div>
 
                           {(options.length > 0 || addons.length > 0) && (
                             <div className="mb-4 flex flex-wrap gap-2">
                               {options.map((op: string, i: number) => (
-                                <span key={`opt-${i}`} className="text-xs px-2 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-200">{op}</span>
+                                <span key={`opt-${i}`} className="text-xs px-2 py-1 rounded-full bg-primary-100 text-primary-800">{op}</span>
                               ))}
                               {addons.map((ad: string, i: number) => (
-                                <span key={`ad-${i}`} className="text-xs px-2 py-1 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200">{ad}</span>
+                                <span key={`ad-${i}`} className="text-xs px-2 py-1 rounded-full bg-purple-100 text-purple-800">{ad}</span>
                               ))}
                             </div>
                           )}
 
                           <div className="flex items-center space-x-4">
                             <div className="flex items-center space-x-2">
-                              <span className="text-sm text-gray-600 dark:text-gray-400">Status:</span>
+                              <span className="text-sm text-gray-600">Status:</span>
                               {getStatusBadge(s.status)}
                             </div>
                             <div className="flex items-center space-x-2">
-                              <span className="text-sm text-gray-600 dark:text-gray-400">Notarization:</span>
+                              <span className="text-sm text-gray-600">Notarization:</span>
                               {(() => { const per = getPerOrderNotarizationStatus(s); return (
                                 <span className={`text-xs px-2 py-1 rounded-full ${
-                                  per === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
-                                  per === 'started' ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300' :
-                                  'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                                  per === 'completed' ? 'bg-green-100 text-green-700' :
+                                  per === 'started' ? 'bg-primary-100 text-primary-700' :
+                                  'bg-yellow-100 text-yellow-800'
                                 }`}>
                                   {per}
                                 </span>
                               ) })()}
                             </div>
                             <div className="flex items-center space-x-2">
-                              <span className="text-sm text-gray-600 dark:text-gray-400">Meeting:</span>
+                              <span className="text-sm text-gray-600">Meeting:</span>
                               {(() => { const meeting = normalizeNotarizationStatus(s.meetingStatus); return (
                                 <span className={`text-xs px-2 py-1 rounded-full ${
-                                  meeting === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
-                                  meeting === 'started' ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300' :
-                                  'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                                  meeting === 'completed' ? 'bg-green-100 text-green-700' :
+                                  meeting === 'started' ? 'bg-primary-100 text-primary-700' :
+                                  'bg-yellow-100 text-yellow-800'
                                 }`}>
                                   {meeting}
                                 </span>
@@ -686,36 +686,36 @@ const Portal: React.FC = () => {
             >
               <Card className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Your Uploads</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">Your Uploads</h2>
                 </div>
                 {loadingClientUploads ? (
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Loading your uploads...</div>
+                  <div className="text-sm text-gray-600">Loading your uploads...</div>
                 ) : (() => {
                   // Prefer latest submission's uploadedFiles
                   const latest = submissions[0]
                   if (!latest || !latest.uploadedFiles) {
-                    return <div className="text-sm text-gray-600 dark:text-gray-400">No uploads found.</div>
+                    return <div className="text-sm text-gray-600">No uploads found.</div>
                   }
                   let uploaded: any[] = []
                   try { uploaded = parseUploadedFiles(latest.uploadedFiles) as any[] } catch {}
                   if (!uploaded || uploaded.length === 0) {
-                    return <div className="text-sm text-gray-600 dark:text-gray-400">No uploads found.</div>
+                    return <div className="text-sm text-gray-600">No uploads found.</div>
                   }
                   const dateKey = formatDateDDMMYY(new Date(latest.createdAt || (latest as any).$createdAt))
                   return (
                     <div className="space-y-6">
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{dateKey}</h4>
-                          <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">Latst</span>
+                          <h4 className="text-sm font-semibold text-gray-700">{dateKey}</h4>
+                          <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">Latst</span>
                         </div>
                         {uploaded.map((u, index) => (
-                          <div key={`client-upload-${index}`} className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+                          <div key={`client-upload-${index}`} className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
                             <div className="flex items-center space-x-3">
                               <Upload className="w-5 h-5 text-primary-600" />
                               <div>
-                                <p className="font-medium text-gray-900 dark:text-white">Uploaded Document</p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">From service form</p>
+                                <p className="font-medium text-gray-900">Uploaded Document</p>
+                                <p className="text-xs text-gray-500">From service form</p>
                               </div>
                             </div>
                             {u?.fileId ? (
@@ -753,13 +753,13 @@ const Portal: React.FC = () => {
           <Card className="p-6">
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-3">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Notarized Files</h2>
+                <h2 className="text-xl font-semibold text-gray-900">Notarized Files</h2>
               </div>
             </div>
             {loadingNotarizedFiles ? (
-              <div className="text-sm text-gray-600 dark:text-gray-400">Loading notarized files...</div>
+              <div className="text-sm text-gray-600">Loading notarized files...</div>
             ) : notarizedFiles.length === 0 ? (
-              <div className="text-sm text-gray-600 dark:text-gray-400">No notarized files available yet.</div>
+              <div className="text-sm text-gray-600">No notarized files available yet.</div>
             ) : (
               (() => {
                 // Sort newest first
@@ -790,18 +790,18 @@ const Portal: React.FC = () => {
                     {dateKeys.map((dateKey, groupIdx) => (
                       <div key={dateKey} className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          <h4 className="text-sm font-semibold text-gray-700">
                             {dateKey}
                           </h4>
                         </div>
                         {groups[dateKey].map((file, index) => (
-                          <div key={`${dateKey}-${index}`} className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+                          <div key={`${dateKey}-${index}`} className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
                             <div className="flex items-center space-x-3">
                               <FileText className="w-5 h-5 text-primary-600" />
                               <div>
-                                <p className="font-medium text-gray-900 dark:text-white">Notarized Document</p>
+                                <p className="font-medium text-gray-900">Notarized Document</p>
                                 {file.uploadedAt && (
-                                  <p className="text-xs text-gray-500 dark:text-gray-400">Uploaded at {formatTime12h(new Date(file.uploadedAt))}</p>
+                                  <p className="text-xs text-gray-500">Uploaded at {formatTime12h(new Date(file.uploadedAt))}</p>
                                 )}
                               </div>
                             </div>
@@ -814,7 +814,7 @@ const Portal: React.FC = () => {
                                 {`Download File ${index + 1}`}
                               </Button>
                               {(file.uploadedAt && new Date(file.uploadedAt).getTime() === latestTs) && (
-                                <span className="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-emerald-500/15 to-emerald-400/15 text-emerald-700 dark:text-emerald-300 border border-emerald-300/40 dark:border-emerald-500/30 shadow-sm">
+                                <span className="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-emerald-500/15 to-emerald-400/15 text-emerald-700 border border-emerald-300/40 shadow-sm">
                                   <Sparkles className="w-3 h-3" />
                                   Latest
                                 </span>

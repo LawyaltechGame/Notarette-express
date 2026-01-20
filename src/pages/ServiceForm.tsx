@@ -224,40 +224,40 @@ const ServiceForm: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Card */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 mb-8 overflow-hidden">
-          <div className="bg-[#111827] px-8 py-6">
-            <h1 className="text-3xl font-bold text-yellow-400 mb-2">
+          <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-8 py-6">
+            <h1 className="text-3xl font-bold text-white mb-2">
               {displayServiceName ? `Notarisation Form for ${displayServiceName}` : 'Start Service'}
           </h1>
-            <p className="text-blue-100 text-lg">
-              Please complete the form below. Required fields are marked with <span className="text-red-300 font-semibold">*</span>
+            <p className="text-white/90 text-lg">
+              Please complete the form below. Required fields are marked with <span className="text-red-200 font-semibold">*</span>
             </p>
           </div>
         </div>
 
         {/* Main Form Card */}
-        <div className="bg-[#111827] rounded-2xl shadow-xl border border-gray-700 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
           <div className="p-8">
             <form onSubmit={onSubmit} className="space-y-8">
               {/* Personal Information Section */}
               <div className="space-y-6">
                 <div className="border-l-4 border-blue-500 pl-4">
-                  <h2 className="text-xl font-semibold text-white mb-1">Personal Information</h2>
-                  <p className="text-sm text-gray-300">Please provide your contact details</p>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-1">Personal Information</h2>
+                  <p className="text-sm text-gray-600">Please provide your contact details</p>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-200">
+                    <label className="block text-sm font-semibold text-gray-700">
                       Full Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
                         errors.fullName 
                           ? 'border-red-400 bg-red-50 text-gray-900' 
-                          : 'border-gray-600 bg-[#1f2937] text-white hover:border-gray-500 focus:bg-[#111827]'
+                          : 'border-gray-300 bg-white text-gray-900 hover:border-gray-400 focus:bg-white'
                       }`}
                       placeholder="Jane Doe"
                     />
@@ -267,22 +267,22 @@ const ServiceForm: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-200">
+                    <label className="block text-sm font-semibold text-gray-700">
                       Email Address <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
                         errors.email 
                           ? 'border-red-400 bg-red-50 text-gray-900' 
-                          : 'border-gray-600 bg-[#1f2937] text-white hover:border-gray-500 focus:bg-[#111827]'
+                          : 'border-gray-300 bg-white text-gray-900 hover:border-gray-400 focus:bg-white'
                       }`}
                       placeholder="jane@example.com"
                     />
                     {user?.email && emailMismatch && !errors.email && (
-                      <p className="text-xs text-yellow-300 mt-1">The email should match your signed-in account: {user.email}</p>
+                      <p className="text-xs text-yellow-600 mt-1">The email should match your signed-in account: {user.email}</p>
                     )}
                     {errors.email && (
                       <p className="text-sm text-red-600 font-medium">{errors.email}</p>
@@ -292,25 +292,25 @@ const ServiceForm: React.FC = () => {
               </div>
 
               {/* Document Information Section */}
-              <div className="space-y-6 pt-8 border-t border-gray-700">
+              <div className="space-y-6 pt-8 border-t border-gray-200">
                 <div className="border-l-4 border-green-500 pl-4">
-                  <h2 className="text-xl font-semibold text-white mb-1">Document Information</h2>
-                  <p className="text-sm text-gray-300">Tell us about the document you need notarized</p>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-1">Document Information</h2>
+                  <p className="text-sm text-gray-600">Tell us about the document you need notarized</p>
                 </div>
 
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-200">
+                    <label className="block text-sm font-semibold text-gray-700">
                       Document Title <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       value={documentTitle}
                       onChange={(e) => setDocumentTitle(e.target.value)}
-                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
                         errors.documentTitle 
                           ? 'border-red-400 bg-red-50 text-gray-900' 
-                          : 'border-gray-600 bg-[#1f2937] text-white hover:border-gray-500 focus:bg-[#111827]'
+                          : 'border-gray-300 bg-white text-gray-900 hover:border-gray-400 focus:bg-white'
                       }`}
                       placeholder="e.g., Passport, Power of Attorney, Contract"
                     />
@@ -320,7 +320,7 @@ const ServiceForm: React.FC = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <label className="block text-sm font-semibold text-gray-200">
+                    <label className="block text-sm font-semibold text-gray-700">
                       Document Type <span className="text-red-500">*</span>
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -336,18 +336,18 @@ const ServiceForm: React.FC = () => {
                           onClick={() => setDocumentType(opt.key)}
                           className={`p-4 rounded-xl border-2 transition-all duration-200 text-left hover:shadow-lg transform hover:-translate-y-1 ${
                             documentType === opt.key 
-                              ? 'border-blue-400 bg-blue-900/30 shadow-md ring-2 ring-blue-900/20 text-white' 
-                              : 'border-gray-600 bg-[#1f2937] text-gray-200 hover:border-gray-500'
+                              ? 'border-primary-500 bg-primary-50 shadow-md ring-2 ring-primary-200 text-gray-900' 
+                              : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
                           }`}
                         >
                           <div className="space-y-2">
                             <span className={`font-semibold block ${
-                              documentType === opt.key ? 'text-white' : 'text-gray-200'
+                              documentType === opt.key ? 'text-gray-900' : 'text-gray-700'
                             }`}>
                               {opt.label}
                             </span>
                             <span className={`text-sm block ${
-                              documentType === opt.key ? 'text-blue-200' : 'text-gray-400'
+                              documentType === opt.key ? 'text-primary-700' : 'text-gray-500'
                             }`}>
                               {opt.desc}
                             </span>
@@ -361,14 +361,14 @@ const ServiceForm: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-200">
+                    <label className="block text-sm font-semibold text-gray-700">
                       Document Description
                     </label>
                     <textarea
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       rows={4}
-                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-600 bg-[#1f2937] text-white hover:border-gray-500 focus:bg-[#111827] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
+                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 hover:border-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 resize-none"
                       placeholder="Briefly describe your document and its purpose..."
                     />
                   </div>
@@ -376,14 +376,14 @@ const ServiceForm: React.FC = () => {
               </div>
 
               {/* File Upload Section */}
-              <div className="space-y-6 pt-8 border-t border-gray-700">
+              <div className="space-y-6 pt-8 border-t border-gray-200">
                 <div className="border-l-4 border-purple-500 pl-4">
-                  <h2 className="text-xl font-semibold text-white mb-1">Upload Documents</h2>
-                  <p className="text-sm text-gray-300">Upload one or more documents that need to be notarized</p>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-1">Upload Documents</h2>
+                  <p className="text-sm text-gray-600">Upload one or more documents that need to be notarized</p>
                 </div>
 
                 <div className="space-y-4">
-                  <label className="block text-sm font-semibold text-gray-200">
+                  <label className="block text-sm font-semibold text-gray-700">
                     Select Files <span className="text-red-500">*</span>
                     <span className="text-xs text-gray-500 font-normal ml-2">
                       (multiple files allowed, max {MAX_FILES} files, up to 50 MB each)
@@ -400,7 +400,7 @@ const ServiceForm: React.FC = () => {
                       type="file"
                       multiple
                       onChange={onFileChange}
-                      className="block w-full text-sm text-gray-200 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-blue-500 file:to-indigo-500 file:text-white hover:file:from-blue-600 hover:file:to-indigo-600 file:transition-all file:duration-200 file:shadow-lg hover:file:shadow-xl file:cursor-pointer cursor-pointer border-2 border-dashed border-gray-600 rounded-xl p-6 bg-[#1f2937] hover:border-gray-500 hover:bg-[#111827] transition-all duration-200"
+                      className="block w-full text-sm text-gray-700 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-primary-500 file:to-primary-600 file:text-white hover:file:from-primary-600 hover:file:to-primary-700 file:transition-all file:duration-200 file:shadow-lg hover:file:shadow-xl file:cursor-pointer cursor-pointer border-2 border-dashed border-gray-300 rounded-xl p-6 bg-gray-50 hover:border-gray-400 hover:bg-gray-100 transition-all duration-200"
                     />
             </div>
                   
@@ -411,7 +411,7 @@ const ServiceForm: React.FC = () => {
                         const input = document.querySelector('input[data-testid="file-input"]') as HTMLInputElement
                         input?.click()
                       }}
-                      className="w-full px-4 py-2 text-sm font-medium text-blue-400 border border-blue-400 rounded-lg hover:bg-blue-400 hover:text-white transition-colors"
+                      className="w-full px-4 py-2 text-sm font-medium text-primary-600 border border-primary-600 rounded-lg hover:bg-primary-600 hover:text-white transition-colors"
                     >
                       + Add More Files ({MAX_FILES - files.length} remaining)
                     </button>
@@ -422,30 +422,30 @@ const ServiceForm: React.FC = () => {
                   )}
                   
                   {files.length > 0 && (
-                    <div className="bg-[#0f172a] rounded-xl p-4 space-y-3 border border-gray-700">
+                    <div className="bg-gray-50 rounded-xl p-4 space-y-3 border border-gray-200">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-semibold text-gray-200">Selected Files ({files.length}/{MAX_FILES})</h4>
+                        <h4 className="font-semibold text-gray-900">Selected Files ({files.length}/{MAX_FILES})</h4>
                         <button
                           type="button"
                           onClick={clearAllFiles}
-                          className="text-xs text-red-400 hover:text-red-300 font-medium"
+                          className="text-xs text-red-600 hover:text-red-700 font-medium"
                         >
                           Clear All
                         </button>
                       </div>
                       <ul className="space-y-2">
                         {files.map((f, i) => (
-                          <li key={i} className="flex items-center justify-between bg-[#111827] p-3 rounded-lg border border-gray-700 shadow-sm">
+                          <li key={i} className="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
                             <div className="flex items-center flex-1 min-w-0">
-                              <span className="font-medium text-gray-200 truncate mr-3">{f.name}</span>
-                              <span className="text-sm text-gray-300 bg-[#1f2937] px-2 py-1 rounded-full">
+                              <span className="font-medium text-gray-900 truncate mr-3">{f.name}</span>
+                              <span className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
                                 {(f.size / (1024 * 1024)).toFixed(1)} MB
                               </span>
                             </div>
                             <button
                               type="button"
                               onClick={() => removeFile(i)}
-                              className="ml-2 text-red-400 hover:text-red-300 p-1"
+                              className="ml-2 text-red-600 hover:text-red-700 p-1"
                               title="Remove file"
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -456,7 +456,7 @@ const ServiceForm: React.FC = () => {
                         ))}
                       </ul>
                       {files.length < MAX_FILES && (
-                        <p className="text-xs text-gray-400 text-center">
+                        <p className="text-xs text-gray-500 text-center">
                           You can add {MAX_FILES - files.length} more file{MAX_FILES - files.length !== 1 ? 's' : ''}
                         </p>
                       )}
@@ -466,27 +466,27 @@ const ServiceForm: React.FC = () => {
               </div>
 
               {/* Additional Notes Section */}
-              <div className="space-y-4 pt-8 border-t border-gray-700">
+              <div className="space-y-4 pt-8 border-t border-gray-200">
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-gray-200">
+                  <label className="block text-sm font-semibold text-gray-700">
                     Additional Notes for the Notary
                   </label>
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     rows={3}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-600 bg-[#1f2937] text-white hover:border-gray-500 focus:bg-[#111827] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-900 hover:border-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 resize-none"
                     placeholder="Add any special instructions, deadlines, or additional context..."
                   />
                 </div>
             </div>
 
               {/* Form Actions */}
-              <div className="flex items-center justify-between pt-8 border-t border-gray-700">
+              <div className="flex items-center justify-between pt-8 border-t border-gray-200">
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-6 py-3 text-gray-200 bg-[#1f2937] border border-gray-600 rounded-xl hover:bg-[#111827] hover:border-gray-500 transition-all duration-200 font-semibold"
+                  className="px-6 py-3 text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-semibold"
                 >
                   Clear Form
                 </button>

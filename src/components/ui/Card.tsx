@@ -21,7 +21,7 @@ const Card: React.FC<CardProps> = ({
     lg: 'p-8',
   }
 
-  const baseClasses = `bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm ${paddingClasses[padding]} ${className}`
+  const baseClasses = `bg-white rounded-lg border border-gray-200 shadow-sm ${paddingClasses[padding]} ${className}`
 
   if (hover) {
     return (

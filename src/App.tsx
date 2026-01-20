@@ -39,7 +39,7 @@ function App() {
     <Provider store={store}>
       <AuthProvider>
         <Router>
-          <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
+          <div className="min-h-screen bg-white flex flex-col">
             <Header />
             <main className="flex-1">
               <Routes>

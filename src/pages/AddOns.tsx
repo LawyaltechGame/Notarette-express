@@ -90,7 +90,7 @@ const AddOns: React.FC = () => {
     <PageBackground>
       <div className="py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-center space-x-12 mb-8 text-gray-500 dark:text-gray-400">
+        <div className="flex items-center justify-center space-x-12 mb-8 text-gray-500">
           <div className="text-center opacity-70">
             <div className="w-8 h-8 rounded-full border flex items-center justify-center mx-auto mb-1">1</div>
             <div className="text-xs">Document Type</div>
@@ -108,10 +108,10 @@ const AddOns: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           <div className="lg:col-span-2">
             <Card>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white text-center mb-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-2">
                 Optional Add-ons
               </h1>
-              <p className="text-center text-gray-600 dark:text-gray-400 mb-8">
+              <p className="text-center text-gray-600 mb-8">
                 Enhance your service with these optional features
               </p>
 
@@ -123,12 +123,12 @@ const AddOns: React.FC = () => {
                       key={a.key}
                       onClick={() => toggle(a.key)}
                       className={`w-full text-left p-5 rounded-xl border transition-all flex items-center justify-between ${
-                        active ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'
+                        active ? 'border-blue-600 bg-blue-50' : 'border-gray-200 bg-white'
                       }`}
                     >
                       <div>
-                        <div className="font-semibold text-gray-900 dark:text-white">{a.title}</div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">{a.subtitle}</div>
+                        <div className="font-semibold text-gray-900">{a.title}</div>
+                        <div className="text-sm text-gray-600">{a.subtitle}</div>
                       </div>
                       <div className="text-blue-600 font-bold">+{fmt(a.priceCents)}</div>
                     </button>
@@ -137,51 +137,51 @@ const AddOns: React.FC = () => {
               </div>
 
               {selected.has('courier') && (
-                <div className="max-w-3xl mx-auto mt-6 p-5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Courier Address</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">We will ship physical documents to this address.</p>
+                <div className="max-w-3xl mx-auto mt-6 p-5 rounded-xl border border-gray-200 bg-white">
+                  <h3 className="font-semibold text-gray-900 mb-1">Courier Address</h3>
+                  <p className="text-xs text-gray-500 mb-4">We will ship physical documents to this address.</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
                       value={courierAddress.name}
                       onChange={e=>setCourierAddress(v=>({ ...v, name: e.target.value }))}
                       placeholder="Full Name"
-                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                     />
                     <input
                       value={courierAddress.line1}
                       onChange={e=>setCourierAddress(v=>({ ...v, line1: e.target.value }))}
                       placeholder="Address Line 1"
-                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                     />
                     <input
                       value={courierAddress.line2}
                       onChange={e=>setCourierAddress(v=>({ ...v, line2: e.target.value }))}
                       placeholder="Address Line 2 (optional)"
-                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                     />
                     <input
                       value={courierAddress.city}
                       onChange={e=>setCourierAddress(v=>({ ...v, city: e.target.value }))}
                       placeholder="City"
-                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                     />
                     <input
                       value={courierAddress.state}
                       onChange={e=>setCourierAddress(v=>({ ...v, state: e.target.value }))}
                       placeholder="State / Province"
-                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                     />
                     <input
                       value={courierAddress.postalCode}
                       onChange={e=>setCourierAddress(v=>({ ...v, postalCode: e.target.value }))}
                       placeholder="Postal Code"
-                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                     />
                     <input
                       value={courierAddress.country}
                       onChange={e=>setCourierAddress(v=>({ ...v, country: e.target.value }))}
                       placeholder="Country"
-                      className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                     />
                   </div>
                   <div className="flex items-center justify-end mt-4">
@@ -204,18 +204,18 @@ const AddOns: React.FC = () => {
                       {savingAddress ? 'Saving…' : (addressSaved ? 'Saved' : 'Save Address')}
                     </Button>
                   </div>
-                  <div className="mt-6 pt-5 border-t border-gray-200 dark:border-gray-700">
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Extra Certified Copies</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Optional. Available only with Courier Delivery.</p>
+                  <div className="mt-6 pt-5 border-t border-gray-200">
+                    <h3 className="font-semibold text-gray-900 mb-2">Extra Certified Copies</h3>
+                    <p className="text-xs text-gray-500 mb-3">Optional. Available only with Courier Delivery.</p>
                     <div className="flex items-center gap-3">
-                      <label className="text-sm text-gray-700 dark:text-gray-300">Number of extra copies</label>
+                      <label className="text-sm text-gray-700">Number of extra copies</label>
                       <input
                         type="number"
                         min={0}
                         max={10}
                         value={extraCopies}
                         onChange={e => setExtraCopies(Math.max(0, Math.min(10, Number(e.target.value) || 0)))}
-                        className="w-24 px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                        className="w-24 px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                       />
                       <span className="text-sm text-blue-600 font-medium">+{fmt(EXTRA_COPY_PRICE_CENTS)} each</span>
                     </div>
@@ -271,37 +271,37 @@ const AddOns: React.FC = () => {
 
           <div className="lg:col-span-1">
             <Card>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Order Summary</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">Order Summary</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <div className="text-gray-900 dark:text-white">Selected Services</div>
-                  <div className="text-gray-900 dark:text-white font-medium">{fmt(baseSubtotal)}</div>
+                  <div className="text-gray-900">Selected Services</div>
+                  <div className="text-gray-900 font-medium">{fmt(baseSubtotal)}</div>
                 </div>
                 {Array.from(selected).map(key => {
                   const a = addonsList.find(x => x.key === key)
                   if (!a) return null
                   return (
                     <div key={key} className="flex items-center justify-between text-sm">
-                      <div className="text-gray-900 dark:text-white">{a.title}</div>
-                      <div className="text-gray-900 dark:text-white font-medium">+{fmt(a.priceCents)}</div>
+                      <div className="text-gray-900">{a.title}</div>
+                      <div className="text-gray-900 font-medium">+{fmt(a.priceCents)}</div>
                     </div>
                   )
                 })}
 
-                <div className="pt-3 border-t border-gray-200 dark:border-gray-700 text-sm">
+                <div className="pt-3 border-t border-gray-200 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
-                    <span className="text-gray-900 dark:text-white">{fmt(subtotalCents)}</span>
+                    <span className="text-gray-600">Subtotal</span>
+                    <span className="text-gray-900">{fmt(subtotalCents)}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">VAT (21%)</span>
-                    <span className="text-gray-900 dark:text-white">{fmt(vatCents)}</span>
+                    <span className="text-gray-600">VAT (21%)</span>
+                    <span className="text-gray-900">{fmt(vatCents)}</span>
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                <div className="pt-3 border-t border-gray-200">
                   <div className="flex items-center justify-between font-semibold">
-                    <span className="text-gray-900 dark:text-white">Total</span>
+                    <span className="text-gray-900">Total</span>
                     <span className="text-blue-600">{fmt(totalCents)}</span>
                   </div>
                 </div>

@@ -79,7 +79,7 @@ const ServiceSelection: React.FC = () => {
     <PageBackground>
       <div className="py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-center space-x-12 mb-8 text-gray-500 dark:text-gray-400">
+        <div className="flex items-center justify-center space-x-12 mb-8 text-gray-500">
           <div className="text-center opacity-70">
             <div className="w-8 h-8 rounded-full border flex items-center justify-center mx-auto mb-1">1</div>
             <div className="text-xs">Document Type</div>
@@ -98,10 +98,10 @@ const ServiceSelection: React.FC = () => {
           {/* Left: choices */}
           <div className="lg:col-span-2">
             <Card>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white text-center mb-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-2">
                 Choose your Service Type
               </h1>
-              <p className="text-center text-gray-600 dark:text-gray-400 mb-8">
+              <p className="text-center text-gray-600 mb-8">
                 Select one or more types of notarization you need
               </p>
 
@@ -113,12 +113,12 @@ const ServiceSelection: React.FC = () => {
                       key={opt.key}
                       onClick={() => toggleKey(opt.key)}
                       className={`w-full text-left p-5 rounded-xl border transition-all flex items-center justify-between ${
-                        selected ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'
+                        selected ? 'border-blue-600 bg-blue-50' : 'border-gray-200 bg-white'
                       }`}
                     >
                       <div>
-                        <div className="font-semibold text-gray-900 dark:text-white">{opt.title}</div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">{opt.subtitle}</div>
+                        <div className="font-semibold text-gray-900">{opt.title}</div>
+                        <div className="text-sm text-gray-600">{opt.subtitle}</div>
                       </div>
                       <div className="flex items-center space-x-3">
                         {selected && <span className="text-blue-600 text-sm font-medium">Selected</span>}
@@ -171,33 +171,33 @@ const ServiceSelection: React.FC = () => {
           {/* Right: order summary */}
           <div className="lg:col-span-1">
             <Card>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Order Summary</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">Order Summary</h3>
               <div className="space-y-3">
                 {selectedOptions.map(opt => (
                   <div key={opt.key} className="flex items-center justify-between text-sm">
                     <div>
-                      <div className="text-gray-900 dark:text-white">{opt.title}</div>
+                      <div className="text-gray-900">{opt.title}</div>
                       <div className="text-xs text-gray-500">Base Service</div>
                     </div>
-                    <div className="text-gray-900 dark:text-white font-medium">{fmt(opt.price, currency)}</div>
+                    <div className="text-gray-900 font-medium">{fmt(opt.price, currency)}</div>
                   </div>
                 ))}
                 {/* Extra Certified Copies moved to Add-ons page */}
 
-                <div className="pt-3 border-t border-gray-200 dark:border-gray-700 text-sm">
+                <div className="pt-3 border-t border-gray-200 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
-                    <span className="text-gray-900 dark:text-white">{fmt(subtotalCents, currency)}</span>
+                    <span className="text-gray-600">Subtotal</span>
+                    <span className="text-gray-900">{fmt(subtotalCents, currency)}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">VAT (21%)</span>
-                    <span className="text-gray-900 dark:text-white">{fmt(vatCents, currency)}</span>
+                    <span className="text-gray-600">VAT (21%)</span>
+                    <span className="text-gray-900">{fmt(vatCents, currency)}</span>
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                <div className="pt-3 border-t border-gray-200">
                   <div className="flex items-center justify-between font-semibold">
-                    <span className="text-gray-900 dark:text-white">Total</span>
+                    <span className="text-gray-900">Total</span>
                     <span className="text-blue-600">{fmt(totalCents, currency)}</span>
                   </div>
                 </div>

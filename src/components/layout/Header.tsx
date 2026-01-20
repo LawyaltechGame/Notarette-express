@@ -119,7 +119,7 @@ const Header: React.FC = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100 dark:bg-gray-900/80 dark:border-gray-800">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to={showNotaryLink ? "/notary" : "/services"} className="flex items-center space-x-2">
@@ -130,7 +130,7 @@ const Header: React.FC = () => {
               loading="eager"
               decoding="async"
             /> */}
-            <span className="brand-font font-semibold text-xl text-gray-900 dark:text-white">
+            <span className="brand-font font-semibold text-xl text-gray-900">
               Notarette Express
             </span>
           </Link>
@@ -140,7 +140,7 @@ const Header: React.FC = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className="text-gray-700 hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors"
+                className="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors"
               >
                 {item.name}
               </Link>
@@ -153,13 +153,13 @@ const Header: React.FC = () => {
                 <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm">
                   {user?.firstName?.charAt(0)?.toUpperCase() || 'U'}
                 </div>
-                <span className="text-gray-600 dark:text-gray-300 text-sm font-medium">
+                <span className="text-gray-600 text-sm font-medium">
                   {user?.firstName} {user?.lastName}
                 </span>
               </div>
               <button
                 onClick={handleLogout}
-                className="p-2 text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 transition-colors"
+                className="p-2 text-gray-700 hover:text-primary-600 transition-colors"
                 aria-label="Logout"
               >
                 <LogOut size={20} />
@@ -177,7 +177,7 @@ const Header: React.FC = () => {
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400"
+              className="md:hidden p-2 text-gray-700 hover:text-primary-600"
               aria-label="Toggle menu"
             >
               {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -192,7 +192,7 @@ const Header: React.FC = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800"
+            className="md:hidden bg-white border-b border-gray-100"
           >
             <div className="px-4 py-4 space-y-2">
               {navigation.map((item) => (
@@ -200,7 +200,7 @@ const Header: React.FC = () => {
                   key={item.name}
                   to={item.href}
                   onClick={() => setIsOpen(false)}
-                  className="block px-3 py-2 text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 text-sm font-medium transition-colors"
+                  className="block px-3 py-2 text-gray-700 hover:text-primary-600 text-sm font-medium transition-colors"
                 >
                   {item.name}
                 </Link>

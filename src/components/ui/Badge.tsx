@@ -8,11 +8,11 @@ interface BadgeProps {
 
 const Badge: React.FC<BadgeProps> = ({ children, variant = 'default', size = 'md' }) => {
   const variants = {
-    default: 'bg-primary-50 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300',
-    success: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-    warning: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300',
-    error: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
-    info: 'bg-primary-100 text-primary-800 dark:bg-primary-900/40 dark:text-primary-300',
+    default: 'bg-primary-50 text-primary-800',
+    success: 'bg-green-100 text-green-800',
+    warning: 'bg-amber-100 text-amber-800',
+    error: 'bg-red-100 text-red-800',
+    info: 'bg-primary-100 text-primary-800',
   }
 
   const sizes = {

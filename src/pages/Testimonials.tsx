@@ -55,7 +55,7 @@ const TestimonialsPage: React.FC = () => {
   return (
     <div className="relative min-h-screen">
       {/* Background inspired by Services page */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-primary-50/20 to-white dark:from-slate-900 dark:via-slate-800/50 dark:to-gray-900/30">
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-primary-50/20 to-white">
         <div
           className="absolute inset-0 opacity-40"
           style={{
@@ -76,14 +76,14 @@ const TestimonialsPage: React.FC = () => {
         <section className="pt-20 pb-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-900/20 border border-primary-200 dark:border-primary-800 mb-6">
+              <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 mb-6">
                 <span className="w-2 h-2 bg-primary-600 rounded-full mr-2 animate-pulse" />
-                <span className="text-sm font-medium text-primary-700 dark:text-primary-300">Real Stories. Real Results.</span>
+                <span className="text-sm font-medium text-primary-700">Real Stories. Real Results.</span>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-primary-900 to-primary-700 dark:from-white dark:via-primary-100 dark:to-primary-200 bg-clip-text text-transparent leading-tight mb-4">
+              <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-primary-900 to-primary-700 bg-clip-text text-transparent leading-tight mb-4">
                 What Clients Say About Us
               </h1>
-              <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
                 Trusted by individuals and businesses for fast, secure, and professional notarization.
               </p>
             </motion.div>
@@ -105,10 +105,10 @@ const TestimonialsPage: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.1 * i }}
-                  className="rounded-2xl bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 p-6 text-center shadow-sm"
+                  className="rounded-2xl bg-white/70 backdrop-blur-xl border border-white/20 p-6 text-center shadow-sm"
                 >
-                  <div className="text-3xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">{stat.label}</div>
+                  <div className="text-3xl font-bold text-gray-900">{stat.value}</div>
+                  <div className="text-sm text-gray-600 mt-1">{stat.label}</div>
                 </motion.div>
               ))}
             </div>
@@ -119,15 +119,15 @@ const TestimonialsPage: React.FC = () => {
         <section className="py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">Customer Testimonials</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-3">Customer Testimonials</h2>
               <div className="w-24 h-1 bg-gradient-to-r from-primary-700 to-primary-500 mx-auto rounded-full" />
             </div>
 
             {/* Marquee container */}
-            <div className="relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl border border-primary-100 dark:border-primary-900/20 shadow-2xl shadow-primary-500/10 p-3 md:p-5">
+            <div className="relative overflow-hidden bg-white/80 backdrop-blur-xl rounded-3xl border border-primary-100 shadow-2xl shadow-primary-500/10 p-3 md:p-5">
               {/* Gradient edges */}
-              <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white/80 dark:from-gray-800/80 to-transparent z-10 rounded-l-3xl" />
-              <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white/80 dark:from-gray-800/80 to-transparent z-10 rounded-r-3xl" />
+              <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white/80 to-transparent z-10 rounded-l-3xl" />
+              <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white/80 to-transparent z-10 rounded-r-3xl" />
 
               <motion.div
                 initial={{ x: 0 }}
@@ -138,22 +138,22 @@ const TestimonialsPage: React.FC = () => {
                 {[...testimonials, ...testimonials].map((t, idx) => (
                   <div
                     key={idx}
-                    className="group shrink-0 w-80 sm:w-96 snap-start relative overflow-hidden rounded-2xl bg-white dark:bg-gray-900 border border-primary-100 dark:border-primary-900/20 p-6 shadow-sm"
+                    className="group shrink-0 w-80 sm:w-96 snap-start relative overflow-hidden rounded-2xl bg-white border border-primary-100 p-6 shadow-sm"
                   >
                     <div className="flex items-center gap-4 mb-4">
                       <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
                       <div>
-                        <div className="font-semibold text-gray-900 dark:text-white">{t.name}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">{t.role}</div>
+                        <div className="font-semibold text-gray-900">{t.name}</div>
+                        <div className="text-xs text-gray-500">{t.role}</div>
                       </div>
                     </div>
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">“{t.quote}”</p>
+                    <p className="text-gray-700 leading-relaxed">“{t.quote}”</p>
                     {t.rating && (
                       <div className="mt-4 flex items-center gap-1">
                         {Array.from({ length: t.rating }).map((_, i) => (
                           <span key={i} className="text-amber-400">★</span>
                         ))}
-                        <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">{t.rating}.0</span>
+                        <span className="ml-2 text-xs text-gray-500">{t.rating}.0</span>
                       </div>
                     )}
                     <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-tr from-primary-500/10 to-primary-400/10" />

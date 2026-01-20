@@ -107,7 +107,7 @@ const Services: React.FC = () => {
   return (
     <div className="relative min-h-screen">
       {/* Modern gradient background with mesh pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-primary-50 to-primary-100 dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900/30">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-primary-50 to-primary-100">
         <div
           className="absolute inset-0 opacity-40"
           style={{
@@ -137,16 +137,16 @@ const Services: React.FC = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-900/20 border border-primary-200 dark:border-primary-800 mb-6"
+              className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 mb-6"
             >
               <span className="w-2 h-2 bg-primary-600 rounded-full mr-2 animate-pulse" />
-              <span className="text-sm font-medium text-primary-700 dark:text-primary-300">
+              <span className="text-sm font-medium text-primary-700">
                 Professional Notarial Services
               </span>
             </motion.div>
 
             {/* Main heading with improved typography */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-gray-900 via-primary-900 to-primary-700 dark:from-white dark:via-primary-100 dark:to-primary-200 bg-clip-text text-transparent mb-6 leading-tight tracking-tight">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-gray-900 via-primary-900 to-primary-700 bg-clip-text text-transparent mb-6 leading-tight tracking-tight">
               <span>Choose Your</span>
               <br />
               <span className="bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent">
@@ -159,10 +159,10 @@ const Services: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed font-light"
+              className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-light"
             >
               Professional notarization services tailored to your needs.{' '}
-              <span className="font-medium text-gray-800 dark:text-gray-200">
+              <span className="font-medium text-gray-800">
                 All services include certified notary review and legal compliance.
               </span>
             </motion.p>
@@ -172,7 +172,7 @@ const Services: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="flex flex-wrap justify-center items-center gap-8 mt-12 text-sm text-gray-500 dark:text-gray-400"
+              className="flex flex-wrap justify-center items-center gap-8 mt-12 text-sm text-gray-500"
             >
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full" />
@@ -202,12 +202,12 @@ const Services: React.FC = () => {
           >
             {/* Section header */}
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Our Services</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Services</h2>
               <div className="w-24 h-1 bg-gradient-to-r from-primary-600 to-primary-400 mx-auto rounded-full" />
             </div>
 
             {/* Enhanced services grid container */}
-            <div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-gray-700/50 shadow-2xl shadow-primary-500/5 p-8 md:p-12">
+            <div className="relative bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl shadow-primary-500/5 p-8 md:p-12">
               {/* Subtle inner glow */}
               <div className="absolute inset-0 bg-gradient-to-r from-primary-500/5 via-transparent to-primary-400/5 rounded-3xl" />
 
@@ -219,7 +219,7 @@ const Services: React.FC = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.05 * index }}
-                    className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 text-center"
+                    className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-200 p-6 text-center"
                   >
                     {card.badge && (
                       <div className="absolute -left-12 top-4 w-40 -rotate-45">
@@ -231,15 +231,15 @@ const Services: React.FC = () => {
                     <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-primary-600 text-white flex items-center justify-center shadow-lg">
                       {React.createElement(getServiceIcon(card.title), { size: 36 })}
                     </div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{card.title}</h3>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 min-h-[40px]">{card.description}</p>
+                    <h3 className="font-semibold text-gray-900 mb-2">{card.title}</h3>
+                    <p className="text-gray-600 text-sm mb-4 min-h-[40px]">{card.description}</p>
                     {card.priceLabel && (
                       <>
-                        <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{card.priceLabel}</div>
+                        <div className="text-2xl font-bold text-gray-900 mb-1">{card.priceLabel}</div>
                         <p className="text-xs text-gray-500 mb-4">starting from</p>
                       </>
                     )}
-                    <ul className="text-sm text-left mx-auto max-w-[260px] space-y-2 text-gray-600 dark:text-gray-400 mb-6 list-disc list-inside">
+                    <ul className="text-sm text-left mx-auto max-w-[260px] space-y-2 text-gray-600 mb-6 list-disc list-inside">
                       {card.features.map((f, i) => (
                         <li key={i}>{f}</li>
                       ))}
@@ -265,11 +265,11 @@ const Services: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-center mt-20 pt-12 border-t border-gray-200/50 dark:border-gray-700/50"
+            className="text-center mt-20 pt-12 border-t border-gray-200/50"
           >
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
+            <p className="text-gray-500 text-sm">
               Need assistance choosing the right service?{' '}
-              <button className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors underline decoration-dotted underline-offset-4">
+              <button className="text-primary-600 hover:text-primary-700 font-medium transition-colors underline decoration-dotted underline-offset-4">
                 Contact our Team
               </button>
             </p>

@@ -18,19 +18,19 @@ const NotFound: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <div className="w-24 h-24 bg-primary-100 dark:bg-primary-900/40 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-24 h-24 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <FileQuestion className="w-12 h-12 text-primary-600" />
           </div>
           
-          <h1 className="text-6xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-6xl font-bold text-gray-900 mb-4">
             404
           </h1>
           
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
             Page Not Found
           </h2>
           
-          <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+          <p className="text-gray-600 mb-8 leading-relaxed">
             The page you're looking for doesn't exist or has been moved. 
             Let's get you back on track with our notarization services.
           </p>
@@ -72,34 +72,34 @@ const NotFound: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700"
+          className="mt-12 pt-8 border-t border-gray-200"
         >
-          <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-4">
+          <h3 className="text-sm font-medium text-gray-900 mb-4">
             Popular Pages
           </h3>
           
           <div className="grid grid-cols-2 gap-3 text-sm">
             <Link 
               to="/services" 
-              className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+              className="text-primary-600 hover:text-primary-700 transition-colors"
             >
               Our Services
             </Link>
             <Link 
               to="/pricing" 
-              className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+              className="text-primary-600 hover:text-primary-700 transition-colors"
             >
               Pricing
             </Link>
             <Link 
               to="/about" 
-              className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+              className="text-primary-600 hover:text-primary-700 transition-colors"
             >
               About Us
             </Link>
             <Link 
               to="/contact" 
-              className="text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 transition-colors"
+              className="text-teal-600 hover:text-teal-700 transition-colors"
             >
               Contact
             </Link>
@@ -111,12 +111,12 @@ const NotFound: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="mt-8 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+          className="mt-8 p-4 bg-white rounded-lg border border-gray-200"
         >
-          <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+          <h4 className="text-sm font-medium text-gray-900 mb-2">
             Need Help?
           </h4>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+          <p className="text-xs text-gray-600 mb-3">
             Our support team is available 24/7 to assist you.
           </p>
           <Link to="/contact">

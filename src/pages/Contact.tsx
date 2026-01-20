@@ -113,10 +113,10 @@ const Contact: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
               Get in Touch
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Have questions about our services? Need help with an order? Our support team is here to help 24/7.
             </p>
           </motion.div>
@@ -124,7 +124,7 @@ const Contact: React.FC = () => {
       </section>
 
       {/* Contact Info */}
-      <section className="py-16 bg-white dark:bg-gray-900">
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {contactInfo.map((info, index) => (
@@ -137,13 +137,13 @@ const Contact: React.FC = () => {
               >
                 <Card hover className="text-center h-full">
                   <info.icon className="w-12 h-12 text-primary-600 mx-auto mb-4" />
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                  <h3 className="font-semibold text-gray-900 mb-2">
                     {info.title}
                   </h3>
                   <p className="text-lg font-medium text-primary-600 mb-2">
                     {info.details}
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-gray-600">
                     {info.description}
                   </p>
                 </Card>
@@ -154,7 +154,7 @@ const Contact: React.FC = () => {
       </section>
 
       {/* Contact Form & FAQ */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
@@ -164,18 +164,18 @@ const Contact: React.FC = () => {
               viewport={{ once: true }}
             >
               <Card>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
                   Send us a Message
                 </h2>
                 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Full Name
                     </label>
                     <input
                       {...register('name')}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="Your full name"
                     />
                     {errors.name && (
@@ -184,13 +184,13 @@ const Contact: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Email Address
                     </label>
                     <input
                       type="email"
                       {...register('email')}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="your.email@example.com"
                     />
                     {errors.email && (
@@ -199,12 +199,12 @@ const Contact: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Subject
                     </label>
                     <input
                       {...register('subject')}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="What can we help you with?"
                     />
                     {errors.subject && (
@@ -213,13 +213,13 @@ const Contact: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Message
                     </label>
                     <textarea
                       {...register('message')}
                       rows={5}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
                       placeholder="Please provide as much detail as possible..."
                     />
                     {errors.message && (
@@ -247,7 +247,7 @@ const Contact: React.FC = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 Frequently Asked Questions
               </h2>
               
@@ -261,10 +261,10 @@ const Contact: React.FC = () => {
                     transition={{ delay: index * 0.1 }}
                   >
                     <Card>
-                      <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                      <h3 className="font-semibold text-gray-900 mb-2">
                         {faq.question}
                       </h3>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                      <p className="text-gray-600 text-sm leading-relaxed">
                         {faq.answer}
                       </p>
                     </Card>
@@ -283,10 +283,10 @@ const Contact: React.FC = () => {
                 <Card>
                   <div className="text-center">
                     <MessageCircle className="w-12 h-12 text-primary-600 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
                       Need Immediate Help?
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 mb-6">
+                    <p className="text-gray-600 mb-6">
                       For urgent support, call our 24/7 hotline or start a live chat.
                     </p>
                     <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
@@ -308,7 +308,7 @@ const Contact: React.FC = () => {
       </section>
 
       {/* Office Hours */}
-      <section className="py-16 bg-white dark:bg-gray-900">
+      <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -317,37 +317,37 @@ const Contact: React.FC = () => {
             className="text-center"
           >
             <Card>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 When You Can Reach Us
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                  <h3 className="font-semibold text-gray-900 mb-2">
                     Emergency Support
                   </h3>
                   <p className="text-primary-600 font-medium mb-1">24/7 Available</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-gray-600">
                     For urgent notarization needs and technical issues
                   </p>
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                  <h3 className="font-semibold text-gray-900 mb-2">
                     General Inquiries
                   </h3>
                   <p className="text-primary-600 font-medium mb-1">Mon-Sun, 6AM-10PM EST</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-gray-600">
                     Questions about services and account support
                   </p>
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                  <h3 className="font-semibold text-gray-900 mb-2">
                     Sales Team
                   </h3>
                   <p className="text-primary-600 font-medium mb-1">Mon-Fri, 9AM-6PM EST</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-gray-600">
                     Business solutions and custom packages
                   </p>
                 </div>

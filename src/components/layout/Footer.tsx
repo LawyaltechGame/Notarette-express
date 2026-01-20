@@ -39,15 +39,15 @@ const Footer: React.FC = () => {
   }
 
   return (
-    <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+    <footer className="bg-gray-50 border-t border-gray-200">
       {/* Trust Badges Section */}
-      <div className="border-b border-gray-200 dark:border-gray-800">
+      <div className="border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {trustBadges.map((badge, index) => (
               <div key={index} className="flex items-center justify-center space-x-3">
                 <badge.icon className="h-6 w-6 text-primary-600" />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span className="text-sm font-medium text-gray-700">
                   {badge.text}
                 </span>
               </div>
@@ -65,17 +65,17 @@ const Footer: React.FC = () => {
               <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xs">NE</span>
               </div>
-              <span className="font-bold text-xl text-gray-900 dark:text-white">
+              <span className="font-bold text-xl text-gray-900">
                 Notarette Express
               </span>
             </Link>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mb-6 max-w-md">
+            <p className="text-gray-600 text-sm mb-6 max-w-md">
               Secure, fast, and compliant remote online notarization services. 
               Licensed notary publics available 24/7 to help with your document needs.
             </p>
             
             {/* Contact Info */}
-            <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+            <div className="space-y-2 text-sm text-gray-600">
               <div className="flex items-center space-x-2">
                 <Phone size={16} />
                 <span>1-800-4549-24</span>
@@ -93,13 +93,13 @@ const Footer: React.FC = () => {
 
           {/* Services Links */}
           <div className="lg:col-span-1 lg:col-start-4">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Services</h3>
+            <h3 className="font-semibold text-gray-900 mb-4">Services</h3>
             <ul className="space-y-2">
               {footerLinks.services.map((link) => (
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    className="text-sm text-gray-700 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors"
+                    className="text-sm text-gray-700 hover:text-primary-600 transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -110,13 +110,13 @@ const Footer: React.FC = () => {
 
           {/* Support Links */}
           <div className="lg:col-span-1">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Support</h3>
+            <h3 className="font-semibold text-gray-900 mb-4">Support</h3>
             <ul className="space-y-2">
               {footerLinks.support.map((link) => (
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    className="text-sm text-gray-700 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors"
+                    className="text-sm text-gray-700 hover:text-primary-600 transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -127,13 +127,13 @@ const Footer: React.FC = () => {
 
           {/* Legal Links */}
           <div className="lg:col-span-1">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Legal</h3>
+            <h3 className="font-semibold text-gray-900 mb-4">Legal</h3>
             <ul className="space-y-2">
               {footerLinks.legal.map((link) => (
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    className="text-sm text-gray-700 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors"
+                    className="text-sm text-gray-700 hover:text-primary-600 transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -144,13 +144,13 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-gray-200 dark:border-gray-800 mt-12 pt-8">
+        <div className="border-t border-gray-200 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-gray-600">
               © {currentYear} Notarette Express. All rights reserved.
             </p>
             
-            <div className="text-sm text-gray-600 dark:text-gray-400 text-center md:text-right">
+            <div className="text-sm text-gray-600 text-center md:text-right">
               <p className="mb-1">
                 <strong>Disclaimer:</strong> Remote notarization availability varies by jurisdiction.
               </p>

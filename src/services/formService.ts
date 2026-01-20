@@ -114,12 +114,30 @@ export const parseSelectedAddOns = (selectedAddOns: string) => {
 export const formService = {
   // Create initial form submission
   async createSubmission(data: Omit<FormSubmission, '$id' | 'createdAt' | 'updatedAt'>): Promise<FormSubmission> {
-    if (!TABLE_ID) {
-      throw new Error('Form submissions table ID not configured')
+    const databaseId = ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID
+    const collectionId = TABLE_ID
+    
+    if (!databaseId) {
+      throw new Error('Form submissions database ID not configured. Please set VITE_FORM_SUBMISSIONS_DATABASE_ID in your .env file.')
+    }
+    
+    if (!collectionId) {
+      throw new Error('Form submissions collection ID not configured. Please set VITE_FORM_SUBMISSIONS_TABLE_ID in your .env file.')
+    }
+    
+    if (databaseId === collectionId) {
+      throw new Error(
+        'Configuration Error: Database ID and Collection ID cannot be the same. ' +
+        `Both are set to "${databaseId}". ` +
+        'Please check your .env file:\n' +
+        '- VITE_FORM_SUBMISSIONS_DATABASE_ID should be the Database ID\n' +
+        '- VITE_FORM_SUBMISSIONS_TABLE_ID should be the Collection ID within that database\n' +
+        'Get these IDs from Appwrite Console -> Databases -> [Your Database] -> [Your Collection]'
+      )
     }
   
-    console.log('Form Database ID:', ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID)
-    console.log('Table ID:', TABLE_ID)
+    console.log('Form Database ID:', databaseId)
+    console.log('Collection ID:', collectionId)
     console.log('Submission data:', data)
   
     const now = new Date().toISOString()
@@ -132,18 +150,36 @@ export const formService = {
         : JSON.stringify([]),
     }
   
-    const submission = await databases.createDocument(
-      ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID!,
-      TABLE_ID,
-      ID.unique(),
-      {
-        ...sanitized,
-        createdAt: now,
-        updatedAt: now,
-      }
-    )
+    try {
+      const submission = await databases.createDocument(
+        databaseId,
+        collectionId,
+        ID.unique(),
+        {
+          ...sanitized,
+          createdAt: now,
+          updatedAt: now,
+        }
+      )
 
-    return submission as unknown as FormSubmission
+      return submission as unknown as FormSubmission
+    } catch (error: any) {
+      const errorMessage = error?.message || 'Unknown error'
+      const errorCode = error?.code || error?.response?.status || 'unknown'
+      
+      if (errorCode === 404 || errorMessage.includes('could not be found')) {
+        throw new Error(
+          `Collection not found: "${collectionId}" in database "${databaseId}".\n\n` +
+          'Please verify in Appwrite Console:\n' +
+          '1. Go to Databases -> Find your database\n' +
+          '2. Check that the Collection ID matches VITE_FORM_SUBMISSIONS_TABLE_ID\n' +
+          '3. Ensure the Database ID matches VITE_FORM_SUBMISSIONS_DATABASE_ID\n' +
+          `Current values: Database="${databaseId}", Collection="${collectionId}"`
+        )
+      }
+      
+      throw error
+    }
   },
 
   // Update form submission
@@ -151,32 +187,45 @@ export const formService = {
     submissionId: string, 
     updates: Partial<Omit<FormSubmission, '$id' | 'createdAt' | 'updatedAt'>>
   ): Promise<FormSubmission> {
-    if (!TABLE_ID) {
-      throw new Error('Form submissions table ID not configured')
+    const databaseId = ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID
+    const collectionId = TABLE_ID
+    
+    if (!databaseId || !collectionId) {
+      throw new Error('Form submissions database or collection ID not configured')
     }
 
-    const updatedSubmission = await databases.updateDocument(
-      ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID!,
-      TABLE_ID,
-      submissionId,
-      {
-        ...updates,
-        updatedAt: new Date().toISOString(),
-      }
-    )
+    try {
+      const updatedSubmission = await databases.updateDocument(
+        databaseId,
+        collectionId,
+        submissionId,
+        {
+          ...updates,
+          updatedAt: new Date().toISOString(),
+        }
+      )
 
-    return updatedSubmission as unknown as FormSubmission
+      return updatedSubmission as unknown as FormSubmission
+    } catch (error: any) {
+      if (error?.code === 404 || error?.message?.includes('could not be found')) {
+        throw new Error(`Collection "${collectionId}" not found in database "${databaseId}". Please check your Appwrite configuration.`)
+      }
+      throw error
+    }
   },
 
   // Get submission by ID
   async getSubmission(submissionId: string): Promise<FormSubmission> {
-    if (!TABLE_ID) {
-      throw new Error('Form submissions table ID not configured')
+    const databaseId = ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID
+    const collectionId = TABLE_ID
+    
+    if (!databaseId || !collectionId) {
+      throw new Error('Form submissions database or collection ID not configured')
     }
 
     const submission = await databases.getDocument(
-      ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID!,
-      TABLE_ID,
+      databaseId,
+      collectionId,
       submissionId
     )
 
@@ -185,13 +234,16 @@ export const formService = {
 
   // Get submissions by client email
   async getSubmissionsByEmail(clientEmail: string): Promise<FormSubmission[]> {
-    if (!TABLE_ID) {
-      throw new Error('Form submissions table ID not configured')
+    const databaseId = ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID
+    const collectionId = TABLE_ID
+    
+    if (!databaseId || !collectionId) {
+      throw new Error('Form submissions database or collection ID not configured')
     }
 
     const response = await databases.listDocuments(
-      ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID!,
-      TABLE_ID,
+      databaseId,
+      collectionId,
       [
         Query.equal('clientEmail', clientEmail),
         Query.orderDesc('$createdAt')
@@ -203,13 +255,16 @@ export const formService = {
 
   // Delete submission
   async deleteSubmission(submissionId: string): Promise<void> {
-    if (!TABLE_ID) {
-      throw new Error('Form submissions table ID not configured')
+    const databaseId = ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID
+    const collectionId = TABLE_ID
+    
+    if (!databaseId || !collectionId) {
+      throw new Error('Form submissions database or collection ID not configured')
     }
 
     await databases.deleteDocument(
-      ENVObj.VITE_FORM_SUBMISSIONS_DATABASE_ID!,
-      TABLE_ID,
+      databaseId,
+      collectionId,
       submissionId
     )
   }

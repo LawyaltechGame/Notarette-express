@@ -4,10 +4,38 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light only" />
+    <style>
+      /* Force light mode immediately - prevent dark mode */
+      html {
+        color-scheme: light !important;
+        background-color: white !important;
+      }
+      body {
+        background-color: white !important;
+        color: #111827 !important;
+      }
+      /* Override any dark mode styles */
+      @media (prefers-color-scheme: dark) {
+        html, body {
+          background-color: white !important;
+          color: #111827 !important;
+        }
+      }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     <title>Notarette Express - Complete Remote Notarization Platform</title>
+    <script>
+      // Prevent dark mode detection
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+      }
+      // Force light mode on HTML element
+      document.documentElement.style.colorScheme = 'light';
+      document.documentElement.style.backgroundColor = 'white';
+    </script>
   </head>
   <body>
     <div id="root"></div>

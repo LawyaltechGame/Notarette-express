@@ -24,34 +24,34 @@ const ResetPassword: React.FC = () => {
       <div className="flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full">
         <Card>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Reset password</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 mb-4">Reset password</h1>
           {!userId || !secret ? (
-            <p className="text-sm text-red-600 dark:text-red-400">Invalid or expired reset link.</p>
+            <p className="text-sm text-red-600">Invalid or expired reset link.</p>
           ) : (
             <div className="space-y-4">
               {errorMsg && (
-                <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded px-3 py-2">{errorMsg}</div>
+                <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">{errorMsg}</div>
               )}
               {successMsg && (
-                <div className="text-sm text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded px-3 py-2">{successMsg}</div>
+                <div className="text-sm text-green-700 bg-green-50 border border-green-200 rounded px-3 py-2">{successMsg}</div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">New password</label>
                 <input
                   type="password"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="At least 8 characters"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Confirm password</label>
                 <input
                   type="password"
                   value={confirm}
                   onChange={e => setConfirm(e.target.value)}
-                  className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <Button

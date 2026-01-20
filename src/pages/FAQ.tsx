@@ -147,7 +147,7 @@ const FAQ: React.FC = () => {
   return (
     <div className="relative min-h-screen">
       {/* Background mesh & accents for modern look */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-primary-50/20 to-white dark:from-slate-900 dark:via-slate-800/50 dark:to-gray-900/30">
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-primary-50/20 to-white">
         <div
           className="absolute inset-0 opacity-40"
           style={{
@@ -169,14 +169,14 @@ const FAQ: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-900/20 border border-primary-200 dark:border-primary-800 mb-6">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 mb-6">
               <span className="w-2 h-2 bg-primary-600 rounded-full mr-2 animate-pulse" />
-              <span className="text-sm font-medium text-primary-700 dark:text-primary-300">Helpful knowledge base</span>
+              <span className="text-sm font-medium text-primary-700">Helpful knowledge base</span>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-primary-900 to-primary-700 dark:from-white dark:via-primary-100 dark:to-primary-200 bg-clip-text text-transparent mb-4 leading-tight">
+            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-primary-900 to-primary-700 bg-clip-text text-transparent mb-4 leading-tight">
               Frequently Asked Questions
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Everything you need to know about our services, process, security, and support.
             </p>
           </motion.div>
@@ -199,7 +199,7 @@ const FAQ: React.FC = () => {
                     className={`flex items-center space-x-2 px-4 py-2 rounded-full border transition-colors ${
                       active
                         ? 'bg-primary-600 text-white border-primary-600 shadow-sm'
-                        : 'bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
+                        : 'bg-white/80 text-gray-700 border-gray-200 hover:bg-gray-50'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -215,7 +215,7 @@ const FAQ: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-gray-700/50 shadow-2xl shadow-primary-500/5 p-4 md:p-8"
+            className="relative bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl shadow-primary-500/5 p-4 md:p-8"
           >
             <div className="space-y-4">
               {filteredFAQs.map((faq, index) => (
@@ -225,13 +225,13 @@ const FAQ: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 + index * 0.03 }}
                 >
-                  <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
+                  <Card className="bg-white border-gray-200">
                     <button
                       onClick={() => toggleItem(faq.question)}
-                      className="w-full text-left hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors rounded-lg p-4"
+                      className="w-full text-left hover:bg-primary-50 transition-colors rounded-lg p-4"
                     >
                       <div className="flex items-start justify-between gap-4">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white pr-4">
+                        <h3 className="text-lg font-semibold text-gray-900 pr-4">
                           {faq.question}
                         </h3>
                         {isExpanded(faq.question) ? (
@@ -246,9 +246,9 @@ const FAQ: React.FC = () => {
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
-                          className="mt-4 pt-4 border-t border-primary-100 dark:border-primary-900/30"
+                          className="mt-4 pt-4 border-t border-primary-100"
                         >
-                          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                          <p className="text-gray-700 leading-relaxed">
                             {faq.answer}
                           </p>
                         </motion.div>

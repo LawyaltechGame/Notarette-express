@@ -66,7 +66,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
     <Card hover className="h-full flex flex-col service-card group">
       <div className="flex flex-col h-full">
         {/* Service Icon/Image Placeholder */}
-        <div className="flex items-center justify-center mb-4 p-6 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-900/10 rounded-lg">
+        <div className="flex items-center justify-center mb-4 p-6 bg-gradient-to-br from-primary-50 to-primary-100 rounded-lg">
           {service.imageUrl ? (
             // If actual image is provided, use it
             <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -96,7 +96,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
         {/* Header with Price */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1 pr-4">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors leading-tight">
+            <h3 className="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors leading-tight">
               {service.name}
             </h3>
           </div>
@@ -104,7 +104,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
             <div className="text-xl font-bold text-primary-600">
               {formatPrice(getDisplayPrice() * 100, getDisplayCurrency())}
             </div>
-            <div className="text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full whitespace-nowrap">
+            <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full whitespace-nowrap">
               Base Price
             </div>
           </div>
@@ -112,14 +112,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
 
         {/* Description */}
         <div className="mb-4">
-          <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+          <p className="text-sm text-gray-600 leading-relaxed">
             {service.description}
           </p>
         </div>
 
         {/* Key Features - Compact */}
         <div className="mb-4">
-          <div className="flex items-center space-x-4 text-xs text-gray-600 dark:text-gray-400 mb-3">
+          <div className="flex items-center space-x-4 text-xs text-gray-600 mb-3">
             <div className="flex items-center space-x-1">
               <Clock className="w-3 h-3 text-blue-500" />
               <span>{service.turnaroundTime}</span>
@@ -135,7 +135,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
             {service.features.slice(0, 2).map((feature, index) => (
               <div key={index} className="flex items-center space-x-2 text-xs">
                 <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                <span className="text-gray-700 dark:text-gray-300">{feature}</span>
+                <span className="text-gray-700">{feature}</span>
               </div>
             ))}
           </div>
@@ -149,7 +149,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
             <Button 
               variant="ghost" 
               size="sm" 
-              className="w-full text-xs group-hover:text-primary-600 group-hover:bg-primary-50 dark:group-hover:bg-primary-900/20 transition-colors"
+              className="w-full text-xs group-hover:text-primary-600 group-hover:bg-primary-50 transition-colors"
             >
               View Details
               <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />

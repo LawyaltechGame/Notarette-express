@@ -88,10 +88,10 @@ const ThankYou: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-primary-600 animate-spin mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
             Loading Your Order Details
           </h2>
         </div>
@@ -101,15 +101,15 @@ const ThankYou: React.FC = () => {
 
   if (error || !orderData) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
+      <div className="min-h-screen bg-gray-50 py-12">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card>
             <div className="text-center py-12">
               <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Order Not Found
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-gray-600 mb-6">
                 {error || 'Unable to load your order details.'}
               </p>
               <Button onClick={() => navigate('/services')} variant="primary">
@@ -123,7 +123,7 @@ const ThankYou: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
+    <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Success Header */}
         <motion.div
@@ -132,13 +132,13 @@ const ThankYou: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 dark:bg-green-900/20 rounded-full mb-6">
-            <CheckCircle className="w-10 h-10 text-green-600 dark:text-green-400" />
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
+            <CheckCircle className="w-10 h-10 text-green-600" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Payment Confirmed!
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300">
+          <p className="text-xl text-gray-600">
             Thank you for your purchase. Your payment has been processed successfully.
           </p>
         </motion.div>
@@ -151,15 +151,15 @@ const ThankYou: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <Card>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 Order Summary
               </h2>
               
               <div className="space-y-4 mb-6">
                 {orderData.items.map((item, index) => (
-                  <div key={index} className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div key={index} className="p-4 bg-gray-50 rounded-lg">
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-semibold text-gray-900 dark:text-white">
+                      <h3 className="font-semibold text-gray-900">
                         {item.name}
                       </h3>
                       <span className="font-bold text-primary-600">
@@ -170,8 +170,8 @@ const ThankYou: React.FC = () => {
                 ))}
               </div>
 
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                <div className="flex justify-between items-center text-xl font-bold text-gray-900 dark:text-white">
+              <div className="border-t border-gray-200 pt-4">
+                <div className="flex justify-between items-center text-xl font-bold text-gray-900">
                   <span>Total</span>
                   <span className="text-primary-600">{formatCurrency(orderData.amount, orderData.currency)}</span>
                 </div>
@@ -186,28 +186,28 @@ const ThankYou: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <Card>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 Customer Information
               </h2>
               
               <div className="space-y-4">
                 {orderData.customer.name && (
                   <div>
-                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Name</label>
-                    <p className="text-gray-900 dark:text-white">{orderData.customer.name}</p>
+                    <label className="text-sm font-medium text-gray-500">Name</label>
+                    <p className="text-gray-900">{orderData.customer.name}</p>
                   </div>
                 )}
                 
                 {orderData.customer.email && (
                   <div>
-                    <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</label>
-                    <p className="text-gray-900 dark:text-white">{orderData.customer.email}</p>
+                    <label className="text-sm font-medium text-gray-500">Email</label>
+                    <p className="text-gray-900">{orderData.customer.email}</p>
                   </div>
                 )}
                 
                 <div>
-                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Order ID</label>
-                  <p className="text-gray-900 dark:text-white font-mono text-sm">
+                  <label className="text-sm font-medium text-gray-500">Order ID</label>
+                  <p className="text-gray-900 font-mono text-sm">
                     {searchParams.get('session_id')}
                   </p>
                 </div>
@@ -223,12 +223,12 @@ const ThankYou: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="text-center mb-12"
         >
-          <Card className="bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-900/10">
+          <Card className="bg-gradient-to-r from-primary-50 to-primary-100">
             <div className="p-8">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Next Step: Book Your Appointment
               </h2>
-              <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
                 Your payment has been processed successfully! Now it's time to schedule your notarization appointment. 
                 Click the button below to book your preferred time slot.
               </p>
@@ -244,7 +244,7 @@ const ThankYou: React.FC = () => {
                 <ExternalLink className="w-5 h-5 ml-2" />
               </Button>
               
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-500">
                 You'll receive a confirmation email with your appointment details and meeting link.
               </p>
             </div>

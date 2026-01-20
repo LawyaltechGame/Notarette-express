@@ -4,6 +4,30 @@
 
 html {
   scroll-behavior: smooth;
+  color-scheme: light !important; /* Force light mode */
+  background-color: white !important;
+}
+
+/* Force light mode - prevent dark mode from system preferences */
+html,
+body {
+  background-color: white !important;
+  color: #111827 !important;
+}
+
+/* Override dark mode media queries */
+@media (prefers-color-scheme: dark) {
+  html,
+  body {
+    background-color: white !important;
+    color: #111827 !important;
+  }
+}
+
+/* Prevent dark mode classes from applying */
+.dark,
+[class*="dark:"] {
+  /* These classes are disabled - dark mode is off */
 }
 
 /* Brand font for site title */

@@ -32,7 +32,7 @@ const Testimonials: React.FC = () => {
   ]
 
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-800">
+    <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           ref={ref}
@@ -41,10 +41,10 @@ const Testimonials: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
             What Our Clients Say
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Join thousands of satisfied customers who trust Notarette Express for their document notarization needs.
           </p>
         </motion.div>
@@ -63,7 +63,7 @@ const Testimonials: React.FC = () => {
                   <Quote className="w-8 h-8 text-primary-600 mb-4" />
 
                   {/* Content */}
-                  <blockquote className="flex-1 text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                  <blockquote className="flex-1 text-gray-700 leading-relaxed mb-6">
                     "{testimonial.content}"
                   </blockquote>
 
@@ -83,10 +83,10 @@ const Testimonials: React.FC = () => {
                       loading="lazy"
                     />
                     <div>
-                      <div className="font-semibold text-gray-900 dark:text-white">
+                      <div className="font-semibold text-gray-900">
                         {testimonial.name}
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="text-sm text-gray-600">
                         {testimonial.role}
                       </div>
                     </div>
@@ -107,19 +107,19 @@ const Testimonials: React.FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
               <div className="text-2xl font-bold text-primary-600 mb-1">4.9/5</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Average Rating</div>
+              <div className="text-sm text-gray-600">Average Rating</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-primary-600 mb-1">50K+</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Happy Customers</div>
+              <div className="text-sm text-gray-600">Happy Customers</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-primary-600 mb-1">24/7</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Support Available</div>
+              <div className="text-sm text-gray-600">Support Available</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-primary-600 mb-1">99.9%</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Uptime</div>
+              <div className="text-sm text-gray-600">Uptime</div>
             </div>
           </div>
         </motion.div>

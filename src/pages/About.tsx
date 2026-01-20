@@ -67,10 +67,10 @@ const About: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
               About Notarette Express
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               We're revolutionizing the notarization process with secure, convenient, and legally compliant 
               remote online notarization services available 24/7.
             </p>
@@ -79,7 +79,7 @@ const About: React.FC = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white dark:bg-gray-900">
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -92,10 +92,10 @@ const About: React.FC = () => {
                 className="text-center"
               >
                 <stat.icon className="w-12 h-12 text-primary-600 mx-auto mb-4" />
-                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                <div className="text-3xl font-bold text-gray-900 mb-2">
                   {stat.value}
                 </div>
-                <div className="text-gray-600 dark:text-gray-400">
+                <div className="text-gray-600">
                   {stat.label}
                 </div>
               </motion.div>
@@ -105,7 +105,7 @@ const About: React.FC = () => {
       </section>
 
       {/* Mission Section */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -113,15 +113,15 @@ const About: React.FC = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
                 Our Mission
               </h2>
-              <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
+              <p className="text-lg text-gray-600 mb-6">
                 At Notarette Express, we believe that getting documents notarized should be simple, secure, and accessible 
                 to everyone, regardless of location or schedule. Our mission is to provide the most reliable, 
                 efficient, and legally compliant remote online notarization services.
               </p>
-              <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
+              <p className="text-lg text-gray-600 mb-8">
                 We combine cutting-edge technology with the expertise of licensed notary publics to deliver 
                 a seamless experience that saves time while maintaining the highest standards of security and legal validity.
               </p>
@@ -148,7 +148,7 @@ const About: React.FC = () => {
       </section>
 
       {/* Values Section */}
-      <section className="py-20 bg-white dark:bg-gray-900">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -156,10 +156,10 @@ const About: React.FC = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Our Core Values
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               These principles guide everything we do and ensure we deliver the highest quality service to our clients.
             </p>
           </motion.div>
@@ -175,10 +175,10 @@ const About: React.FC = () => {
               >
                 <Card hover className="text-center h-full">
                   <value.icon className="w-12 h-12 text-primary-600 mx-auto mb-6" />
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">
                     {value.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {value.description}
                   </p>
                 </Card>
@@ -189,7 +189,7 @@ const About: React.FC = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -197,10 +197,10 @@ const About: React.FC = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Meet Our Leadership Team
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Our experienced team combines legal expertise, technology innovation, and customer service excellence.
             </p>
           </motion.div>
@@ -221,13 +221,13 @@ const About: React.FC = () => {
                     className="w-24 h-24 rounded-full mx-auto mb-6 object-cover"
                     loading="lazy"
                   />
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     {member.name}
                   </h3>
                   <p className="text-primary-600 font-medium mb-4">
                     {member.role}
                   </p>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                  <p className="text-gray-600 text-sm">
                     {member.bio}
                   </p>
                 </Card>

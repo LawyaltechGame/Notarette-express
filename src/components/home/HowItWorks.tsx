@@ -34,7 +34,7 @@ const HowItWorks: React.FC = () => {
   ]
 
   return (
-    <section id="how-it-works" className="py-20 bg-white dark:bg-gray-900">
+    <section id="how-it-works" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           ref={ref}
@@ -43,10 +43,10 @@ const HowItWorks: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
             How It Works
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Get your documents notarized in four simple steps. 
             Fast, secure, and fully compliant with legal requirements.
           </p>
@@ -54,7 +54,7 @@ const HowItWorks: React.FC = () => {
 
         <div className="relative">
           {/* Connection Lines */}
-          <div className="hidden lg:block absolute top-24 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-200 via-primary-200 to-green-200 dark:from-blue-800 dark:via-primary-800 dark:to-green-800" />
+          <div className="hidden lg:block absolute top-24 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-200 via-primary-200 to-green-200" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {steps.map((step, index) => (
@@ -66,8 +66,8 @@ const HowItWorks: React.FC = () => {
                 className="relative text-center"
               >
                 {/* Step Number */}
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center border-4 border-white dark:border-gray-900 z-10">
-                  <span className="text-sm font-bold text-gray-600 dark:text-gray-300">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center border-4 border-white z-10">
+                  <span className="text-sm font-bold text-gray-600">
                     {index + 1}
                   </span>
                 </div>
@@ -78,10 +78,10 @@ const HowItWorks: React.FC = () => {
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
                   {step.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                <p className="text-gray-600 leading-relaxed">
                   {step.description}
                 </p>
               </motion.div>
@@ -96,7 +96,7 @@ const HowItWorks: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.8 }}
           className="text-center mt-16"
         >
-          <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
+          <p className="text-lg text-gray-600 mb-6">
             Ready to get started? It only takes a few minutes.
           </p>
           <motion.button
