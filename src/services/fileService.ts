@@ -94,10 +94,21 @@ export class FileService {
       try {
         fileInfo = await storage.getFile(this.bucketId, fileId)
         console.log('File info retrieved:', fileInfo)
+        
+        // CRITICAL: Use the actual file ID from fileInfo, not the passed fileId
+        // Sometimes the fileId parameter might be different from the actual stored ID
+        const actualFileId = fileInfo.$id || fileId
+        if (actualFileId !== fileId) {
+          console.warn(`File ID mismatch: passed "${fileId}", using "${actualFileId}"`)
+        }
+        
         // Use actual filename from fileInfo if available
         if (fileInfo.name && !fileName) {
           fileName = fileInfo.name
         }
+        
+        // Update fileId to use the verified ID
+        fileId = actualFileId
       } catch (getFileError: any) {
         console.error('Error getting file info:', getFileError)
         if (getFileError?.code === 404 || getFileError?.message?.includes('not found')) {
@@ -109,61 +120,77 @@ export class FileService {
         throw new Error(`Cannot access file: ${getFileError?.message || 'Unknown error'}`)
       }
       
-      // Use Appwrite SDK's getFileDownload which returns authenticated URL
-      // This URL should include session token for production/incognito compatibility
-      const downloadUrl = storage.getFileDownload(this.bucketId, fileId)
-      console.log('Using Appwrite authenticated download URL')
-      
-      // Method 1: Try direct link download first (works when session is available)
-      // This is the most reliable method for production/incognito
+      // Verify user is authenticated before attempting download
+      const { appwriteAccount } = await import('../lib/appwrite')
+
       try {
-        const link = document.createElement('a')
-        link.href = downloadUrl.toString()
-        link.download = fileName || fileInfo.name || 'download'
-        link.target = '_blank'
-        link.rel = 'noopener noreferrer'
-        link.style.display = 'none'
-        
-        document.body.appendChild(link)
-        link.click()
-        
-        // Wait briefly to see if download starts
-        await new Promise(resolve => setTimeout(resolve, 300))
-        
-        document.body.removeChild(link)
-        
-        console.log(`Download initiated via direct link: ${fileName}`)
-        return
-      } catch (linkError) {
-        console.warn('Direct link download failed, trying fetch method:', linkError)
+        // Use account.get() to verify authentication (recommended approach)
+        const user = await appwriteAccount.get()
+        console.log('User authenticated for download:', user.email)
+      } catch (authError: any) {
+        // If user is not authenticated, throw a clear error
+        if (authError?.code === 401 || authError?.type === 'general_unauthorized_scope') {
+          throw new Error('You must be logged in to download files. Please log in and try again.')
+        }
+        console.warn('Authentication check failed, will attempt download anyway:', authError)
       }
-      
-      // Method 2: Fallback - Fetch with credentials for incognito/production
-      // This ensures cookies/session are included even in incognito mode
+
+      // CRITICAL FIX: Use getFileView instead of getFileDownload
+      // getFileView respects read permissions better and works in incognito mode
+      // We'll fetch the file content and trigger download manually
+      const viewUrl = storage.getFileView(this.bucketId, fileId)
+      console.log('Using Appwrite file view URL:', viewUrl.toString())
+      console.log('File details:', {
+        originalFileId: fileId,
+        verifiedFileId: fileInfo?.$id,
+        fileName,
+        bucketId: this.bucketId,
+        fileInfoName: fileInfo?.name,
+        fileInfoSize: fileInfo?.sizeOriginal,
+        fileInfoPermissions: fileInfo?.$permissions
+      })
+
+      // Try fetch with credentials first (most reliable method)
+      // This ensures session cookies are included even in incognito/production
       try {
-        const response = await fetch(downloadUrl.toString(), {
+        const response = await fetch(viewUrl.toString(), {
           method: 'GET',
-          credentials: 'include', // Critical for incognito/production
+          credentials: 'include', // Critical: Include cookies/session for authentication
           mode: 'cors',
           cache: 'no-cache',
           headers: {
             'Accept': '*/*',
-          }
+            'X-Appwrite-Project': ENVObj.VITE_APPWRITE_PROJECT_ID || '',
+          },
+          redirect: 'follow' // Follow redirects if any
         })
         
         if (!response.ok) {
+          // Log response details for debugging
+          const errorText = await response.text().catch(() => '')
+          console.error('Download failed:', {
+            status: response.status,
+            statusText: response.statusText,
+            url: viewUrl.toString(),
+            errorText
+          })
+          
           if (response.status === 404) {
-            throw new Error(`File not found: "${fileName}". The file may have been deleted.`)
+            throw new Error(`File not found: "${fileName}". The file may have been deleted or the file ID "${fileId}" is incorrect.`)
           }
           if (response.status === 401 || response.status === 403) {
-            throw new Error(`Permission denied: You don't have access to download this file. Please ensure you are logged in as a notary.`)
+            throw new Error(`Permission denied: You don't have access to download this file. Please ensure you are logged in as a notary and file permissions are correct.`)
           }
-          const errorText = await response.text().catch(() => '')
-          throw new Error(`Failed to download file: HTTP ${response.status}. ${errorText}`)
+          throw new Error(`Failed to download file: HTTP ${response.status}. ${errorText || response.statusText}`)
         }
         
         // Get the file as a blob
         const blob = await response.blob()
+        
+        // Verify blob is not empty
+        if (blob.size === 0) {
+          throw new Error(`Downloaded file is empty. The file may be corrupted or the download failed.`)
+        }
         
         // Create a download link from blob
         const url = window.URL.createObjectURL(blob)
@@ -179,18 +206,36 @@ export class FileService {
         // Clean up the object URL after a delay
         setTimeout(() => window.URL.revokeObjectURL(url), 1000)
         
-        console.log(`Successfully downloaded file via fetch: ${fileName}`)
+        console.log(`Successfully downloaded file: ${fileName} (${blob.size} bytes)`)
+        return
       } catch (fetchError: any) {
-        console.error('Fetch download failed:', fetchError)
-        
-        // Method 3: Last resort - Open in new window
-        // User will need to be authenticated in that window
-        if (fetchError?.message?.includes('CORS') || fetchError?.message?.includes('Failed to fetch') || fetchError?.code === 'ERR_NETWORK') {
-          console.log('Opening file in new window as fallback')
-          window.open(downloadUrl.toString(), '_blank', 'noopener,noreferrer')
-          throw new Error(`Please ensure you are logged in. Opening file in new window...`)
+        console.error('Fetch download failed, trying direct link method:', fetchError)
+
+        // Fallback: Try direct link method (works when session is available in same tab)
+        // This is less reliable in incognito but may work if fetch fails due to CORS
+        try {
+          const link = document.createElement('a')
+          link.href = viewUrl.toString()
+          link.download = fileName || fileInfo.name || 'download'
+          link.target = '_blank'
+          link.rel = 'noopener noreferrer'
+          link.style.display = 'none'
+
+          document.body.appendChild(link)
+          link.click()
+
+          // Wait briefly to see if download starts
+          await new Promise(resolve => setTimeout(resolve, 500))
+
+          document.body.removeChild(link)
+
+          console.log(`Download initiated via direct link: ${fileName}`)
+          return
+        } catch (linkError) {
+          console.error('Direct link download also failed:', linkError)
+          // Re-throw the original fetch error as it's more informative
+          throw fetchError
         }
-        throw fetchError
       }
     } catch (error) {
       console.error('Error downloading file:', error)
@@ -220,14 +265,18 @@ export class FileService {
        for (const file of files) {
          try {
            console.log(`Adding to ZIP: ${file.name}`)
-           
+
            // Use Appwrite storage.getFileDownload for proper authentication
            const downloadUrl = storage.getFileDownload(this.bucketId, file.fileId)
-           
+
            // Fetch the file using the Appwrite download URL
            const response = await fetch(downloadUrl.toString(), {
              method: 'GET',
+             credentials: 'include',
+             mode: 'cors',
+             cache: 'no-cache',
              headers: {
+               'Accept': '*/*',
                'X-Appwrite-Project': ENVObj.VITE_APPWRITE_PROJECT_ID || '',
              }
            })

@@ -223,7 +223,7 @@ const NotaryDashboard: React.FC = () => {
 
 
   // Download individual file with proper error handling and access granting
-  const downloadIndividualFile = async (fileId: string, fileName: string) => {
+  const downloadIndividualFile = async (fileId: string, fileName: string, folderPath?: string) => {
     if (!fileId || fileId.trim() === '') {
       console.error('Missing or empty fileId:', fileId)
       alert('Invalid file ID. Please try again.')
@@ -236,48 +236,107 @@ const NotaryDashboard: React.FC = () => {
       // Get client email from selected submission for granting access
       const clientEmail = selectedSubmission?.email || selectedSubmission?.clientEmail
       
+      // Check if fileId is a temp ID (indicates upload failed)
+      if (fileId.startsWith('temp_')) {
+        throw new Error(`This file was not successfully uploaded. The file ID "${fileId}" is a temporary ID, which means the upload failed. Please ask the client to re-upload this file.`)
+      }
+      
+      // Try to verify file exists first
+      let fileInfo: any
+      let actualFileId = fileId
+      
+      try {
+        fileInfo = await storage.getFile(ENVObj.VITE_APPWRITE_BUCKET_ID!, fileId)
+        console.log('File verified by ID:', fileInfo)
+        
+        // Check if file actually exists and has content
+        if (!fileInfo || !fileInfo.$id) {
+          throw new Error(`File metadata invalid. File ID: ${fileId}`)
+        }
+        actualFileId = fileInfo.$id
+      } catch (verifyError: any) {
+        console.warn('File not found by ID, trying to find by folder path...', verifyError)
+        
+        // Fallback: Try to find file by folder path and filename
+        if (folderPath && fileName && clientEmail) {
+          try {
+            console.log(`Searching for file by folder path: ${folderPath}/${fileName}`)
+            const filesInFolder = await FileService.getFilesByFolder(folderPath)
+            const matchingFile = filesInFolder.find(f => 
+              f.name.toLowerCase().includes(fileName.toLowerCase()) ||
+              f.name.toLowerCase().endsWith(fileName.toLowerCase())
+            )
+            
+            if (matchingFile) {
+              console.log('Found file by folder path:', matchingFile)
+              fileInfo = { $id: matchingFile.fileId, name: matchingFile.name }
+              actualFileId = matchingFile.fileId
+            } else {
+              throw new Error(`File not found in folder: ${folderPath}`)
+            }
+          } catch (folderError) {
+            console.error('Could not find file by folder path:', folderError)
+            // Continue with original error
+          }
+        }
+        
+        if (!fileInfo) {
+          if (verifyError?.code === 404 || verifyError?.message?.includes('not found')) {
+            throw new Error(
+              `File not found: "${fileName}".\n\n` +
+              `File ID: ${fileId}\n` +
+              `Folder Path: ${folderPath || 'N/A'}\n\n` +
+              `Possible reasons:\n` +
+              `1. The file was never successfully uploaded (check upload logs)\n` +
+              `2. The file was deleted\n` +
+              `3. The file ID in the database doesn't match the file in storage\n\n` +
+              `Please verify the file exists in Appwrite Storage or ask the client to re-upload.`
+            )
+          }
+          if (verifyError?.code === 401 || verifyError?.code === 403) {
+            throw new Error(`Permission denied: You don't have access to download this file. Please ensure you are logged in as a notary and the file permissions are correct.`)
+          }
+          throw verifyError
+        }
+      }
+      
       // First, try to grant file access if needed (for notaries)
       const grantFnId = ENVObj.VITE_GRANT_FILE_ACCESS_FUNCTION_ID || ENVObj.VITE_GRANT_FUNCTION_ID
-      if (grantFnId && clientEmail) {
+      if (grantFnId && clientEmail && actualFileId) {
         try {
           console.log('Attempting to grant file access via function:', grantFnId)
           const functions = new Functions(client)
           // Grant function expects: { clientEmail: string, files: [{ fileId: string, name: string }] }
-          await functions.createExecution(
-            grantFnId, 
-            JSON.stringify({ 
+          const execution = await functions.createExecution(
+            grantFnId,
+            JSON.stringify({
               clientEmail: clientEmail,
-              files: [{ fileId, name: fileName }]
-            }), 
+              files: [{ fileId: actualFileId, name: fileName }]
+            }),
             false
           )
-          console.log('File access granted successfully')
-          // Wait a moment for permissions to propagate
-          await new Promise(resolve => setTimeout(resolve, 500))
+          console.log('File access granted successfully', execution)
+
+          // Wait longer for permissions to propagate in Appwrite
+          // This is especially important in incognito mode where session is new
+          console.log('Waiting for permissions to propagate...')
+          await new Promise(resolve => setTimeout(resolve, 1500))
+
+          // Verify file is accessible after granting permissions
+          try {
+            const verifyFile = await storage.getFile(ENVObj.VITE_APPWRITE_BUCKET_ID!, actualFileId)
+            console.log('File verified after permission grant:', verifyFile)
+          } catch (verifyError) {
+            console.warn('File verification after grant failed:', verifyError)
+          }
         } catch (grantError) {
           console.warn('Could not grant file access (may already have access):', grantError)
           // Continue anyway - file might already be accessible
         }
       }
       
-      // Try to verify file exists first
-      let fileInfo: any
-      try {
-        fileInfo = await storage.getFile(ENVObj.VITE_APPWRITE_BUCKET_ID!, fileId)
-        console.log('File verified:', fileInfo)
-      } catch (verifyError: any) {
-        if (verifyError?.code === 404 || verifyError?.message?.includes('not found')) {
-          throw new Error(`File not found: "${fileName}". The file may have been deleted or moved. File ID: ${fileId}`)
-        }
-        if (verifyError?.code === 401 || verifyError?.code === 403) {
-          throw new Error(`Permission denied: You don't have access to download this file. Please ensure you are logged in as a notary.`)
-        }
-        console.warn('File verification warning:', verifyError)
-        // Continue to try download anyway
-      }
-      
       // Use FileService to download the file (uses authenticated download)
-      await FileService.downloadFile(fileId, fileName || fileInfo?.name)
+      await FileService.downloadFile(actualFileId, fileName || fileInfo?.name)
       
       console.log(`Successfully downloaded individual file: ${fileName}`)
     } catch (err) {
@@ -1203,23 +1262,41 @@ const NotaryDashboard: React.FC = () => {
                           if (files.length > 0) {
                             return (
                               <div className="space-y-2">
-                                {files.map((file, index) => (
-                                  <button
-                                    key={index}
-                                    onClick={() => downloadIndividualFile(file.fileId, file.name)}
-                                    className="w-full px-4 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md transition-colors flex items-center justify-between"
-                                  >
-                                    <div className="flex items-center space-x-3 flex-1 min-w-0">
-                                      <svg className="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                      </svg>
-                                      <span className="truncate text-sm font-medium">{file.name}</span>
-                                    </div>
-                                    <span className="text-xs text-primary-100 ml-2">
-                                      {file.size ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : ''}
-                                    </span>
-                                  </button>
-                                ))}
+                                {files.map((file, index) => {
+                                  // Check if fileId is a temp ID (indicates upload failed)
+                                  const isTempId = file.fileId && file.fileId.startsWith('temp_')
+                                  return (
+                                    <button
+                                      key={index}
+                                      onClick={() => {
+                                        if (isTempId) {
+                                          alert(`This file was not successfully uploaded. File ID: ${file.fileId}\n\nPlease ask the client to re-upload this file.`)
+                                          return
+                                        }
+                                        downloadIndividualFile(file.fileId, file.name, file.folderPath)
+                                      }}
+                                      disabled={isTempId}
+                                      className={`w-full px-4 py-3 font-medium rounded-md transition-colors flex items-center justify-between ${
+                                        isTempId 
+                                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                          : 'bg-primary-600 hover:bg-primary-700 text-white'
+                                      }`}
+                                    >
+                                      <div className="flex items-center space-x-3 flex-1 min-w-0">
+                                        <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        <span className="truncate text-sm font-medium">
+                                          {file.name}
+                                          {isTempId && ' (Upload Failed)'}
+                                        </span>
+                                      </div>
+                                      <span className={`text-xs ml-2 ${isTempId ? 'text-gray-400' : 'text-primary-100'}`}>
+                                        {file.size ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : ''}
+                                      </span>
+                                    </button>
+                                  )
+                                })}
                               </div>
                             )
                           } else {
