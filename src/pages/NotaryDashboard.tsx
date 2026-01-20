@@ -222,23 +222,51 @@ const NotaryDashboard: React.FC = () => {
 
 
 
-  // Fallback: Download individual file (for testing)
+  // Download individual file with proper error handling and access granting
   const downloadIndividualFile = async (fileId: string, fileName: string) => {
     if (!fileId || fileId.trim() === '') {
       console.error('Missing or empty fileId:', fileId)
+      alert('Invalid file ID. Please try again.')
       return
     }
 
     try {
       console.log(`Downloading individual file: ${fileName} (${fileId})`)
       
-      // Use FileService to download the file
+      // First, try to grant file access if needed (for notaries)
+      const grantFnId = ENVObj.VITE_GRANT_FILE_ACCESS_FUNCTION_ID || ENVObj.VITE_GRANT_FUNCTION_ID
+      if (grantFnId) {
+        try {
+          console.log('Attempting to grant file access via function:', grantFnId)
+          const functions = new Functions(client)
+          await functions.createExecution(grantFnId, JSON.stringify({ fileId }), false)
+          console.log('File access granted successfully')
+        } catch (grantError) {
+          console.warn('Could not grant file access (may already have access):', grantError)
+          // Continue anyway - file might already be accessible
+        }
+      }
+      
+      // Try to verify file exists first
+      try {
+        const fileInfo = await storage.getFile(ENVObj.VITE_APPWRITE_BUCKET_ID!, fileId)
+        console.log('File verified:', fileInfo)
+      } catch (verifyError: any) {
+        if (verifyError?.code === 404 || verifyError?.message?.includes('not found')) {
+          throw new Error(`File not found: "${fileName}". The file may have been deleted or moved. File ID: ${fileId}`)
+        }
+        console.warn('File verification warning:', verifyError)
+        // Continue to try download anyway
+      }
+      
+      // Use FileService to download the file (uses authenticated download)
       await FileService.downloadFile(fileId, fileName)
       
       console.log(`Successfully downloaded individual file: ${fileName}`)
     } catch (err) {
       console.error('Error downloading individual file:', err)
-      alert(`Failed to download file: ${err instanceof Error ? err.message : String(err)}`)
+      const errorMessage = err instanceof Error ? err.message : String(err)
+      alert(`Failed to download file "${fileName}": ${errorMessage}\n\nPlease ensure:\n1. You are logged in as a notary\n2. The file exists and hasn't been deleted\n3. You have permission to access this file`)
     }
   }
 

@@ -75,7 +75,7 @@ export class FileService {
   }
 
   /**
-   * Download a file by file ID using direct Appwrite URL for better PDF compatibility
+   * Download a file by file ID using Appwrite SDK for proper authentication
    * @param fileId - The file ID to download
    * @param fileName - The desired file name for download
    * @returns Promise that resolves when download starts
@@ -86,20 +86,49 @@ export class FileService {
     }
 
     try {
-      console.log(`Downloading file directly: ${fileName} (${fileId})`)
+      console.log(`Downloading file: ${fileName} (${fileId})`)
       
-      // Use direct Appwrite view URL for better PDF compatibility
-      const baseUrl = ENVObj.VITE_APPWRITE_ENDPOINT
-      const projectId = ENVObj.VITE_APPWRITE_PROJECT_ID
-      const viewUrl = `${baseUrl}/storage/buckets/${this.bucketId}/files/${fileId}/view?project=${projectId}`
+      // First, try to get file info to verify it exists and check permissions
+      try {
+        const fileInfo = await storage.getFile(this.bucketId, fileId)
+        console.log('File info retrieved:', fileInfo)
+      } catch (getFileError: any) {
+        console.error('Error getting file info:', getFileError)
+        // If file doesn't exist or no permission, try granting access first
+        if (getFileError?.code === 404 || getFileError?.message?.includes('not found')) {
+          throw new Error(`File not found or you don't have permission to access it. File ID: ${fileId}`)
+        }
+        // For other errors, continue to try download
+      }
       
-      console.log('Using direct view URL:', viewUrl)
+      // Use Appwrite SDK's getFileDownload method which handles authentication
+      const downloadUrl = storage.getFileDownload(this.bucketId, fileId)
+      console.log('Using Appwrite download URL:', downloadUrl.toString())
       
-      // Create a temporary link with the direct view URL
+      // Fetch the file with proper authentication headers
+      const response = await fetch(downloadUrl.toString(), {
+        method: 'GET',
+        credentials: 'include', // Include cookies for authentication
+      })
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error(`File not found: ${fileName}. The file may have been deleted or you don't have permission to access it.`)
+        }
+        if (response.status === 401 || response.status === 403) {
+          throw new Error(`Permission denied: You don't have access to download this file. Please contact support.`)
+        }
+        throw new Error(`Failed to download file: HTTP ${response.status}`)
+      }
+      
+      // Get the file as a blob
+      const blob = await response.blob()
+      
+      // Create a download link
+      const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
-      link.href = viewUrl
+      link.href = url
       link.download = fileName
-      link.target = '_blank'
       link.style.display = 'none'
       
       // Add to DOM, click, and remove
@@ -107,9 +136,12 @@ export class FileService {
       link.click()
       document.body.removeChild(link)
       
-      console.log(`Downloaded file directly: ${fileName}`)
+      // Clean up the object URL
+      setTimeout(() => window.URL.revokeObjectURL(url), 100)
+      
+      console.log(`Successfully downloaded file: ${fileName}`)
     } catch (error) {
-      console.error('Error downloading file directly:', error)
+      console.error('Error downloading file:', error)
       throw error
     }
   }
