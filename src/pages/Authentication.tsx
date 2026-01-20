@@ -8,8 +8,11 @@ import { loginSuccess } from '../store/slices/userSlice';
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import { Mail, Lock, Eye, EyeOff, User, ArrowRight } from 'lucide-react'
-import { APP_BASE_URL } from '../lib/constant'
+import { APP_BASE_URL, ENVObj } from '../lib/constant'
 import { addToast } from '../store/slices/uiSlice'
+import PageBackground from '../components/layout/PageBackground'
+import { Teams } from 'appwrite'
+import { client } from '../lib/appwrite'
 
 const Authentication = () => {
   const [loggedInUser, setLoggedInUser] = useState<Models.User<Models.Preferences> | null>(null);
@@ -25,6 +28,38 @@ const Authentication = () => {
   const [mode, setMode] = useState<'signup' | 'signin'>('signup')
   const [rateLimitWaitTime, setRateLimitWaitTime] = useState<number | null>(null)
   const rateLimitIntervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Helper function to check if user is a notary and redirect accordingly
+  const redirectAfterLogin = async (userEmail: string | null) => {
+    if (!userEmail || !ENVObj.VITE_NOTARY_TEAM_ID) {
+      navigate('/services', { replace: true })
+      return
+    }
+    
+    try {
+      const account = await appwriteAccount.get()
+      const userId = account.$id
+      const teams = new Teams(client)
+      const memberships = await teams.listMemberships(ENVObj.VITE_NOTARY_TEAM_ID)
+      const isNotary = memberships.memberships?.some((m: any) => m.userId === userId)
+      
+      if (isNotary) {
+        navigate('/notary', { replace: true })
+      } else {
+        navigate('/services', { replace: true })
+      }
+    } catch (e) {
+      // Fallback to email list check
+      const emailList = String(ENVObj.VITE_NOTARY_EMAILS || '')
+        .toLowerCase().split(',').map(s => s.trim()).filter(Boolean)
+      const email = userEmail.toLowerCase()
+      if (emailList.includes(email)) {
+        navigate('/notary', { replace: true })
+      } else {
+        navigate('/services', { replace: true })
+      }
+    }
+  }
 
   useEffect(() => {
     if (location.pathname === '/login') setMode('signin')
@@ -62,7 +97,7 @@ const Authentication = () => {
             phone: '',
           },
         }));
-        navigate('/services', { replace: true });
+        await redirectAfterLogin(existing.email ?? null)
         setIsSubmitting(false);
         return;
       }
@@ -93,7 +128,7 @@ const Authentication = () => {
               phone: '',
             },
           }));
-          navigate('/services', { replace: true });
+          await redirectAfterLogin(profile.email ?? null)
           setIsSubmitting(false); 
           return;
         } catch (e) {
@@ -177,13 +212,14 @@ const Authentication = () => {
         phone: '',
       },
     }));
-    navigate('/services', { replace: true });
+    await redirectAfterLogin(profile.email ?? null)
     setIsSubmitting(false)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
+    <PageBackground>
+      <div className="flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -420,8 +456,9 @@ const Authentication = () => {
             <span>Secured Authentication</span>
           </div>
         </motion.div>
+        </div>
       </div>
-    </div>
+    </PageBackground>
   );
 };
 

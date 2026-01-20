@@ -5,6 +5,7 @@ import { Clock, Shield, CheckCircle, ArrowRight, Star } from 'lucide-react'
 import { getServiceBySlug } from '../data/services'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
+import PageBackground from '../components/layout/PageBackground'
 
 const ServiceDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
@@ -33,8 +34,9 @@ const ServiceDetail: React.FC = () => {
   
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <PageBackground>
+      <div className="py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -191,8 +193,9 @@ const ServiceDetail: React.FC = () => {
             </motion.div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </PageBackground>
   )
 }
 

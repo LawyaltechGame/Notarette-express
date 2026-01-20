@@ -2,6 +2,7 @@ import React from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getServiceBySlug } from '../data/services'
 import { formService, FormSubmission } from '../services/formService'
+import PageBackground from '../components/layout/PageBackground'
 import { storage, ID } from '../lib/appwrite'
 import { Permission, Role } from 'appwrite'
 import { ENVObj } from '../lib/constant'
@@ -218,8 +219,9 @@ const ServiceForm: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#111827] py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <PageBackground>
+      <div className="py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Card */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 mb-8 overflow-hidden">
           <div className="bg-[#111827] px-8 py-6">
@@ -507,8 +509,9 @@ const ServiceForm: React.FC = () => {
             </form>
           </div>
           </div>
+        </div>
       </div>
-    </div>
+    </PageBackground>
   )
 }
 

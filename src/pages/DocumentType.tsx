@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import { useFormSubmission } from '../hooks/useFormSubmission'
+import PageBackground from '../components/layout/PageBackground'
 
 const options = [
   {
@@ -89,8 +90,9 @@ const DocumentType: React.FC = () => {
   }, [submission])
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <PageBackground>
+      <div className="py-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-center space-x-12 mb-8 text-gray-500 dark:text-gray-400">
           <div className="text-center">
             <div className="w-8 h-8 rounded-full border-2 border-blue-600 text-blue-600 flex items-center justify-center mx-auto mb-1">1</div>
@@ -163,8 +165,9 @@ const DocumentType: React.FC = () => {
             </Button>
           </div>
         </Card>
+        </div>
       </div>
-    </div>
+    </PageBackground>
   )
 }
 

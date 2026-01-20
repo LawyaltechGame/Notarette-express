@@ -5,6 +5,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, Calendar, ExternalLink, ArrowRight } from 'lucide-react';
 import { useFormSubmission } from '../hooks/useFormSubmission';
+import PageBackground from '../components/layout/PageBackground';
 
 interface OrderData {
   paid: boolean;
@@ -136,18 +137,21 @@ const ThankYou: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your order details...</p>
+      <PageBackground>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading your order details...</p>
+          </div>
         </div>
-      </div>
+      </PageBackground>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#111827] py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <PageBackground>
+      <div className="py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -258,8 +262,9 @@ const ThankYou: React.FC = () => {
             </button>
           </motion.div>
         }
+        </div>
       </div>
-    </div>
+    </PageBackground>
   );
 };
 

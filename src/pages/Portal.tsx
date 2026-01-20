@@ -11,6 +11,7 @@ import { Query } from 'appwrite'
 import { ENVObj } from '../lib/constant'
 import { FileService, FileMetadata } from '../services/fileService'
 import { formService, FormSubmission, parseUploadedFiles } from '../services/formService'
+import PageBackground from '../components/layout/PageBackground'
 
 const Portal: React.FC = () => {
   const orders = useAppSelector(state => state.order.orders)
@@ -402,8 +403,9 @@ const Portal: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <PageBackground>
+      <div className="py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {showRetentionNotice && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/50" onClick={dismissRetentionNotice} />
@@ -828,8 +830,9 @@ const Portal: React.FC = () => {
             )}
           </Card>
         </motion.div>
+        </div>
       </div>
-    </div>
+    </PageBackground>
   )
 }
 

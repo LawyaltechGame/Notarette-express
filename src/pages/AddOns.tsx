@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import { useFormSubmission } from '../hooks/useFormSubmission'
+import PageBackground from '../components/layout/PageBackground'
 
 const addonsList = [
   { key: 'courier', title: 'Courier Delivery', subtitle: 'Physical delivery within 3 business days', priceCents: 100 },
@@ -86,8 +87,9 @@ const AddOns: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <PageBackground>
+      <div className="py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-center space-x-12 mb-8 text-gray-500 dark:text-gray-400">
           <div className="text-center opacity-70">
             <div className="w-8 h-8 rounded-full border flex items-center justify-center mx-auto mb-1">1</div>
@@ -313,8 +315,9 @@ const AddOns: React.FC = () => {
             </Card>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </PageBackground>
   )
 }
 

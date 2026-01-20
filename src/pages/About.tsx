@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Shield, Users, Award, Clock, CheckCircle, Globe } from 'lucide-react'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
+import PageBackground from '../components/layout/PageBackground'
 
 const About: React.FC = () => {
   const stats = [
@@ -57,9 +58,9 @@ const About: React.FC = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <PageBackground>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 py-20">
+      <section className="relative py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -261,7 +262,7 @@ const About: React.FC = () => {
           </motion.div>
         </div>
       </section>
-    </div>
+    </PageBackground>
   )
 }
 

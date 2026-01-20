@@ -4,6 +4,7 @@ import Button from "../components/ui/Button";
 import { Shield, CheckCircle, Calendar } from "lucide-react";
 import { createCheckoutAndRedirect } from "../services/stripeService";
 import { useFormSubmission } from "../hooks/useFormSubmission";
+import PageBackground from "../components/layout/PageBackground";
 
 const Checkout: React.FC = () => {
   const [payload, setPayload] = useState<any>(null);
@@ -47,8 +48,9 @@ const Checkout: React.FC = () => {
   const total = payload?.totalCents ?? subtotal;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <PageBackground>
+      <div className="py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
           Checkout
         </h1>
@@ -246,8 +248,9 @@ const Checkout: React.FC = () => {
             <Calendar className="w-5 h-5 mx-auto mb-2" /> Instant Confirmation
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </PageBackground>
   );
 };
 

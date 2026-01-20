@@ -32,12 +32,20 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   // Role-gate for notary-only paths and client-only paths
   const isNotaryRoute = location.pathname.startsWith('/notary')
   const isClientOnlyRoute = clientOnly || location.pathname.startsWith('/portal')
+  // Client routes that notaries should not access
+  const isClientRoute = location.pathname.startsWith('/services') || 
+                        location.pathname.startsWith('/testimonials') || 
+                        location.pathname.startsWith('/faq') ||
+                        location.pathname.startsWith('/home') ||
+                        location.pathname.startsWith('/checkout') ||
+                        location.pathname.startsWith('/thank-you') ||
+                        location.pathname === '/'
   
   React.useEffect(() => {
     let cancelled = false
     const checkTeam = async () => {
-      // Only check team membership if we need to (notary routes or client-only routes)
-      if ((!isNotaryRoute && !isClientOnlyRoute) || !isAuthenticated || !ENVObj.VITE_NOTARY_TEAM_ID) {
+      // Check team membership for all authenticated users
+      if (!isAuthenticated || !ENVObj.VITE_NOTARY_TEAM_ID) {
         setIsNotary(null)
         return
       }
@@ -63,7 +71,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     }
     checkTeam()
     return () => { cancelled = true }
-  }, [isAuthenticated, isNotaryRoute, isClientOnlyRoute, user?.email])
+  }, [isAuthenticated, user?.email])
 
   // Show loading spinner while checking authentication
   if (loading) {
@@ -115,6 +123,23 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     if (!isAuthenticated) {
       return <Navigate to="/login" state={{ from: location }} replace />
     }
+    if (isNotary === true) {
+      return <Navigate to="/notary" replace />
+    }
+    if (isNotary === null) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+          <div className="text-center">
+            <Loader2 className="w-12 h-12 text-primary-600 animate-spin mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Checking access…</h2>
+          </div>
+        </div>
+      )
+    }
+  }
+
+  // Redirect notaries away from client routes (services, testimonials, faq, etc.)
+  if (isAuthenticated && isClientRoute && !isNotaryRoute) {
     if (isNotary === true) {
       return <Navigate to="/notary" replace />
     }

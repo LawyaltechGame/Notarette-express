@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import { appwriteAccount } from '../lib/appwrite'
+import PageBackground from '../components/layout/PageBackground'
 
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate()
@@ -19,8 +20,9 @@ const ResetPassword: React.FC = () => {
   const canSubmit = userId && secret && password.length >= 8 && password === confirm && !isSubmitting
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
+    <PageBackground>
+      <div className="flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full">
         <Card>
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Reset password</h1>
           {!userId || !secret ? (
@@ -86,8 +88,9 @@ const ResetPassword: React.FC = () => {
             </div>
           )}
         </Card>
+        </div>
       </div>
-    </div>
+    </PageBackground>
   )
 }
 

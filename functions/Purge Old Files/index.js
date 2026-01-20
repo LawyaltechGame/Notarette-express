@@ -53,6 +53,10 @@ export default async ({ req, res, log, error }) => {
 
     const storage = new Storage(client);
 
+    // Calculate cutoff date for logging
+    const cutoffDate = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
+    log(`Starting cleanup: Retention period = ${retentionDays} days, Cutoff date = ${cutoffDate.toISOString()}`);
+
     let totalExamined = 0;
     let totalDeleted = 0;
     let cursor = undefined;
@@ -76,13 +80,15 @@ export default async ({ req, res, log, error }) => {
         const expired = isOlderThanRetention(createdAt, retentionDays);
 
         if (inScope && expired) {
+          const fileDate = new Date(createdAt);
+          const daysOld = Math.floor((Date.now() - fileDate.getTime()) / (24 * 60 * 60 * 1000));
           if (dryRun) {
-            log(`[DRY_RUN] Would delete: ${name} (${fileId}), createdAt=${createdAt}`);
+            log(`[DRY_RUN] Would delete: ${name} (${fileId}), createdAt=${createdAt}, age=${daysOld} days`);
           } else {
             try {
               await storage.deleteFile(APPWRITE_BUCKET_ID, fileId);
               totalDeleted += 1;
-              log(`Deleted: ${name} (${fileId}), createdAt=${createdAt}`);
+              log(`Deleted: ${name} (${fileId}), createdAt=${createdAt}, age=${daysOld} days`);
             } catch (e) {
               error(`Delete failed for ${name} (${fileId}): ${e?.message || e}`);
             }
@@ -96,7 +102,15 @@ export default async ({ req, res, log, error }) => {
       if (!cursor) break;
     }
 
-    const summary = { ok: true, examined: totalExamined, deleted: totalDeleted, retentionDays, dryRun };
+    const summary = { 
+      ok: true, 
+      examined: totalExamined, 
+      deleted: totalDeleted, 
+      retentionDays, 
+      dryRun,
+      cutoffDate: cutoffDate.toISOString(),
+      executionDate: new Date().toISOString()
+    };
     log(JSON.stringify(summary));
     return res.json(summary);
   } catch (e) {

@@ -4,6 +4,7 @@ import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import { getServiceBySlug } from '../data/services'
 import { useFormSubmission } from '../hooks/useFormSubmission'
+import PageBackground from '../components/layout/PageBackground'
 
 const ServiceSelection: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
@@ -75,8 +76,9 @@ const ServiceSelection: React.FC = () => {
   const totalCents = subtotalCents + vatCents
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <PageBackground>
+      <div className="py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-center space-x-12 mb-8 text-gray-500 dark:text-gray-400">
           <div className="text-center opacity-70">
             <div className="w-8 h-8 rounded-full border flex items-center justify-center mx-auto mb-1">1</div>
@@ -209,8 +211,9 @@ const ServiceSelection: React.FC = () => {
             </Card>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </PageBackground>
   )
 }
 

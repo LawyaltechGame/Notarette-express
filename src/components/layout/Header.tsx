@@ -85,14 +85,19 @@ const Header: React.FC = () => {
     } catch {}
   }, [user?.email])
 
-  const navigation = [
-    { name: 'Services', href: '/services' },
-    { name: 'Testimonials', href: '/testimonials' },
-    { name: 'FAQ', href: '/faq' },
-    ...(showNotaryLink ? [{ name: 'Notary Panel', href: '/notary' }] as const : []),
-    // Only show Client Portal if user is NOT a notary
-    ...(!showNotaryLink ? [{ name: 'Client Portal', href: '/portal' }] as const : []),
-  ]
+  // Navigation differs for notaries vs clients
+  const navigation = showNotaryLink
+    ? [
+        // Notaries only see Notary Panel
+        { name: 'Notary Panel', href: '/notary' },
+      ]
+    : [
+        // Clients see regular navigation
+        { name: 'Services', href: '/services' },
+        { name: 'Testimonials', href: '/testimonials' },
+        { name: 'FAQ', href: '/faq' },
+        { name: 'Client Portal', href: '/portal' },
+      ]
 
   const handleLogout = async () => {
     try {
@@ -117,7 +122,7 @@ const Header: React.FC = () => {
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100 dark:bg-gray-900/80 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to="/services" className="flex items-center space-x-2">
+          <Link to={showNotaryLink ? "/notary" : "/services"} className="flex items-center space-x-2">
             {/* <img
               src={LOGO_URL}
               alt="Notarette Express"
@@ -161,12 +166,14 @@ const Header: React.FC = () => {
               </button>
             </div>
 
-            <Link
-              to="/services"
-              className="hidden md:inline-flex items-center px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
-            >
-              Get Notarized
-            </Link>
+            {!showNotaryLink && (
+              <Link
+                to="/services"
+                className="hidden md:inline-flex items-center px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                Get Notarized
+              </Link>
+            )}
 
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -198,13 +205,15 @@ const Header: React.FC = () => {
                   {item.name}
                 </Link>
               ))}
-              <Link
-                to="/services"
-                onClick={() => setIsOpen(false)}
-                className="block w-full text-center mt-4 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
-              >
-                Get Notarized
-              </Link>
+              {!showNotaryLink && (
+                <Link
+                  to="/services"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full text-center mt-4 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
+                >
+                  Get Notarized
+                </Link>
+              )}
             </div>
           </motion.div>
         )}

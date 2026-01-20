@@ -3,13 +3,15 @@ import { motion } from 'framer-motion'
 import { FileQuestion, Home, ArrowLeft } from 'lucide-react'
 import Button from '../components/ui/Button'
 import { Link, useNavigate } from 'react-router-dom'
+import PageBackground from '../components/layout/PageBackground'
 
 const NotFound: React.FC = () => {
   const navigate = useNavigate()
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4">
-      <div className="max-w-md w-full text-center">
+    <PageBackground>
+      <div className="flex items-center justify-center min-h-screen px-4">
+        <div className="max-w-md w-full text-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -123,8 +125,9 @@ const NotFound: React.FC = () => {
             </Button>
           </Link>
         </motion.div>
+        </div>
       </div>
-    </div>
+    </PageBackground>
   )
 }
 

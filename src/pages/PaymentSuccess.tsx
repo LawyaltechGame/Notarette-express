@@ -6,6 +6,7 @@ import { addToast } from '../store/slices/uiSlice'
 import { bookAppointment, createCalEvent, CAL_MEETING_LINK } from '../services/appointmentService'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
+import PageBackground from '../components/layout/PageBackground'
 
 const PaymentSuccess: React.FC = () => {
   const navigate = useNavigate()
@@ -87,24 +88,27 @@ const PaymentSuccess: React.FC = () => {
 
   if (isProcessing) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-600 mx-auto mb-4"></div>
+      <PageBackground>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-600 mx-auto mb-4"></div>
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
             Processing Your Payment
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
             Please wait while we confirm your payment and book your appointment...
           </p>
+          </div>
         </div>
-      </div>
+      </PageBackground>
     )
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <PageBackground>
+        <div className="py-12">
+          <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card>
             <div className="text-center py-12">
               <div className="mx-auto w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mb-4">
@@ -126,8 +130,9 @@ const PaymentSuccess: React.FC = () => {
               </div>
             </div>
           </Card>
+          </div>
         </div>
-      </div>
+      </PageBackground>
     )
   }
 
