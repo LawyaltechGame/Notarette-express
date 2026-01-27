@@ -22,7 +22,6 @@ const NotaryDashboard: React.FC = () => {
   const [loadingRequests, setLoadingRequests] = React.useState(false)
   const [formSubmissions, setFormSubmissions] = React.useState<any[]>([])
   const [loadingSubmissions, setLoadingSubmissions] = React.useState(false)
-  // Pagination state
   const [submissionsPage, setSubmissionsPage] = React.useState(1)
   const [submissionsPageSize, setSubmissionsPageSize] = React.useState(10)
   const [requestsPage, setRequestsPage] = React.useState(1)
