@@ -84,7 +84,7 @@ const NotaryDashboard: React.FC = () => {
           // Base URL only
           website_url: String(APP_BASE_URL),
           company_name: 'Notarette',
-          support_email: 'businesswithnotarette@gmail.com',
+          support_email: 'info@notarium.se',
           // Optional; your template may or may not use it
           title: String(request.documentTitle || request.uploadBatchId || '')
         },

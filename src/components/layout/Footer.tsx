@@ -82,7 +82,7 @@ const Footer: React.FC = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Mail size={16} />
-                <span>businesswithnotarette@gmail.com</span>
+                <span>info@notarium.se</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin size={16} />
