@@ -1,6 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import HowItWorks from '../components/home/HowItWorks'
+import PageBackground from '../components/layout/PageBackground'
 import Button from '../components/ui/Button'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'

@@ -133,7 +133,6 @@ const NotaryDashboard: React.FC = () => {
     return d
   }, [])
 
-  // Deprecated grouped view kept previously; now using flat list with pagination
 
   // Flat, sorted arrays for pagination by rows (last 7 days)
   const submissionsFlat = React.useMemo(() => {
