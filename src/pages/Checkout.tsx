@@ -66,7 +66,6 @@ const Checkout: React.FC = () => {
                 <div className="font-semibold text-gray-900">
                   {payload?.serviceTitle || "Selected Service"}
                   <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-                    Base Service
                   </span>
                 </div>
                 <p className="text-sm text-gray-600">
@@ -137,7 +136,7 @@ const Checkout: React.FC = () => {
           {/* Pay with Stripe */}
           <Card>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Pay with Stripe
+              Pay 
             </h2>
             <div className="text-sm text-gray-700 space-y-2 mb-6">
               <div>1. Review your order summary</div>
