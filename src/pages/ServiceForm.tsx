@@ -69,7 +69,7 @@ const ServiceForm: React.FC = () => {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = 'Enter a valid email'
     if (user?.email && email.toLowerCase() !== user.email.toLowerCase()) next.email = 'Email must match the account email you used to sign in'
     if (!documentTitle.trim()) next.documentTitle = 'Document title is required'
-    if (!documentType) next.documentType = 'Please select a document type'
+    // Document type is now optional - removed as a separate step
     if (files.length === 0) next.files = 'Please upload at least one document'
     if (files.length > MAX_FILES) next.files = `Maximum ${MAX_FILES} files allowed`
     if (files.some(f => f.size > MAX_FILE_SIZE_BYTES)) next.files = 'Each file must be 50 MB or smaller'
@@ -208,7 +208,7 @@ const ServiceForm: React.FC = () => {
       sessionStorage.setItem('notary_manual_form', JSON.stringify(payload))
       
       console.log('Form submitted successfully, navigating to next step...')
-      navigate(`/services/${slug}/document-type`)
+      navigate(`/services/${slug}/service-selection`)
       
     } catch (error) {
       console.error('Form submission error:', error)
@@ -488,7 +488,7 @@ const ServiceForm: React.FC = () => {
                   onClick={resetForm}
                   className="px-6 py-3 text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-semibold"
                 >
-                  Clear Form
+                  Clear
                 </button>
                 
                 <button
@@ -502,7 +502,7 @@ const ServiceForm: React.FC = () => {
                       <span>Submitting...</span>
                     </div>
                   ) : (
-                    'Submit Form'
+                    'Next'
                   )}
                 </button>
               </div>

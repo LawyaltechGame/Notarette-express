@@ -177,7 +177,7 @@ const ServiceDetail: React.FC = () => {
                 <p className="text-sm text-gray-600 mb-6">
                   Start the service configuration to choose document type, notarization options, and add-ons.
                 </p>
-                <Link to={`/services/${service.slug}/document-type`}>
+                <Link to={`/services/${service.slug}/service-selection`}>
                   <Button variant="primary" className="w-full">
                     Continue
                     <ArrowRight className="w-4 h-4 ml-2" />

@@ -18,12 +18,17 @@ const AddOns: React.FC = () => {
   
   const navigateToStep = (step: string) => {
     const base = slug || ''
-    if (step === 'form_submitted') navigate(`/services/${base}/document-type`, { replace: true })
+    if (step === 'form_submitted') navigate(`/services/${base}/service-selection`, { replace: true })
     else if (step === 'service_selected') navigate(`/services/${base}/service-selection`, { replace: true })
     else if (step === 'addons_selected') navigate(`/services/${base}/add-ons`, { replace: true })
     else if (step === 'checkout') navigate(`/checkout`, { replace: true })
     else if (step === 'completed') navigate(`/thank-you`, { replace: true })
   }
+
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior })
+  }, [])
 
   // Guard: require ServiceSelection payload
   React.useEffect(() => {
@@ -93,14 +98,10 @@ const AddOns: React.FC = () => {
         <div className="flex items-center justify-center space-x-12 mb-8 text-gray-500">
           <div className="text-center opacity-70">
             <div className="w-8 h-8 rounded-full border flex items-center justify-center mx-auto mb-1">1</div>
-            <div className="text-xs">Document Type</div>
-          </div>
-          <div className="text-center opacity-70">
-            <div className="w-8 h-8 rounded-full border flex items-center justify-center mx-auto mb-1">2</div>
             <div className="text-xs">Service Selection</div>
           </div>
           <div className="text-center">
-            <div className="w-8 h-8 rounded-full border-2 border-blue-600 text-blue-600 flex items-center justify-center mx-auto mb-1">3</div>
+            <div className="w-8 h-8 rounded-full border-2 border-blue-600 text-blue-600 flex items-center justify-center mx-auto mb-1">2</div>
             <div className="text-xs">Add-ons</div>
           </div>
         </div>

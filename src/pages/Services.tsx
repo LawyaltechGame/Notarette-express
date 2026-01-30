@@ -37,8 +37,8 @@ const Services: React.FC = () => {
         localStorage.removeItem('intake_form_pending')
       }
       setSubmittedForSlug(slug)
-      // Redirect directly to the Document Type page for the submitted service
-      navigate(`/services/${slug}/document-type`, { replace: true })
+      // Redirect directly to the Service Selection page for the submitted service
+      navigate(`/services/${slug}/service-selection`, { replace: true })
     } else {
       // Fallback: if no slug found at all, just normalize URL
       navigate('/services', { replace: true })
@@ -49,12 +49,13 @@ const Services: React.FC = () => {
     const name = serviceName.toLowerCase()
 
     if (name.includes('power of attorney')) return FaUserCheck
-    if (name.includes('certified copy')) return FaFileAlt
-    if (name.includes('passport') || name.includes('id')) return FaIdCard
-    if (name.includes('company formation') || name.includes('business')) return FaBuilding
-    if (name.includes('apostille')) return FaStamp
+    if (name.includes('passport')) return FaIdCard
+    if (name.includes('diploma') || name.includes('degree') || name.includes('academic transcript')) return FaCertificate
+    if (name.includes('bank statement')) return FaFileAlt
+    if (name.includes('deed') || name.includes('title transfer') || name.includes('real estate')) return FaFileContract
+    if (name.includes('board') || name.includes('shareholder') || name.includes('resolution') || name.includes('company formation') || name.includes('business')) return FaBuilding
+    if (name.includes('sale') || name.includes('purchase') || name.includes('agreement')) return FaFileContract
     if (name.includes('translation')) return FaLanguage
-    if (name.includes('real estate')) return FaFileContract
     if (name.includes('estate planning')) return FaCertificate
 
     return FaShieldAlt
@@ -62,14 +63,6 @@ const Services: React.FC = () => {
 
   // Fixed cards to match design
   const displayCards = [
-    {
-      title: 'Certified Copy',
-      slug: 'certified-copy-document',
-      priceLabel: '€1',
-      description: 'Get legally certified copies of your important documents with official notary seal.',
-      features: ['Official notary seal', 'Digital & physical copies', 'EU-wide recognition'],
-      badge: null,
-    },
     {
       title: 'Power of Attorney',
       slug: 'power-of-attorney',
@@ -79,27 +72,59 @@ const Services: React.FC = () => {
       badge: 'Most Popular',
     },
     {
-      title: 'Signature Verification',
-      slug: 'signature-verification',
+      title: 'Passport',
+      slug: 'passport',
       priceLabel: '€1',
-      description: 'Verify signatures on contracts and legal documents with notarial authentication.',
-      features: ['Identity verification', 'Digital signature support', 'Fraud protection'],
+      description: 'Certified copy and notarization of passport documents with official notary seal.',
+      features: ['Passport verification', 'Notarial certification', 'Digital copy provided'],
       badge: null,
     },
     {
-      title: 'Apostille Service',
-      slug: 'apostille-services',
+      title: 'Diplomas and Degrees',
+      slug: 'diplomas-and-degrees',
       priceLabel: '€1',
-      description: 'International document authentication for use in Hague Convention countries.',
-      features: ['Hague Convention compliant', 'Express 24h option', 'Worldwide acceptance'],
+      description: 'Certified copy and notarization of academic diplomas and degrees.',
+      features: ['Academic document verification', 'International recognition', 'Quick processing'],
       badge: null,
     },
     {
-      title: 'Other Documents',
-      slug: 'other-documents',
-      priceLabel: '',
-      description: 'If your document type is not listed, select this option to proceed.',
-      features: ['Custom assessments', 'Expert guidance', 'Fast turnaround'],
+      title: 'Academic Transcripts',
+      slug: 'academic-transcripts',
+      priceLabel: '€1',
+      description: 'Certified copy and notarization of academic transcripts and grade reports.',
+      features: ['Transcript verification', 'Official seal', 'Digital copy provided'],
+      badge: null,
+    },
+    {
+      title: 'Bank Statements',
+      slug: 'bank-statements',
+      priceLabel: '€1',
+      description: 'Certified copy and notarization of bank statements and financial documents.',
+      features: ['Financial document verification', 'Privacy protection', 'Quick processing'],
+      badge: null,
+    },
+    {
+      title: 'Deeds of Title Transfer',
+      slug: 'deeds-of-title-transfer',
+      priceLabel: '€1',
+      description: 'Notarization of property title transfer deeds and real estate transfers.',
+      features: ['Property document expertise', 'Legal compliance', 'Same-day processing'],
+      badge: null,
+    },
+    {
+      title: 'Board and Shareholder Resolutions',
+      slug: 'board-and-shareholder-resolutions',
+      priceLabel: '€1',
+      description: 'Notarization of corporate board and shareholder resolutions.',
+      features: ['Corporate document expertise', 'Legal compliance', 'Same-day processing'],
+      badge: null,
+    },
+    {
+      title: 'Sale and Purchase Agreements',
+      slug: 'sale-and-purchase-agreements',
+      priceLabel: '€1',
+      description: 'Notarization of sale and purchase agreements and commercial transactions.',
+      features: ['Commercial document expertise', 'Legal compliance', 'Same-day processing'],
       badge: null,
     },
   ]
@@ -219,7 +244,7 @@ const Services: React.FC = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.05 * index }}
-                    className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-200 p-6 text-center"
+                    className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-200 p-6 text-center flex flex-col h-full"
                   >
                     {card.badge && (
                       <div className="absolute -left-12 top-4 w-40 -rotate-45">
@@ -228,18 +253,18 @@ const Services: React.FC = () => {
                         </span>
                       </div>
                     )}
-                    <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-primary-600 text-white flex items-center justify-center shadow-lg">
+                    <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-primary-600 text-white flex items-center justify-center shadow-lg flex-shrink-0">
                       {React.createElement(getServiceIcon(card.title), { size: 36 })}
                     </div>
-                    <h3 className="font-semibold text-gray-900 mb-2">{card.title}</h3>
-                    <p className="text-gray-600 text-sm mb-4 min-h-[40px]">{card.description}</p>
+                    <h3 className="font-semibold text-gray-900 mb-2 flex-shrink-0">{card.title}</h3>
+                    <p className="text-gray-600 text-sm mb-4 flex-shrink-0">{card.description}</p>
                     {card.priceLabel && (
-                      <>
+                      <div className="flex-shrink-0">
                         <div className="text-2xl font-bold text-gray-900 mb-1">{card.priceLabel}</div>
                         <p className="text-xs text-gray-500 mb-4">starting from</p>
-                      </>
+                      </div>
                     )}
-                    <ul className="text-sm text-left mx-auto max-w-[260px] space-y-2 text-gray-600 mb-6 list-disc list-inside">
+                    <ul className="text-sm text-left mx-auto max-w-[260px] space-y-2 text-gray-600 mb-6 list-disc list-inside flex-grow">
                       {card.features.map((f, i) => (
                         <li key={i}>{f}</li>
                       ))}
@@ -249,7 +274,7 @@ const Services: React.FC = () => {
                       onClick={() => {
                         navigate(`/services/${card.slug}/start`)
                       }}
-                      className={`w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-medium transition-colors`}
+                      className={`w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-medium transition-colors flex-shrink-0 mt-auto`}
                     >
                       {card.slug === 'other-documents' ? 'Start Other Service' : 'Start Service'}
                       <span className="ml-2">→</span>

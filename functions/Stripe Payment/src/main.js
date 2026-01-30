@@ -12,13 +12,6 @@ const SERVICES = [
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
-    slug: 'certified-copy-document',
-    name: 'Certified Copy of Document',
-    priceCents: 100,
-    currency: 'eur',
-    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/certified-copy-of-document-meeting-test'
-  },
-  {
     slug: 'certified-copy-passport-id',
     name: 'Certified Copy of Passport/ID',
     priceCents: 100,
@@ -28,13 +21,6 @@ const SERVICES = [
   {
     slug: 'company-formation-documents',
     name: 'Company Formation Documents',
-    priceCents: 100,
-    currency: 'eur',
-    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
-  },
-  {
-    slug: 'apostille-services',
-    name: 'Apostille Services',
     priceCents: 100,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
@@ -56,6 +42,55 @@ const SERVICES = [
   {
     slug: 'estate-planning-document-notarization',
     name: 'Estate Planning Document Notarization',
+    priceCents: 100,
+    currency: 'eur',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
+  },
+  {
+    slug: 'passport',
+    name: 'Passport',
+    priceCents: 100,
+    currency: 'eur',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
+  },
+  {
+    slug: 'diplomas-and-degrees',
+    name: 'Diplomas and Degrees',
+    priceCents: 100,
+    currency: 'eur',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
+  },
+  {
+    slug: 'academic-transcripts',
+    name: 'Academic Transcripts',
+    priceCents: 100,
+    currency: 'eur',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
+  },
+  {
+    slug: 'bank-statements',
+    name: 'Bank Statements',
+    priceCents: 100,
+    currency: 'eur',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
+  },
+  {
+    slug: 'deeds-of-title-transfer',
+    name: 'Deeds of Title Transfer',
+    priceCents: 100,
+    currency: 'eur',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
+  },
+  {
+    slug: 'board-and-shareholder-resolutions',
+    name: 'Board and Shareholder Resolutions',
+    priceCents: 100,
+    currency: 'eur',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
+  },
+  {
+    slug: 'sale-and-purchase-agreements',
+    name: 'Sale and Purchase Agreements',
     priceCents: 100,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'

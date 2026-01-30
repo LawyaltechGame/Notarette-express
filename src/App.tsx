@@ -22,7 +22,6 @@ import PaymentSuccess from './pages/PaymentSuccess'
 import PaymentCancelled from './pages/PaymentCancelled'
 import NotFound from './pages/NotFound'
 import ServiceForm from './pages/ServiceForm'
-import DocumentType from './pages/DocumentType'
 import ServiceSelection from './pages/ServiceSelection'
 import PostCheckout from './routes/PostCheckout'
 import AddOns from './pages/AddOns'
@@ -91,11 +90,6 @@ function App() {
                 <Route path="/services/:slug/service-selection" element={
                   <ProtectedRoute>
                     <ServiceSelection />
-                  </ProtectedRoute>
-                } />
-                <Route path="/services/:slug/document-type" element={
-                  <ProtectedRoute>
-                    <DocumentType />
                   </ProtectedRoute>
                 } />
                 <Route path="/services/:slug/add-ons" element={

@@ -56,39 +56,6 @@ export const services: Service[] = [
     ],
   },
   {
-    id: '2',
-    name: 'Certified Copy of Document',
-    slug: 'certified-copy-document',
-    priceCents: 100, // €1.00
-    currency: 'EUR',
-    description: 'Official certified copy of original documents',
-    longDescription: 'Create legally certified copies of original documents with notarial certification.',
-    features: [
-      'Original document verification',
-      'Notarial certification',
-      'Digital copy provided',
-      'Secure storage',
-      'Quick processing',
-    ],
-    turnaroundTime: '1-2 hours',
-    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/certified-copy-of-document-meeting-test',
-    options: {
-      extraPagesPriceCents: 100,
-      courierPriceCents: 100,
-      rushServicePriceCents: 100,
-    },
-    faqs: [
-      {
-        question: 'What documents can be certified?',
-        answer: 'Most original documents including certificates, licenses, and official records.',
-      },
-      {
-        question: 'Do I need the original document?',
-        answer: 'Yes, the original document must be presented for certification.',
-      },
-    ],
-  },
-  {
     id: '3',
     name: 'Certified Copy of Passport/ID',
     slug: 'certified-copy-passport-id',
@@ -151,39 +118,6 @@ export const services: Service[] = [
       {
         question: 'Do I need to be present?',
         answer: 'Yes, all parties must be present for notarization, either in person or via video call.',
-      },
-    ],
-  },
-  {
-    id: '5',
-    name: 'Apostille Services',
-    slug: 'apostille-services',
-    priceCents: 100, // €1.00
-    currency: 'EUR',
-    description: 'International document authentication and apostille services',
-    longDescription: 'Professional apostille services for international document authentication and legalization.',
-    features: [
-      'International expertise',
-      'Government authentication',
-      'Express processing available',
-      'Document verification',
-      '24/7 availability',
-    ],
-    turnaroundTime: '3-5 business days',
-    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
-    options: {
-      extraPagesPriceCents: 100,
-      courierPriceCents: 100,
-      rushServicePriceCents: 100,
-    },
-    faqs: [
-      {
-        question: 'What is an apostille?',
-        answer: 'An apostille is a form of authentication for documents to be used in countries that are part of the Hague Convention.',
-      },
-      {
-        question: 'How long does apostille processing take?',
-        answer: 'Standard processing takes 3-5 business days, with express options available for faster service.',
       },
     ],
   },
@@ -283,6 +217,237 @@ export const services: Service[] = [
       {
         question: 'Is remote notarization valid for estate documents?',
         answer: 'Yes, remote notarization is legally recognized for estate planning documents in most jurisdictions.',
+      },
+    ],
+  },
+  {
+    id: '9',
+    name: 'Passport',
+    slug: 'passport',
+    priceCents: 100, // €1.00
+    currency: 'EUR',
+    description: 'Certified copy and notarization of passport documents',
+    longDescription: 'Professional notarization and certified copy services for passport documents with full legal compliance and identity verification.',
+    features: [
+      'Passport verification',
+      'Notarial certification',
+      'Digital copy provided',
+      'Secure storage',
+      'Quick processing',
+    ],
+    turnaroundTime: '1-2 hours',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
+    options: {
+      extraPagesPriceCents: 100,
+      courierPriceCents: 100,
+      rushServicePriceCents: 100,
+    },
+    faqs: [
+      {
+        question: 'What passport services do you provide?',
+        answer: 'We provide certified copies and notarization services for passport documents.',
+      },
+      {
+        question: 'Do I need the original passport?',
+        answer: 'Yes, the original passport must be presented for certification and notarization.',
+      },
+    ],
+  },
+  {
+    id: '10',
+    name: 'Diplomas and Degrees',
+    slug: 'diplomas-and-degrees',
+    priceCents: 100, // €1.00
+    currency: 'EUR',
+    description: 'Certified copy and notarization of academic diplomas and degrees',
+    longDescription: 'Professional notarization and certified copy services for academic diplomas, degrees, and educational certificates.',
+    features: [
+      'Academic document verification',
+      'Notarial certification',
+      'Digital copy provided',
+      'International recognition',
+      'Quick processing',
+    ],
+    turnaroundTime: '1-2 hours',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
+    options: {
+      extraPagesPriceCents: 100,
+      courierPriceCents: 100,
+      rushServicePriceCents: 100,
+    },
+    faqs: [
+      {
+        question: 'What academic documents can be notarized?',
+        answer: 'Diplomas, degrees, certificates, and other academic credentials from recognized institutions.',
+      },
+      {
+        question: 'Is the original diploma required?',
+        answer: 'Yes, the original diploma or degree certificate must be presented for certification.',
+      },
+    ],
+  },
+  {
+    id: '11',
+    name: 'Academic Transcripts',
+    slug: 'academic-transcripts',
+    priceCents: 100, // €1.00
+    currency: 'EUR',
+    description: 'Certified copy and notarization of academic transcripts',
+    longDescription: 'Professional notarization and certified copy services for academic transcripts and grade reports.',
+    features: [
+      'Transcript verification',
+      'Notarial certification',
+      'Digital copy provided',
+      'Official seal',
+      'Quick processing',
+    ],
+    turnaroundTime: '1-2 hours',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
+    options: {
+      extraPagesPriceCents: 100,
+      courierPriceCents: 100,
+      rushServicePriceCents: 100,
+    },
+    faqs: [
+      {
+        question: 'What transcript services do you provide?',
+        answer: 'We provide certified copies and notarization services for official academic transcripts.',
+      },
+      {
+        question: 'Do transcripts need to be official?',
+        answer: 'Yes, transcripts must be official documents issued by the educational institution.',
+      },
+    ],
+  },
+  {
+    id: '12',
+    name: 'Bank Statements',
+    slug: 'bank-statements',
+    priceCents: 100, // €1.00
+    currency: 'EUR',
+    description: 'Certified copy and notarization of bank statements',
+    longDescription: 'Professional notarization and certified copy services for bank statements and financial documents.',
+    features: [
+      'Financial document verification',
+      'Notarial certification',
+      'Digital copy provided',
+      'Privacy protection',
+      'Quick processing',
+    ],
+    turnaroundTime: '1-2 hours',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
+    options: {
+      extraPagesPriceCents: 100,
+      courierPriceCents: 100,
+      rushServicePriceCents: 100,
+    },
+    faqs: [
+      {
+        question: 'What bank statement services do you provide?',
+        answer: 'We provide certified copies and notarization services for bank statements and financial records.',
+      },
+      {
+        question: 'Are bank statements kept confidential?',
+        answer: 'Yes, all financial documents are handled with strict confidentiality and security measures.',
+      },
+    ],
+  },
+  {
+    id: '13',
+    name: 'Deeds of Title Transfer',
+    slug: 'deeds-of-title-transfer',
+    priceCents: 100, // €1.00
+    currency: 'EUR',
+    description: 'Notarization of property title transfer deeds',
+    longDescription: 'Professional notarization services for deeds of title transfer, property conveyance documents, and real estate transfers.',
+    features: [
+      'Property document expertise',
+      'Legal compliance assurance',
+      'Digital certificate included',
+      'Same-day processing',
+      '24/7 availability',
+    ],
+    turnaroundTime: '2-4 hours',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
+    options: {
+      extraPagesPriceCents: 100,
+      courierPriceCents: 100,
+      rushServicePriceCents: 100,
+    },
+    faqs: [
+      {
+        question: 'What property transfer documents can be notarized?',
+        answer: 'Deeds of title transfer, property conveyance documents, and other real estate transfer instruments.',
+      },
+      {
+        question: 'Do all parties need to be present?',
+        answer: 'Yes, all parties involved in the transfer must be present for notarization, either in person or via video call.',
+      },
+    ],
+  },
+  {
+    id: '14',
+    name: 'Board and Shareholder Resolutions',
+    slug: 'board-and-shareholder-resolutions',
+    priceCents: 100, // €1.00
+    currency: 'EUR',
+    description: 'Notarization of corporate board and shareholder resolutions',
+    longDescription: 'Professional notarization services for board resolutions, shareholder resolutions, and corporate governance documents.',
+    features: [
+      'Corporate document expertise',
+      'Legal compliance assurance',
+      'Digital certificate included',
+      'Same-day processing',
+      '24/7 availability',
+    ],
+    turnaroundTime: '2-4 hours',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
+    options: {
+      extraPagesPriceCents: 100,
+      courierPriceCents: 100,
+      rushServicePriceCents: 100,
+    },
+    faqs: [
+      {
+        question: 'What corporate resolutions can be notarized?',
+        answer: 'Board resolutions, shareholder resolutions, meeting minutes, and other corporate governance documents.',
+      },
+      {
+        question: 'Do corporate officers need to be present?',
+        answer: 'Yes, authorized corporate officers must be present for notarization of corporate documents.',
+      },
+    ],
+  },
+  {
+    id: '15',
+    name: 'Sale and Purchase Agreements',
+    slug: 'sale-and-purchase-agreements',
+    priceCents: 100, // €1.00
+    currency: 'EUR',
+    description: 'Notarization of sale and purchase agreements',
+    longDescription: 'Professional notarization services for sale and purchase agreements, contracts of sale, and commercial transaction documents.',
+    features: [
+      'Commercial document expertise',
+      'Legal compliance assurance',
+      'Digital certificate included',
+      'Same-day processing',
+      '24/7 availability',
+    ],
+    turnaroundTime: '2-4 hours',
+    calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test',
+    options: {
+      extraPagesPriceCents: 100,
+      courierPriceCents: 100,
+      rushServicePriceCents: 100,
+    },
+    faqs: [
+      {
+        question: 'What sale and purchase agreements can be notarized?',
+        answer: 'Property sale agreements, business purchase agreements, asset purchase agreements, and other commercial transaction documents.',
+      },
+      {
+        question: 'Do all parties need to be present?',
+        answer: 'Yes, all parties to the agreement must be present for notarization, either in person or via video call.',
       },
     ],
   }
