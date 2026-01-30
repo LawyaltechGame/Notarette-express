@@ -62,6 +62,19 @@ const ServiceSelection: React.FC = () => {
   const currency = service?.currency || 'EUR'
   const fmt = (cents: number, curr: string) => new Intl.NumberFormat('en-IE', { style: 'currency', currency: curr }).format(cents / 100)
 
+  const initialPayload = React.useMemo(() => {
+    try {
+      const raw = sessionStorage.getItem('notary_checkout_payload') || sessionStorage.getItem('notary_wizard_selection')
+      return raw ? JSON.parse(raw) : null
+    } catch {
+      return null
+    }
+  }, [])
+
+  const extraCopies = initialPayload?.extraCopies || 0
+  const EXTRA_COPY_PRICE_CENTS = 100
+  const extraCopiesCents = extraCopies * EXTRA_COPY_PRICE_CENTS
+
   const toggleKey = (key: string) => {
     setSelectedKeys(prev => {
       const next = new Set(prev)
@@ -75,7 +88,7 @@ const ServiceSelection: React.FC = () => {
 
   // Pricing summary
   const selectedOptions = baseOptions.filter(o => selectedKeys.has(o.key))
-  const subtotalCents = selectedOptions.reduce((sum, o) => sum + o.price, 0)
+  const subtotalCents = selectedOptions.reduce((sum, o) => sum + o.price, 0) + extraCopiesCents
   const vatRate = 0
   const vatCents = 0
   const totalCents = subtotalCents + vatCents
@@ -184,6 +197,16 @@ const ServiceSelection: React.FC = () => {
                   </div>
                 ))}
                 {/* Extra Certified Copies moved to Add-ons page */}
+
+                {extraCopies > 0 && (
+                  <div className="flex items-center justify-between text-sm">
+                    <div>
+                      <div className="text-gray-900">Extra Certified Copies × {extraCopies}</div>
+                      <div className="text-xs text-gray-500">Add-ons</div>
+                    </div>
+                    <div className="text-gray-900 font-medium">{fmt(extraCopiesCents, currency)}</div>
+                  </div>
+                )}
 
                 <div className="pt-3 border-t border-gray-200 text-sm">
                   <div className="flex items-center justify-between">

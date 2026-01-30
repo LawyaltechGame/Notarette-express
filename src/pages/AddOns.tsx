@@ -289,6 +289,13 @@ const AddOns: React.FC = () => {
                   )
                 })}
 
+                {selected.has('courier') && extraCopies > 0 && (
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="text-gray-900">Extra Certified Copies × {extraCopies}</div>
+                    <div className="text-gray-900 font-medium">+{fmt(extraCopiesCents)}</div>
+                  </div>
+                )}
+
                 <div className="pt-3 border-t border-gray-200 text-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Subtotal</span>
