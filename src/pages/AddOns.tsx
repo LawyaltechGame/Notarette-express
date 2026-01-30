@@ -62,9 +62,10 @@ const AddOns: React.FC = () => {
     line1: '',
     line2: '',
     city: '',
-    state: '',
     postalCode: '',
-    country: ''
+    country: '',
+    email: '',
+    phone: ''
   })
 
   const currency = initial?.currency || 'EUR'
@@ -167,9 +168,17 @@ const AddOns: React.FC = () => {
                       className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                     />
                     <input
-                      value={courierAddress.state}
-                      onChange={e=>setCourierAddress(v=>({ ...v, state: e.target.value }))}
-                      placeholder="State / Province"
+                      value={courierAddress.email}
+                      onChange={e=>setCourierAddress(v=>({ ...v, email: e.target.value }))}
+                      placeholder="Email Address"
+                      type="email"
+                      className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
+                    />
+                    <input
+                      value={courierAddress.phone}
+                      onChange={e=>setCourierAddress(v=>({ ...v, phone: e.target.value }))}
+                      placeholder="Phone Number"
+                      type="tel"
                       className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                     />
                     <input
