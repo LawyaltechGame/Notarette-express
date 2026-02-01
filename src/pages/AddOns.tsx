@@ -170,14 +170,14 @@ const AddOns: React.FC = () => {
                     <input
                       value={courierAddress.email}
                       onChange={e=>setCourierAddress(v=>({ ...v, email: e.target.value }))}
-                      placeholder="Email Address"
+                      placeholder="Email Address (to recipient)"
                       type="email"
                       className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                     />
                     <input
                       value={courierAddress.phone}
                       onChange={e=>setCourierAddress(v=>({ ...v, phone: e.target.value }))}
-                      placeholder="Phone Number"
+                      placeholder="Phone Number (to recipient)"
                       type="tel"
                       className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                     />
