@@ -51,9 +51,9 @@ const ServiceSelection: React.FC = () => {
 
   const baseOptions = React.useMemo(() => {
     return [
-      { key: 'base', title:  'Certified Copy', subtitle: 'Official service with notary seal', price: service ? service.priceCents : 100, currency: service?.currency || 'EUR' },
-      { key: 'signature', title: 'Signature Notarization', subtitle: 'Verify and notarize signatures', price: 100, currency: service?.currency || 'EUR' },
-      { key: 'true-content', title: 'True Content Verification', subtitle: 'Verify document authenticity', price: 100, currency: service?.currency || 'EUR' },
+      { key: 'base', title:  'Certified Copy', subtitle: 'Official service with notary seal', price: service ? service.priceCents : 6500, currency: service?.currency || 'EUR' },
+      { key: 'signature', title: 'Signature Notarization', subtitle: 'Verify and notarize signatures', price: 6500, currency: service?.currency || 'EUR' },
+      { key: 'true-content', title: 'True Content Verification', subtitle: 'Verify document authenticity', price: 6500, currency: service?.currency || 'EUR' },
     ]
   }, [service])
 
@@ -72,14 +72,14 @@ const ServiceSelection: React.FC = () => {
   }, [])
 
   const extraCopies = initialPayload?.extraCopies || 0
-  const EXTRA_COPY_PRICE_CENTS = 100
+  const EXTRA_COPY_PRICE_CENTS = 0
   const extraCopiesCents = extraCopies * EXTRA_COPY_PRICE_CENTS
 
   const toggleKey = (key: string) => {
     setSelectedKeys(prev => {
-      const next = new Set(prev)
-      if (next.has(key)) next.delete(key)
-      else next.add(key)
+      const next = new Set<string>()
+      // If clicking the already-selected option, clear selection; otherwise select only this option
+      if (!prev.has(key)) next.add(key)
       return next
     })
   }

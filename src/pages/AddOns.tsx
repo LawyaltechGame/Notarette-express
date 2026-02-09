@@ -5,10 +5,24 @@ import Button from '../components/ui/Button'
 import { useFormSubmission } from '../hooks/useFormSubmission'
 import PageBackground from '../components/layout/PageBackground'
 
+const EU_COUNTRIES = ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE']
+const EUROPE_OUTSIDE_EU = ['CH', 'NO', 'IS', 'GB', 'UA', 'BY', 'RU', 'MD', 'RS', 'BA', 'ME', 'MK', 'AL', 'TR']
+
+// Calculate shipping cost based on country
+const getShippingCostCents = (countryCode: string): number => {
+  if (!countryCode) return 0
+  const code = countryCode.toUpperCase()
+  if (EU_COUNTRIES.includes(code)) return 4500 // €45 for EU
+  if (EUROPE_OUTSIDE_EU.includes(code)) return 5500 // €55 for Europe outside EU
+  return 6500 // €65 for rest of world
+}
+
+// Calculate extra copy price based on country (proportional to shipping cost)
+// Extra copy pricing removed — copies are free
+
 const addonsList = [
-  { key: 'courier', title: 'Courier Delivery', subtitle: 'Physical delivery within 3 business days', priceCents: 100 },
-  { key: 'apostille', title: 'Apostille Service', subtitle: 'International authentication for Hague Convention countries', priceCents: 100 },
-  { key: 'express', title: 'Express 24h Processing', subtitle: 'Priority processing within 24 hours', priceCents: 100 },
+  { key: 'courier', title: 'Courier Delivery', subtitle: 'Physical delivery within 3 business days', priceCents: 0 }, // Dynamic pricing
+  { key: 'apostille', title: 'Apostille Service', subtitle: 'International authentication for Hague Convention countries', priceCents: 7000 },
 ]
 
 const AddOns: React.FC = () => {
@@ -16,14 +30,7 @@ const AddOns: React.FC = () => {
   const navigate = useNavigate()
   const { updateSubmission } = useFormSubmission()
   
-  const navigateToStep = (step: string) => {
-    const base = slug || ''
-    if (step === 'form_submitted') navigate(`/services/${base}/service-selection`, { replace: true })
-    else if (step === 'service_selected') navigate(`/services/${base}/service-selection`, { replace: true })
-    else if (step === 'addons_selected') navigate(`/services/${base}/add-ons`, { replace: true })
-    else if (step === 'checkout') navigate(`/checkout`, { replace: true })
-    else if (step === 'completed') navigate(`/thank-you`, { replace: true })
-  }
+  
 
   // Scroll to top when component mounts
   React.useEffect(() => {
@@ -72,12 +79,19 @@ const AddOns: React.FC = () => {
   const fmt = (cents: number) => new Intl.NumberFormat('en-IE', { style: 'currency', currency }).format(cents / 100)
 
   const baseSubtotal = initial?.subtotalCents || 0
-  const EXTRA_COPY_PRICE_CENTS = 100
+  
+  // Calculate courier cost dynamically based on country
+  const courierCostCents = selected.has('courier') ? getShippingCostCents(courierAddress.country) : 0
+  
+  // Extra copies are free
+  const extraCopyPriceCents = 0
+  
   const addonsCentsFromToggles = Array.from(selected).reduce((sum, key) => {
+    if (key === 'courier') return sum + courierCostCents
     const a = addonsList.find(x => x.key === key)
     return sum + (a?.priceCents || 0)
   }, 0)
-  const extraCopiesCents = (selected.has('courier') ? extraCopies : 0) * EXTRA_COPY_PRICE_CENTS
+  const extraCopiesCents = (selected.has('courier') ? extraCopies : 0) * extraCopyPriceCents
   const addonsCents = addonsCentsFromToggles + extraCopiesCents
   const subtotalCents = baseSubtotal + addonsCents
   const vatCents = 0
@@ -120,6 +134,7 @@ const AddOns: React.FC = () => {
               <div className="max-w-3xl mx-auto space-y-4">
                 {addonsList.map(a => {
                   const active = selected.has(a.key)
+                  const displayPrice = a.key === 'courier' ? courierCostCents : a.priceCents
                   return (
                     <button
                       key={a.key}
@@ -132,7 +147,7 @@ const AddOns: React.FC = () => {
                         <div className="font-semibold text-gray-900">{a.title}</div>
                         <div className="text-sm text-gray-600">{a.subtitle}</div>
                       </div>
-                      <div className="text-blue-600 font-bold">+{fmt(a.priceCents)}</div>
+                      <div className="text-blue-600 font-bold">+{fmt(displayPrice)}</div>
                     </button>
                   )
                 })}
@@ -190,10 +205,19 @@ const AddOns: React.FC = () => {
                     <input
                       value={courierAddress.country}
                       onChange={e=>setCourierAddress(v=>({ ...v, country: e.target.value }))}
-                      placeholder="Country"
+                      placeholder="Country (e.g., DE, FR, AT)"
                       className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                     />
                   </div>
+                  
+                  {courierAddress.country && (
+                    <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="text-sm text-gray-900">
+                        <span className="font-medium">Shipping Cost for {courierAddress.country.toUpperCase()}:</span> {fmt(getShippingCostCents(courierAddress.country))}
+                      </p>
+                    </div>
+                  )}
+                  
                   <div className="flex items-center justify-end mt-4">
                     <Button
                       variant="secondary"
@@ -215,7 +239,7 @@ const AddOns: React.FC = () => {
                     </Button>
                   </div>
                   <div className="mt-6 pt-5 border-t border-gray-200">
-                    <h3 className="font-semibold text-gray-900 mb-2">Extra Certified Copies</h3>
+                    <h3 className="font-semibold text-gray-900 mb-2">Extra copies</h3>
                     <p className="text-xs text-gray-500 mb-3">Optional. Available only with Courier Delivery.</p>
                     <div className="flex items-center gap-3">
                       <label className="text-sm text-gray-700">Number of extra copies</label>
@@ -227,7 +251,7 @@ const AddOns: React.FC = () => {
                         onChange={e => setExtraCopies(Math.max(0, Math.min(10, Number(e.target.value) || 0)))}
                         className="w-24 px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-900"
                       />
-                      <span className="text-sm text-blue-600 font-medium">+{fmt(EXTRA_COPY_PRICE_CENTS)} each</span>
+                      <span className="text-sm text-blue-600 font-medium">Free</span>
                     </div>
                   </div>
                 </div>
@@ -255,10 +279,14 @@ const AddOns: React.FC = () => {
                     const base = raw ? JSON.parse(raw) : {}
                     const addons = Array.from(selected).map(key => {
                       const a = addonsList.find(x => x.key === key)
-                      return { key, title: a?.title, priceCents: a?.priceCents || 0 }
+                      let price = a?.priceCents || 0
+                      if (key === 'courier') {
+                        price = courierCostCents
+                      }
+                      return { key, title: a?.title, priceCents: price }
                     })
                     if (selected.has('courier') && extraCopies > 0) {
-                      addons.push({ key: 'extraCopies', title: `Extra Certified Copies × ${extraCopies}`, priceCents: extraCopiesCents })
+                      addons.push({ key: 'extraCopies', title: `Extra copies × ${extraCopies}`, priceCents: 0 })
                     }
                     const payload = {
                       ...base,
@@ -268,6 +296,7 @@ const AddOns: React.FC = () => {
                       vatCents,
                       totalCents,
                       extraCopies: selected.has('courier') ? extraCopies : 0,
+                      courierAddress: selected.has('courier') ? courierAddress : null,
                     }
                     sessionStorage.setItem('notary_checkout_payload', JSON.stringify(payload))
                     navigate('/checkout')
@@ -290,17 +319,18 @@ const AddOns: React.FC = () => {
                 {Array.from(selected).map(key => {
                   const a = addonsList.find(x => x.key === key)
                   if (!a) return null
+                  const displayPrice = key === 'courier' ? courierCostCents : a.priceCents
                   return (
                     <div key={key} className="flex items-center justify-between text-sm">
                       <div className="text-gray-900">{a.title}</div>
-                      <div className="text-gray-900 font-medium">+{fmt(a.priceCents)}</div>
+                      <div className="text-gray-900 font-medium">+{fmt(displayPrice)}</div>
                     </div>
                   )
                 })}
 
                 {selected.has('courier') && extraCopies > 0 && (
                   <div className="flex items-center justify-between text-sm">
-                    <div className="text-gray-900">Extra Certified Copies × {extraCopies}</div>
+                    <div className="text-gray-900">Extra copies × {extraCopies}</div>
                     <div className="text-gray-900 font-medium">+{fmt(extraCopiesCents)}</div>
                   </div>
                 )}

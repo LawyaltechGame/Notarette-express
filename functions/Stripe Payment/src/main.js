@@ -7,91 +7,91 @@ const SERVICES = [
   {
     slug: 'power-of-attorney',
     name: 'Power of Attorney',
-    priceCents: 100,
+    priceCents: 6500,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'certified-copy-passport-id',
     name: 'Certified Copy of Passport/ID',
-    priceCents: 100,
+    priceCents: 6500,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'company-formation-documents',
     name: 'Company Formation Documents',
-    priceCents: 100,
+    priceCents: 6500,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'document-translation-notarization',
     name: 'Document Translation & Notarization',
-    priceCents: 100,
+    priceCents: 6500,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'real-estate-document-notarization',
     name: 'Real Estate Document Notarization',
-    priceCents: 100,
+    priceCents: 6500,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'estate-planning-document-notarization',
     name: 'Estate Planning Document Notarization',
-    priceCents: 100,
+    priceCents: 6500,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'passport',
     name: 'Passport',
-    priceCents: 100,
+    priceCents: 6500,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'diplomas-and-degrees',
     name: 'Diplomas and Degrees',
-    priceCents: 100,
+    priceCents: 6500,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'academic-transcripts',
     name: 'Academic Transcripts',
-    priceCents: 100,
+    priceCents: 6500,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'bank-statements',
     name: 'Bank Statements',
-    priceCents: 100,
+    priceCents: 6500,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'deeds-of-title-transfer',
     name: 'Deeds of Title Transfer',
-    priceCents: 100,
+    priceCents: 6500,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'board-and-shareholder-resolutions',
     name: 'Board and Shareholder Resolutions',
-    priceCents: 100,
+    priceCents: 6500,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   },
   {
     slug: 'sale-and-purchase-agreements',
     name: 'Sale and Purchase Agreements',
-    priceCents: 100,
+    priceCents: 6500,
     currency: 'eur',
     calComBookingLink: 'https://cal.com/marcus-whereby-xu25ac/remote-notarization-meeting-test'
   }
@@ -231,7 +231,7 @@ export default async ({ req, res, log, error }) => {
 
   // Create checkout session
   try {
-    const { successUrl: clientSuccessUrl, failureUrl, items, idempotencyKey: clientIdempotencyKey, userId, userEmail } = body;
+    const { successUrl: clientSuccessUrl, failureUrl, items, idempotencyKey: clientIdempotencyKey, userId, userEmail, courierCountry } = body;
     if (!Array.isArray(items) || items.length === 0) {
       log('No items provided in payload');
       return res.json({ error: 'No items provided' }, 400);
@@ -266,58 +266,61 @@ export default async ({ req, res, log, error }) => {
         price_data: {
           currency: service.currency,
           product_data: { name: service.name },
-          unit_amount: 100
+          unit_amount: 6500
         },
         quantity: 1
       });
-      subtotalCents += 100;
+      subtotalCents += 6500;
     }
     if (selectedServiceTypes.has('signature')) {
       lineItems.push({
         price_data: {
           currency: service.currency,
           product_data: { name: 'Signature Notarization' },
-          unit_amount: 100
+          unit_amount: 6500
         },
         quantity: 1
       });
-      subtotalCents += 100;
+      subtotalCents += 6500;
     }
     if (selectedServiceTypes.has('true-content')) {
       lineItems.push({
         price_data: {
           currency: service.currency,
           product_data: { name: 'True Content Verification' },
-          unit_amount: 100
+          unit_amount: 6500
         },
         quantity: 1
       });
-      subtotalCents += 100;
+      subtotalCents += 6500;
     }
 
-    // Extra certified copies: €15.00 per copy
-    if (extraCopies > 0) {
-      const amount = 100 * extraCopies;
-      lineItems.push({
-        price_data: {
-          currency: service.currency,
-          product_data: { name: `Extra Copies × ${extraCopies}` },
-          unit_amount: amount
-        },
-        quantity: 1
-      });
-      subtotalCents += amount;
+    // Add-ons from AddOns page: courier (region-based: EU 4500, Europe outside EU 5500, rest 6500), apostille 7000
+    const getCourierCostCents = (countryCode) => {
+      if (!countryCode) return 0
+      const EU = ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE']
+      const EUROPE_NON_EU = ['CH', 'NO', 'IS', 'GB', 'UA', 'BY', 'RU', 'MD', 'RS', 'BA', 'ME', 'MK', 'AL', 'TR']
+      const code = countryCode.toUpperCase()
+      if (EU.includes(code)) return 4500 // €45
+      if (EUROPE_NON_EU.includes(code)) return 5500 // €55
+      return 6500 // €65 for rest of world
     }
 
-    // Add-ons from AddOns page: courier 1500, apostille 8900, express 2500
-    const addonPriceByKey = { courier: 100, apostille: 100, express: 100 };
+    
+    // Add-ons from AddOns page: courier (region-based: EU 4500, Europe outside EU 5500, rest 6500), apostille 7000
+    const addonPriceByKey = { apostille: 7000 };
     for (const addKey of addOnIds) {
-      const amount = addonPriceByKey[addKey] || 0;
+      let amount = 0
+      if (addKey === 'courier') {
+        amount = getCourierCostCents(courierCountry || '')
+      } else {
+        amount = addonPriceByKey[addKey] || 0
+      }
       if (amount > 0) {
         lineItems.push({
           price_data: {
             currency: service.currency,
-            product_data: { name: addKey === 'courier' ? 'Courier Delivery' : addKey === 'apostille' ? 'Apostille Service' : 'Express 24h Processing' },
+            product_data: { name: addKey === 'courier' ? 'Courier Delivery' : 'Apostille Service' },
             unit_amount: amount
           },
           quantity: 1

@@ -142,7 +142,7 @@ export type CheckoutItemInput = {
 }
 
 // Connect to Appwrite Function for Stripe Checkout
-export async function createCheckoutAndRedirect(items: CheckoutItemInput[], overrideEmail?: string) {
+export async function createCheckoutAndRedirect(items: CheckoutItemInput[], overrideEmail?: string, courierAddress?: any) {
   try {
     // Get the current user session
     const session = await appwriteAccount.getSession('current');
@@ -185,7 +185,7 @@ export async function createCheckoutAndRedirect(items: CheckoutItemInput[], over
     const prefillEmail = userEmail || null;
 
     // Prepare the request payload
-    const payload = {
+    const payload: any = {
       successUrl: `${window.location.origin}/post-checkout?session_id={CHECKOUT_SESSION_ID}`,
       failureUrl: `${window.location.origin}/checkout`,
       items: items,
@@ -193,6 +193,11 @@ export async function createCheckoutAndRedirect(items: CheckoutItemInput[], over
       userId,
       userEmail: prefillEmail
     };
+
+    // Add courier address if provided
+    if (courierAddress && courierAddress.country) {
+      payload.courierCountry = courierAddress.country;
+    }
 
     // Call the Appwrite Function
     const functions = new Functions(client);

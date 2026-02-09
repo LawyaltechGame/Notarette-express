@@ -205,6 +205,7 @@ const Checkout: React.FC = () => {
                     ? payload.selectedOptions.map((o: any) => o.key)
                     : [];
                   const extraCopies = payload?.extraCopies || 0;
+                  const courierAddress = payload?.courierAddress || null;
                   const items = [
                     {
                       serviceId,
@@ -214,7 +215,7 @@ const Checkout: React.FC = () => {
                       extraCopies,
                     },
                   ];
-                  createCheckoutAndRedirect(items, email)
+                  createCheckoutAndRedirect(items, email, courierAddress)
                     .catch(() => {})
                     .finally(() => setIsSubmitting(false));
                 } catch (e) {

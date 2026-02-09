@@ -26,7 +26,7 @@ export const services: Service[] = [
     id: '1',
     name: 'Power of Attorney',
     slug: 'power-of-attorney',
-    priceCents: 100, // €1.00
+    priceCents: 6500, // €65.00
     currency: 'EUR',
     description: 'Legally binding power of attorney notarization',
     longDescription: 'Professional notarization of power of attorney documents with full legal compliance and identity verification.',
@@ -59,7 +59,7 @@ export const services: Service[] = [
     id: '3',
     name: 'Certified Copy of Passport/ID',
     slug: 'certified-copy-passport-id',
-    priceCents: 100, // €1.00
+    priceCents: 6500, // €65.00
     currency: 'EUR',
     description: 'Certified copy of passport or government ID',
     longDescription: 'Create legally certified copies of passports, driver licenses, and other government-issued identification documents.',
@@ -92,7 +92,7 @@ export const services: Service[] = [
     id: '4',
     name: 'Company Formation Documents',
     slug: 'company-formation-documents',
-    priceCents: 100, // €1.00
+    priceCents: 6500, // €65.00
     currency: 'EUR',
     description: 'Notarization of company formation and business documents',
     longDescription: 'Professional notarization of company formation documents, articles of incorporation, and business agreements.',
@@ -125,7 +125,7 @@ export const services: Service[] = [
     id: '6',
     name: 'Document Translation & Notarization',
     slug: 'document-translation-notarization',
-    priceCents: 100, // €1.00
+    priceCents: 6500, // €65.00
     currency: 'EUR',
     description: 'Professional translation and notarization services',
     longDescription: 'Professional translation services combined with notarial certification for international use.',
@@ -158,7 +158,7 @@ export const services: Service[] = [
     id: '7',
     name: 'Real Estate Document Notarization',
     slug: 'real-estate-document-notarization',
-    priceCents: 100, // €1.00
+    priceCents: 6500, // €65.00
     currency: 'EUR',
     description: 'Notarization of real estate and property documents',
     longDescription: 'Professional notarization of real estate contracts, deeds, mortgages, and property-related documents.',
@@ -191,7 +191,7 @@ export const services: Service[] = [
     id: '8',
     name: 'Estate Planning Document Notarization',
     slug: 'estate-planning-document-notarization',
-    priceCents: 100, // €1.00
+    priceCents: 6500, // €65.00
     currency: 'EUR',
     description: 'Notarization of wills, trusts, and estate planning documents',
     longDescription: 'Professional notarization of wills, trusts, power of attorney documents, and other estate planning instruments.',
@@ -224,7 +224,7 @@ export const services: Service[] = [
     id: '9',
     name: 'Passport',
     slug: 'passport',
-    priceCents: 100, // €1.00
+    priceCents: 6500, // €65.00
     currency: 'EUR',
     description: 'Certified copy and notarization of passport documents',
     longDescription: 'Professional notarization and certified copy services for passport documents with full legal compliance and identity verification.',
@@ -257,7 +257,7 @@ export const services: Service[] = [
     id: '10',
     name: 'Diplomas and Degrees',
     slug: 'diplomas-and-degrees',
-    priceCents: 100, // €1.00
+    priceCents: 6500, // €65.00
     currency: 'EUR',
     description: 'Certified copy and notarization of academic diplomas and degrees',
     longDescription: 'Professional notarization and certified copy services for academic diplomas, degrees, and educational certificates.',
@@ -290,7 +290,7 @@ export const services: Service[] = [
     id: '11',
     name: 'Academic Transcripts',
     slug: 'academic-transcripts',
-    priceCents: 100, // €1.00
+    priceCents: 6500, // €65.00
     currency: 'EUR',
     description: 'Certified copy and notarization of academic transcripts',
     longDescription: 'Professional notarization and certified copy services for academic transcripts and grade reports.',
@@ -323,7 +323,7 @@ export const services: Service[] = [
     id: '12',
     name: 'Bank Statements',
     slug: 'bank-statements',
-    priceCents: 100, // €1.00
+    priceCents: 6500, // €65.00
     currency: 'EUR',
     description: 'Certified copy and notarization of bank statements',
     longDescription: 'Professional notarization and certified copy services for bank statements and financial documents.',
@@ -356,7 +356,7 @@ export const services: Service[] = [
     id: '13',
     name: 'Deeds of Title Transfer',
     slug: 'deeds-of-title-transfer',
-    priceCents: 100, // €1.00
+    priceCents: 6500, // €65.00
     currency: 'EUR',
     description: 'Notarization of property title transfer deeds',
     longDescription: 'Professional notarization services for deeds of title transfer, property conveyance documents, and real estate transfers.',
@@ -389,7 +389,7 @@ export const services: Service[] = [
     id: '14',
     name: 'Board and Shareholder Resolutions',
     slug: 'board-and-shareholder-resolutions',
-    priceCents: 100, // €1.00
+    priceCents: 6500, // €65.00
     currency: 'EUR',
     description: 'Notarization of corporate board and shareholder resolutions',
     longDescription: 'Professional notarization services for board resolutions, shareholder resolutions, and corporate governance documents.',
@@ -422,7 +422,7 @@ export const services: Service[] = [
     id: '15',
     name: 'Sale and Purchase Agreements',
     slug: 'sale-and-purchase-agreements',
-    priceCents: 100, // €1.00
+    priceCents: 6500, // €65.00
     currency: 'EUR',
     description: 'Notarization of sale and purchase agreements',
     longDescription: 'Professional notarization services for sale and purchase agreements, contracts of sale, and commercial transaction documents.',

@@ -66,7 +66,7 @@ const Services: React.FC = () => {
     {
       title: 'Power of Attorney',
       slug: 'power-of-attorney',
-      priceLabel: '€1',
+      priceLabel: '€65',
       description: 'Create and notarize power of attorney documents for legal representation.',
       features: ['Legal drafting included', 'Multiple jurisdiction support', 'Express processing'],
       badge: 'Most Popular',
@@ -74,7 +74,7 @@ const Services: React.FC = () => {
     {
       title: 'Passport',
       slug: 'passport',
-      priceLabel: '€1',
+      priceLabel: '€65',
       description: 'Certified copy and notarization of passport documents with official notary seal.',
       features: ['Passport verification', 'Notarial certification', 'Digital copy provided'],
       badge: null,
@@ -82,7 +82,7 @@ const Services: React.FC = () => {
     {
       title: 'Diplomas and Degrees',
       slug: 'diplomas-and-degrees',
-      priceLabel: '€1',
+      priceLabel: '€65',
       description: 'Certified copy and notarization of academic diplomas and degrees.',
       features: ['Academic document verification', 'International recognition', 'Quick processing'],
       badge: null,
@@ -90,7 +90,7 @@ const Services: React.FC = () => {
     {
       title: 'Academic Transcripts',
       slug: 'academic-transcripts',
-      priceLabel: '€1',
+      priceLabel: '€65',
       description: 'Certified copy and notarization of academic transcripts and grade reports.',
       features: ['Transcript verification', 'Official seal', 'Digital copy provided'],
       badge: null,
@@ -98,7 +98,7 @@ const Services: React.FC = () => {
     {
       title: 'Bank Statements',
       slug: 'bank-statements',
-      priceLabel: '€1',
+      priceLabel: '€65',
       description: 'Certified copy and notarization of bank statements and financial documents.',
       features: ['Financial document verification', 'Privacy protection', 'Quick processing'],
       badge: null,
@@ -106,7 +106,7 @@ const Services: React.FC = () => {
     {
       title: 'Deeds of Title Transfer',
       slug: 'deeds-of-title-transfer',
-      priceLabel: '€1',
+      priceLabel: '€65',
       description: 'Notarization of property title transfer deeds and real estate transfers.',
       features: ['Property document expertise', 'Legal compliance', 'Same-day processing'],
       badge: null,
@@ -114,7 +114,7 @@ const Services: React.FC = () => {
     {
       title: 'Board and Shareholder Resolutions',
       slug: 'board-and-shareholder-resolutions',
-      priceLabel: '€1',
+      priceLabel: '€65',
       description: 'Notarization of corporate board and shareholder resolutions.',
       features: ['Corporate document expertise', 'Legal compliance', 'Same-day processing'],
       badge: null,
@@ -122,7 +122,7 @@ const Services: React.FC = () => {
     {
       title: 'Sale and Purchase Agreements',
       slug: 'sale-and-purchase-agreements',
-      priceLabel: '€1',
+      priceLabel: '€65',
       description: 'Notarization of sale and purchase agreements and commercial transactions.',
       features: ['Commercial document expertise', 'Legal compliance', 'Same-day processing'],
       badge: null,
